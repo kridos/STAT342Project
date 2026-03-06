@@ -1,7 +1,7 @@
 ---
 title: "Your Paper Title Here"
-author: "Your Name(s)"
-date: Date
+author: 'Krish Doshi, Lauren Yee, Kian Sharifzadeh'
+date: '`r Sys.Date()`'
 output: pdf_document
 urlcolor: blue
 header-includes:
@@ -12,7 +12,11 @@ fontsize: 11pt
 
 ```{r setup, include=FALSE}
 #Use this code chunk to include libraries, and set global options.
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(MASS)
 ```
+
 
 # Abstract
 Write your abstract here.
