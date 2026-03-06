@@ -1,5 +1,5 @@
 ---
-title: "Your Paper Title Here"
+title: "BNT162b2 Decieving Public or Saving Lives?"
 author: 'Krish Doshi, Lauren Yee, Kian Sharifzadeh'
 date: '`r Sys.Date()`'
 output: pdf_document
@@ -17,16 +17,18 @@ library(tidyverse)
 library(MASS)
 ```
 
-
 # Abstract
+
 Write your abstract here.
 
 # Keywords
+
 *Keyword 1*, *Keyword 2*, *Keyword 3*, *Keyword 4*
 
 \newpage
 
 # Introduction / Background
+
 Provide an introduction with background information.
 
 ```{r label="important_R_code", eval=TRUE, echo=FALSE}
@@ -36,18 +38,23 @@ Provide an introduction with background information.
 # Statistical Methods
 
 ## Model
+
 Describe the statistical model used.
 
 ## Likelihood Inference
+
 Detail the likelihood approach.
 
 ## Bayesian Inference
+
 Detail the Bayesian approach.
 
 # Results
-Present your findings. 
+
+Present your findings.
 
 # Discussion / Conclusion
+
 Discuss / conclude here.
 
 # Bibliography
@@ -58,13 +65,15 @@ Doe, J. (2020). Title of the Paper. *Journal Name*, 12(3), 45-67.
 
 Last, F., & Last, F. (2025). *Book Title*. Publisher.
 
-Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from https://www.example.com.
+Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://www.example.com>.
 
 # Appendix
 
 ## Code
+
 ```{r ref.label = "important_R_code", eval=FALSE}
 ```
 
 ## Proofs
+
 If applicable, include detailed mathematical derivations or additional theoretical explanations.
