@@ -7,14 +7,29 @@ urlcolor: blue
 header-includes:
 - \usepackage{amsmath,amsfonts,amssymb}
 - \usepackage{setspace} \doublespacing
+- \usepackage{colortbl}
+- \usepackage{float}
+- \usepackage{graphicx}
+- \usepackage{booktabs}
+- \usepackage{hyperref}
+- \usepackage{caption}
+- \usepackage{subcaption}
 fontsize: 11pt
 ---
 
 ```{r setup, include=FALSE}
 #Use this code chunk to include libraries, and set global options.
+#install.packages("janitor")
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(MASS)
+library(janitor)
+
+data <- data.frame("Covid_Case" = c(8, 162, 170), "No_Covid_Case" = c(17403, 17349, 34752), "Total"= c(17411, 17511, 34922))
+
+row.names(data) <- c("BNT162b2", "Placebo", "Total")
+
+extended_df <- data.frame("Treatment"=c(rep("BNT162b2", 17411), rep("Placebo", 17511)), "Has_Covid" = c(rep("Yes", 8), rep("No", 17403), rep("Yes", 162), rep("No", 17349)))
 ```
 
 # Abstract
@@ -35,7 +50,38 @@ Provide an introduction with background information.
 # You can reference your code in the appendix (sample here).
 ```
 
+## Visualization
+
+
+
+```{r table}
+
+table_test <- extended_df %>% 
+  tabyl(Group, Has_Covid) %>%
+    adorn_totals(where = c("row", "col")) %>%
+    adorn_title()
+
+
+```
+
+```{r boxplot}
+ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) + 
+  geom_bar(position="fill")
+
+
+```
+
+```{r mosaic-plot}
+
+mosaicplot(table_test, main = "Covid Cases", color = TRUE)
+
+mosaicplot(~ Group + Has_Covid, data = extended_df, color = TRUE)
+
+```
+
 # Statistical Methods
+
+
 
 ## Model
 
