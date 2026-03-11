@@ -39,11 +39,42 @@ Provide an introduction with background information.
 
 ## Model
 
+```{r}
+pfizer_estimator <- 8/17411
+placebo_estimator <- 162 / 17511
+
+pfizer_estimator
+placebo_estimator
+
+relative_risk <- pfizer_estimator / placebo_estimator
+relative_risk
+
+psi <- 1 - relative_risk
+psi
+
+```
+
+From these calculations, we find that $\pi_{pf} = \frac{8}{17411}$ and $\pi_{pl} = \frac{162}{17511}$. In other words, $\pi_{pf} \approx 0.00046$ and $\pi_{pl} \approx 0.00925$.
+
+Pfizer vaccine estimator: 8/17411
+
+Placebo estimator: 162 / 17511
+
+Total: 170 / 34922
+
 Describe the statistical model used.
+
+Let $T \sim Binom(170, \pi)$, where $\pi$ is equivalent to P(Vaccine|Infection). Since $n_1$ is approximately equal to $n_2$, we can rewrite P(Vaccine|Infection) as $\pi = \frac{\pi_{pf}}{\pi_{pf} + \pi_{pl}}$
+
+
+
+
 
 ## Likelihood Inference
 
 Detail the likelihood approach.
+
+
 
 ## Bayesian Inference
 
