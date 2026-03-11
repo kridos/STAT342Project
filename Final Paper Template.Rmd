@@ -39,6 +39,8 @@ Provide an introduction with background information.
 
 ## Model
 
+## Make sure to prove why T is binomial in Appendix (see last slides for example slides)
+
 ```{r}
 pfizer_estimator <- 8/17411
 placebo_estimator <- 162 / 17511
@@ -54,7 +56,7 @@ psi
 
 ```
 
-From these calculations, we find that $\pi_{pf} = \frac{8}{17411}$ and $\pi_{pl} = \frac{162}{17511}$. In other words, $\pi_{pf} \approx 0.00046$ and $\pi_{pl} \approx 0.00925$.
+From these calculations, we find that $\pi_{v} = \frac{8}{17411}$ and $\pi_{p} = \frac{162}{17511}$. In other words, $\pi_{v} \approx 0.00046$ and $\pi_{p} \approx 0.00925$.
 
 Pfizer vaccine estimator: 8/17411
 
@@ -64,9 +66,17 @@ Total: 170 / 34922
 
 Describe the statistical model used.
 
-Let $T \sim Binom(170, \pi)$, where $\pi$ is equivalent to P(Vaccine|Infection). Since $n_1$ is approximately equal to $n_2$, we can rewrite P(Vaccine|Infection) as $\pi = \frac{\pi_{pf}}{\pi_{pf} + \pi_{pl}}$
+Let $T \sim Binom(170, \pi)$, where $\pi$ is equivalent to P(Vaccine|Infection). T denotes the number of COVID cases in the vaccine group out of all the sample cases. 170 represents the total number of COVID cases in the sample. Since $n_1$ is approximately equal to $n_2$, we can rewrite P(Vaccine|Infection) as $\pi = \frac{\pi_{v}}{\pi_{v} + \pi_{p}}$. Our parameter of interest is $\psi$, which is equal to $1 -\frac{\pi_v}{\pi_p} = \frac{\pi_p - \pi_v}{\pi_p}$. Using our value of $\pi$, we can rewrite $\psi$ as $\frac{1-2\pi}{1-\pi}$.
 
+Proof: 
 
+$\frac{1-2\pi}{1-\pi} = \frac{1 - 2(\frac{\pi_{v}}{\pi_{v} + \pi_{p}})}{1- \frac{\pi_{v}}{\pi_{v} + \pi_{p}}}$
+
+$\frac{\pi_v + \pi_p - 2\pi_v}{\pi_v + \pi_p - \pi_v}$
+
+$\frac{\pi_p - \pi_v}{\pi_p} = \psi$
+
+Let $c$ be the number of COVID infections from the vaccine group. We observe $t = 8$. We want to test: $H_0: \psi = 0.3$, $H_1: \psi \ne 0.3$.
 
 
 
