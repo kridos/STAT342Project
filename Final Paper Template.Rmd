@@ -84,6 +84,21 @@ Let $c$ be the number of COVID infections from the vaccine group. We observe $t 
 
 Detail the likelihood approach.
 
+First, we need to find our likelihood function $L^{\ast}(\psi)$. Using our parameterization $\frac{1-2\pi}{1-\pi} = \psi$:
+
+$1-2\pi = \psi(1-\pi)$
+
+$1-2\pi = \psi-\psi\pi$
+
+$\psi\pi-2\pi = \psi- 1$
+
+$\pi(\psi-2) = \psi-1$
+
+$\pi = \frac{\psi- 1}{\psi-2}$
+
+We know that $L^{\ast}(\pi)  = \binom{n}{x} (\pi)^{x} \times (1-\pi)^{n-x}$ Using $\pi$ in terms of $\psi$, we get: $L^{\ast}(\psi) = \binom{n}{x} (\frac{\psi- 1}{\psi-2})^{x} \times (1-\frac{\psi- 1}{\psi-2})^{n-x}$
+
+Next, we solve for $\hat{\psi}^{mle}$. In order to do this, we need to find the log-likelihood function of $L^{\ast}(\psi)$: $\ell(\psi) = \ln{\binom{n}{x} (\frac{\psi- 1}{\psi-2})^{x}} + \ln{(1-\frac{\psi- 1}{\psi-2})^{n-x}}$
 
 
 ## Bayesian Inference
