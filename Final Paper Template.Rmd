@@ -24,6 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(MASS)
 library(janitor)
+library(fastR2)
 
 data <- data.frame("Covid_Case" = c(8, 162, 170), "No_Covid_Case" = c(17403, 17349, 34752), "Total"= c(17411, 17511, 34922))
 
@@ -142,16 +143,73 @@ $\pi(\psi-2) = \psi-1$
 
 $\pi = \frac{\psi- 1}{\psi-2}$
 
-We know that $L^{\ast}(\pi)  = \binom{n}{x} (\pi)^{x} \times (1-\pi)^{n-x}$ Using $\pi$ in terms of $\psi$, we get: $L^{\ast}(\psi) = \binom{n}{x} (\frac{\psi- 1}{\psi-2})^{x} \times (1-\frac{\psi- 1}{\psi-2})^{n-x}$
+We know that $L^{\ast}(\pi)  = \binom{n}{x} (\pi)^{x} \times (1-\pi)^{n-x}$. In this case, $n$ represents the number of people included in the sample and $x$ is the number of people who got infected with COVID. Using $\pi$ in terms of $\psi$, we get: $L^{\ast}(\psi) = \binom{n}{x} (\frac{\psi- 1}{\psi-2})^{x} \times (1-\frac{\psi- 1}{\psi-2})^{n-x}$
 
-Next, we solve for $\hat{\psi}^{mle}$. In order to do this, we need to find the log-likelihood function of $L^{\ast}(\psi)$: $\ell(\psi) = \ln{\binom{n}{x} (\frac{\psi- 1}{\psi-2})^{x}} + \ln{(1-\frac{\psi- 1}{\psi-2})^{n-x}}$
+Next, we solve for $\hat{\psi}^{mle}$. In order to do this, we need to find the log-likelihood function of $L^{\ast}(\psi)$: 
 
+$\ell(\psi) = \ln{\left[\binom{n}{x} (\frac{\psi- 1}{\psi-2})^{x}\right]} + \ln\left[{(1-\frac{\psi- 1}{\psi-2})^{n-x}}\right]$
+
+$\ell(\psi) = \ln{\binom{n}{x}} + x\ln{(\psi- 1)} -x\ln{(\psi-2)} + (n-x)\ln{(\frac{\psi- 2 - (\psi- 1)}{\psi-2})}$
+
+$\ell(\psi) = \ln{\binom{n}{x}} + x\ln{(\psi- 1)} -x\ln{(\psi-2)} + (n-x)\ln{(\frac{-1}{\psi-2})}$
+
+Now, we take the first derivative with respect to $\psi$:
+
+$\frac{d}{d \psi}\ell(\psi) = 0 + \frac{x}{\psi - 1} - \frac{x}{\psi - 2} - \frac{n-x}{\psi-2} = \frac{x}{\psi - 1} - \frac{x + (n-x)}{\psi - 2}$
+
+$\frac{d}{d \psi}\ell(\psi) = \frac{x}{\psi - 1} - \frac{n}{\psi - 2}$
+
+Setting $\frac{d}{d \psi}\ell(\psi) = 0$: $\frac{x}{\psi - 1} - \frac{n}{\psi - 2} = 0$
+
+$\frac{x}{\psi - 1} = \frac{n}{\psi - 2}$
+
+$x\psi - 2x = n\psi - n$
+
+$n- 2x = \psi(n - x)$
+
+Therefore, $\boxed{\hat{\psi}^{mle} = \frac{n - 2x}{n-x}}$, which can also be rewritten as $\frac{1 - 2\hat{\pi}^{mle}}{1 - \hat{\pi}^{mle}}$.
+
+To see if $\hat{\psi}^{mle}$, we do the 2nd derivative test:
+
+$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{x}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2}$
+
+Since $\frac{n}{\psi - 2}$ will always be less than $\frac{x}{\psi - 1}$, $\hat{\psi}^{mle}$ is a \fbox{Strict Global Maximum}.
 
 ## Bayesian Inference
 
 Detail the Bayesian approach.
 
 # Results
+
+## Frequentist Way
+
+The equation for the large sample confidence interval of $\psi$ is $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$
+
+Using Theorem 12.1 under regularity conditions, we know that $I(\hat{\psi}^{mle}) = -E\left[\frac{d^2}{d\psi^2}\ell(\psi)\right]$
+
+$-E\left[-\frac{t}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2} \right] = \frac{t}{(\psi - 1)^2} - \frac{n}{(\psi - 2)^2} $
+
+$\ell(\psi) = \ln{\binom{n}{x}} + x\ln{(\psi- 1)} -x\ln{(\psi-2)} + (n-x)\ln{(\frac{-1}{\psi-2})}$
+
+```{r}
+
+
+loglik.psi<-function(pi,x, n){ #first argument must be parameter
+ifelse((pi < 0 | pi > 1), NA,
+x*log((1-2*pi) / (1-pi))+(n-x)*log((1-((1-2*pi) / (1-pi))) ) )
+}
+#annoying: loglik argument is lowercase "l"
+ml.psi <- maxLik2(loglik=loglik.psi,
+start = 0.3, x = 8,n =170)
+plot(ml.psi) +
+labs(title = "Second order approximation for Psi Reparametrization",
+subtitle = "n = 170, x = 8)",
+x = expression(pi))
+
+
+
+```
+
 
 Present your findings.
 
