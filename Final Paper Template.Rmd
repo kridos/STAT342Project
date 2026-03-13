@@ -293,38 +293,25 @@ set.seed(414)
 values <- c()
 
 for(i in 1:10000){
-  t_star <- rbinom(30, 170, 0.3)
+  t_star <- rbinom(1, 170, 0.3)
   pi_mle <- t_star / 170
   psi_star <- (170 - 2*t_star) / (170-t_star)
   wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
   values <- c(values, wstar)
   
 }
-# sim_func <- function(B){
-#   t_star <- rbinom(B, 170, 0.3)
-#   pi_mle <- t_star / 170
-#   psi_star <- (1 - 2*pi_mle) / (1-pi_mle)
-#   wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
-#   wstar
-#   return(wstar)
-# }
-# 
-# sim_func(B)
 
-# null_sim <- lapply(1:B, sim_func)
-# Wstar <- c(unlist(null_sim))
-# which.min(Wstar)
 
 emp_p_value <- mean(values >= W_stat)
 emp_p_value
-# cat("Empirical P value = ", emp_p_value)
+cat("Empirical P value = ", emp_p_value)
 
-# ggplot(data = NULL,
-# mapping = aes(x = Wstar))+
-# geom_histogram() +
-# geom_vline(xintercept = W_stat) +
-# labs(title = "Counts of W from Bootstrapping", 
-#      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
+ggplot(data = NULL,
+mapping = aes(x = values))+
+geom_histogram() +
+geom_vline(xintercept = W_stat, color = "red") +
+labs(title = "Counts of W from Bootstrapping",
+     x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
 
 ```
 
