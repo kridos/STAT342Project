@@ -327,7 +327,7 @@ else{
 }
 }
 
-ml.psi <- maxLik2(loglik=loglik.pi,
+ml.pi <- maxLik2(loglik=loglik.pi,
 start = 0.3, x = 8,n = 170)
 
 plot(ml.pi) +
