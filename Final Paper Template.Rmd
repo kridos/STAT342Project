@@ -230,6 +230,21 @@ x = expression(psi))
 
 
 
+loglik.pi<-function(pi,x, n){
+if(pi < 0 || pi > 1) NA
+else{  
+  log(choose(n, x)) + x*log(pi) +(n-x)*log(1 - pi)
+}
+}
+
+ml.psi <- maxLik2(loglik=loglik.pi,
+start = 0.3, x = 8,n = 170)
+
+plot(ml.pi) +
+labs(title = "Second order approximation for Pi",
+subtitle = "n = 170, t = 8",
+x = expression(pi))
+
 ```
 
 ```{r}
