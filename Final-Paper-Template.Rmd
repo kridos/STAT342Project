@@ -70,16 +70,15 @@ adorn_title()
 
 ```
 
-```{r boxplot}
+``` {r barplot}
 ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
-  geom_bar(position="fill")
+  geom_bar(position="fill") + 
+  scale_fill_manual(values = c("lightblue", "#F5F5F5")) + 
+  theme_minimal()
 
 ```
 
-```{r mosaic-plot}
-mosaicplot(table_test, main = "Covid Cases", color = TRUE)
-mosaicplot(~ Treatment + Has_Covid, data = extended_df, color = TRUE)
-```
+
 
 # Statistical Methods
 
