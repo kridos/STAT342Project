@@ -1,7 +1,7 @@
 ---
 title: "BNT162b2 Decieving Public or Saving Lives?"
 author: 'Krish Doshi, Lauren Yee, Kian Sharifzadeh'
-date: '`r Sys.Date()`'
+date: '2026-03-13'
 output: pdf_document
 urlcolor: blue
 header-includes:
@@ -17,21 +17,7 @@ header-includes:
 fontsize: 11pt
 ---
 
-```{r setup, include=FALSE}
-#Use this code chunk to include libraries, and set global options.
-#install.packages("janitor")
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(MASS)
-library(janitor)
-library(fastR2)
 
-data <- data.frame("Covid_Case" = c(8, 162, 170), "No_Covid_Case" = c(17403, 17349, 34752), "Total"= c(17411, 17511, 34922))
-
-row.names(data) <- c("BNT162b2", "Placebo", "Total")
-
-extended_df <- data.frame("Treatment"=c(rep("BNT162b2", 17411), rep("Placebo", 17511)), "Has_Covid" = c(rep("Yes", 8), rep("No", 17403), rep("Yes", 162), rep("No", 17349)))
-```
 
 # Abstract
 
@@ -47,39 +33,40 @@ Write your abstract here.
 
 Provide an introduction with background information.
 
-On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the SARS-CoV-2 virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore this finding further, we test two hypotheses with Frequentist and Bayesian methods for inference: $H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$ where $\psi$ denotes the vaccine efficacy.
 
-https://www.nejm.org/doi/full/10.1056/nejmoa2034577
-https://www.cdc.gov/museum/timeline/covid19.html
-https://pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world.
-
-```{r label="important_R_code", eval=TRUE, echo=FALSE}
-# You can reference your code in the appendix (sample here).
-```
 
 ## Visualization
 
 
 
-```{r table}
+
+``` r
 table_test <- extended_df %>% 
 tabyl(Treatment, Has_Covid) %>%
 adorn_totals(where = c("row", "col")) %>%
 adorn_title()
-
-
 ```
 
-```{r boxplot}
+
+``` r
 ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
   geom_bar(position="fill")
-
 ```
 
-```{r mosaic-plot}
+![](Final-Paper-Template_files/figure-latex/boxplot-1.pdf)<!-- --> 
+
+
+``` r
 mosaicplot(table_test, main = "Covid Cases", color = TRUE)
+```
+
+![](Final-Paper-Template_files/figure-latex/mosaic-plot-1.pdf)<!-- --> 
+
+``` r
 mosaicplot(~ Treatment + Has_Covid, data = extended_df, color = TRUE)
 ```
+
+![](Final-Paper-Template_files/figure-latex/mosaic-plot-2.pdf)<!-- --> 
 
 # Statistical Methods
 
@@ -89,19 +76,42 @@ mosaicplot(~ Treatment + Has_Covid, data = extended_df, color = TRUE)
 
 ## Make sure to prove why T is binomial in Appendix (see last slides for example slides)
 
-```{r}
+
+``` r
 pfizer_estimator <- 8/17411
 placebo_estimator <- 162 / 17511
 
 pfizer_estimator
-placebo_estimator
+```
 
+```
+## [1] 0.0004594796
+```
+
+``` r
+placebo_estimator
+```
+
+```
+## [1] 0.009251328
+```
+
+``` r
 relative_risk <- pfizer_estimator / placebo_estimator
 relative_risk
+```
 
+```
+## [1] 0.04966635
+```
+
+``` r
 psi <- 1 - relative_risk
 psi
+```
 
+```
+## [1] 0.9503337
 ```
 
 From these calculations, we find that $\pi_{v} = \frac{8}{17411}$ and $\pi_{p} = \frac{162}{17511}$. In other words, $\pi_{v} \approx 0.00046$ and $\pi_{p} \approx 0.00925$.
@@ -150,15 +160,15 @@ $\ell(\psi) = \ln{\left[\binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t}\right]} + \ln
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)} + (n-t)\ln{(\frac{2-\psi - (1-\psi)}{2-\psi})}$
 
-$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{1} - (n-t)\ln{(2-\psi)}$
+$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
 
 Now, we take the first derivative with respect to $\psi$:
 
-$\frac{d}{d \psi}\ell(\psi) = 0 - \frac{t}{1-\psi} + \frac{t}{2-\psi} + \frac{n-t}{2-\psi} = -\frac{t}{1-\psi} + \frac{t + (n-t)}{2-\psi}$
+$\frac{d}{d \psi}\ell(\psi) = 0 - \frac{t}{1-\psi} + \frac{t}{2-\psi} + \frac{n-t}{2-\psi} = \frac{t}{1-\psi} - \frac{t + (n-t)}{2-\psi}$
 
-$\frac{d}{d \psi}\ell(\psi) = -\frac{t}{1-\psi} + \frac{n}{2-\psi}$
+$\frac{d}{d \psi}\ell(\psi) = \frac{t}{1-\psi} - \frac{n}{2-\psi}$
 
-Setting $\frac{d}{d \psi}\ell(\psi) = 0$: $-\frac{t}{1-\psi} + \frac{n}{2-\psi} = 0$
+Setting $\frac{d}{d \psi}\ell(\psi) = 0$: $\frac{t}{1-\psi} - \frac{n}{2-\psi} = 0$
 
 $\frac{t}{1-\psi} = \frac{n}{2-\psi}$
 
@@ -170,97 +180,13 @@ Therefore, $\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$, which can also be re
 
 To see if $\hat{\psi}^{mle}$, we do the 2nd derivative test:
 
-$\frac{d^2}{d \psi^2}\ell(\psi) = \frac{t}{(1-\psi)^2} -\frac{n}{(2-\psi)^2}$
+$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
 
-Depending on the values of $n$ and $t$, our estimate will not always be considered a global maximum. In our case, $\frac{d^2}{d \psi^2}\ell(\psi)$ is negative, which means $\hat{\psi}^{mle}$ is a \fbox{Maximum}.
+Since $\frac{n}{2-\psi}$ will always be less than $\frac{t}{1-\psi}$, $\hat{\psi}^{mle}$ is a \fbox{Strict Global Maximum}.
 
 ## Bayesian Inference
 
 Detail the Bayesian approach.
-
-In the paper, the authors mention that they used a beta binomial model with the transformation $$\pi = \frac{\pi_v}{\pi_v + \pi_p}$$ where $\pi_v$ and $\pi_p$ are the probabilities of an infection in the vaccine and placebo groups respectively. Here, the binomial $\pi$ was modeled with a minimally informative beta prior, Beta(0.700102, 1), and the parameter of interest is $\psi = \frac{1 - 2\pi}{1 - \pi}$. It was estimated to be 95% with the 95% Bayesian credible interval reported as [90.3%, 97.6%] and the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999.
-
-### Prior Elicitation
-
-We use two apriori beliefs about $\psi$ in 5 different cases.
-
-$$P(\psi \geq 0.3) = P\left(\frac{1 - 2\pi}{1 - \pi} \geq 0.3\right)$$
-$$= P(1 - 2\pi \geq 0.3(1 - \pi))$$
-$$= P(1 - 2\pi \geq 0.3 - 0.3\pi)$$
-$$= P(-1.7\pi \geq -0.7)$$
-$$= P\left(\pi \leq \frac{7}{17}\right)$$
-1 - Most Pessimistic
-
-- $P(\psi \geq 0.3) = 0.025$
-- $P(\psi \geq 0) = 0.35$
-
-2 - Pessimestic
-
-- $P(\psi \geq 0.3) = 0.05$
-- $P(\psi \geq 0) = 0.5$
-
-3 - Neutral
-
-- $P(\psi \geq 0.3) = 0.1$
-- $P(\psi \geq 0) = 0.65$
-
-4 - Optimistic
-
-- $P(\psi \geq 0.3) = 0.2$
-- $P(\psi \geq 0) = 0.8$
-
-5 - More Optimistic
-
-- $P(\psi \geq 0.3) = 0.4$
-- $P(\psi \geq 0) = 0.95$
-
-```{r}
-library(LearnBayes)
-
-beta.select(quantile1 = list(p = 0.025, x = 7/17),
-            quantile2 = list(p = 0.35, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.05, x = 7/17),
-            quantile2 = list(p = 0.5, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.1, x = 7/17),
-            quantile2 = list(p = 0.65, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.2, x = 7/17),
-            quantile2 = list(p = 0.8, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.4, x = 7/17),
-            quantile2 = list(p = 0.95, x = 0.5))
-```
-We choose these apriori beliefs to analyze the data and sensitivity of the prior. In other words, there are more pessimestic to more optimistic probabilities assigned to the events where the vaccine exceeds the FDA efficacy threshold of 30%, and whether it provides any beneficial value.
-
-### Posterior Distributions 
-(with data model $f(T|\pi) \sim Binom(170, \pi)$ & where $t = 8$)
-
-1 - Most Pessimistic
-
-$$g(\pi) = Beta(41.05, 37.63) \quad prior$$
-$$h(\pi|t) = Beta(41.05 + t, 170 - t + 37.63) \quad posterior$$
-
-2 - Pessimistic
-
-$$g(\pi) = Beta(43.03, 43.03) \quad prior$$
-$$h(\pi|t) = Beta(43.03 + t, 170 - t + 43.03) \quad posterior$$
-
-3 - Neutral
-
-$$g(\pi) = Beta(42.4, 46.0) \quad prior$$
-$$h(\pi|t) = Beta(37.63 + t, 170 - t + 41.05) \quad posterior$$
-
-4 - Optimistic
-
-$$g(\pi) = Beta(41.23, 49.20) \quad prior$$
-$$h(\pi|t) = Beta(41.23 + t, 170 - t + 49.20) \quad posterior$$
-
-5 - More Optimistic
-
-$$g(\pi) = Beta(48.96, 66.55) \quad prior$$
-$$h(\pi|t) = Beta(48.96 + t, 170 - t + 66.55) \quad posterior$$
 
 # Results
 
@@ -284,25 +210,44 @@ $\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \
 
 Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
 
-Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 170$: 
+Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 160$: 
 
-```{r}
+
+``` r
 n <- 170
 t <- 8
 psi_mle <- (n - 2*t) / (n - t)
+psi_mle
+```
+
+```
+## [1] 0.9506173
+```
+
+``` r
 psi_se <- sqrt(((1-psi_mle)*(2-psi_mle)^2) / n)
 
 lower <- psi_mle - qnorm(0.975)*psi_se
 upper <- psi_mle + qnorm(0.975)*psi_se
 
 lower
-upper
-psi_se 
+```
 
+```
+## [1] 0.9155627
+```
+
+``` r
+upper
+```
+
+```
+## [1] 0.9856719
 ```
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
-```{r}
+
+``` r
 loglik.psi<-function(psi,x, n){
 if(psi >= 1) NA
 else{  
@@ -317,34 +262,41 @@ plot(ml.psi) +
 labs(title = "Second order approximation for Psi (Parametrization for Pi)",
 subtitle = "n = 170, t = 8",
 x = expression(psi))
-
-
-
-loglik.pi<-function(pi,x, n){
-if(pi < 0 || pi > 1) NA
-else{  
-  log(choose(n, x)) + x*log(pi) +(n-x)*log(1 - pi)
-}
-}
-
-ml.psi <- maxLik2(loglik=loglik.pi,
-start = 0.3, x = 8,n = 170)
-
-plot(ml.pi) +
-labs(title = "Second order approximation for Pi",
-subtitle = "n = 170, t = 8",
-x = expression(pi))
-
 ```
 
-```{r}
+```
+## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## i Please use `linewidth` instead.
+## i The deprecated feature was likely used in the fastR2 package.
+##   Please report the issue at <https://github.com/rpruim/fastR2/issues>.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.
+```
+
+```
+## Warning: Removed 4 rows containing missing values or values outside the scale range
+## (`geom_function()`).
+```
+
+```
+## Warning: Removed 101 rows containing missing values or values outside the scale range
+## (`geom_function()`).
+```
+
+![](Final-Paper-Template_files/figure-latex/unnamed-chunk-3-1.pdf)<!-- --> 
+
+
+``` r
 set.seed(414)
 
-pi_samples <- rbinom(n = 100000, size = 170, prob =  8/170)
-pi_mle <- pi_samples / 170
-psi_samples <- (1 - 2*pi_mle) / (1-pi_mle)
+pi_samples <- rbinom(n = 100, size = 170, prob =  8/170)
+psi_samples <- replicate(n = 10000, expr= (1 - 2*pi_samples) / (1-pi_samples))
 sd(psi_samples)
+```
 
+```
+## [1] 0.1141392
 ```
 
 ### Likelihood Ratio Test Statistic
@@ -359,64 +311,85 @@ Then, $W = 2(-1.945 + 62.746) \approx \boxed{121.601}$
 
 
 Likelihood Ratio Test Statistic
-```{r}
+
+``` r
 log_lik_func <- function(psi, n , t){
-  log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) -(n-t)*log((2-psi))
+  log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) +(n-t)*log(1 / (2-psi))
 }
 
 log_mle <- log_lik_func(psi_mle, 170, 8)
 log_null <- log_lik_func(0.3, 170, 8)
 
 log_mle
-log_null
+```
 
+```
+## [1] -1.944994
+```
+
+``` r
+log_null
+```
+
+```
+## [1] -62.7456
+```
+
+``` r
 W_stat <- 2*(log_mle - log_null)
 W_stat
-
 ```
 
-```{r}
+```
+## [1] 121.6012
+```
+
+
+$\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$
+
+``` r
 pchisq(W_stat, 1, lower.tail = F)
-
-
-set.seed(414)
-values <- c()
-
-for(i in 1:10000){
-  t_star <- rbinom(30, 170, 0.3)
-  pi_mle <- t_star / 170
-  psi_star <- (170 - 2*t_star) / (170-t_star)
-  wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
-  values <- c(values, wstar)
-  
-}
-# sim_func <- function(B){
-#   t_star <- rbinom(B, 170, 0.3)
-#   pi_mle <- t_star / 170
-#   psi_star <- (1 - 2*pi_mle) / (1-pi_mle)
-#   wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
-#   wstar
-#   return(wstar)
-# }
-# 
-# sim_func(B)
-
-# null_sim <- lapply(1:B, sim_func)
-# Wstar <- c(unlist(null_sim))
-# which.min(Wstar)
-
-emp_p_value <- mean(values >= W_stat)
-emp_p_value
-# cat("Empirical P value = ", emp_p_value)
-
-# ggplot(data = NULL,
-# mapping = aes(x = Wstar))+
-# geom_histogram() +
-# geom_vline(xintercept = W_stat) +
-# labs(title = "Counts of W from Bootstrapping", 
-#      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
+```
 
 ```
+## [1] 2.822294e-28
+```
+
+``` r
+set.seed(414)
+B <- 1000
+sim_func <- function(i){
+  t_star <- rbinom(30, 170, 0.3)
+  psi_star <- (170 - 2*t_star) / (170 - t_star)
+  wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
+  return(wstar)
+}
+
+null_sim <- lapply(1:B, sim_func)
+Wstar <- c(unlist(null_sim))
+
+emp_p_value <- sum(Wstar >= W_stat)/B
+cat("Empirical P value = ", emp_p_value)
+```
+
+```
+## Empirical P value =  0
+```
+
+``` r
+ggplot(data = NULL,
+mapping = aes(x = Wstar))+
+geom_histogram() +
+geom_vline(xintercept = W_stat) + 
+labs(title = "Counts of W from Bootstrapping", 
+     x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+```
+
+![](Final-Paper-Template_files/figure-latex/unnamed-chunk-6-1.pdf)<!-- --> 
 
 
 Present your findings.
@@ -439,7 +412,9 @@ Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <
 
 ## Code
 
-```{r ref.label = "important_R_code", eval=FALSE}
+
+``` r
+# You can reference your code in the appendix (sample here).
 ```
 
 ## Proofs
