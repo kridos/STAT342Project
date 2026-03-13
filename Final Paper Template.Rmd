@@ -123,7 +123,7 @@ $\frac{\pi_v + \pi_p - 2\pi_v}{\pi_v + \pi_p - \pi_v}$
 
 $\frac{\pi_p - \pi_v}{\pi_p} = \psi$
 
-Let $c$ be the number of COVID infections from the vaccine group. We observe $t = 8$. We want to test: $H_0: \psi = 0.3$, $H_1: \psi \ne 0.3$.
+Let $t$ be the number of COVID infections from the vaccine group. We observe $t = 8$. We want to test: $H_0: \psi = 0.3$, $H_1: \psi \ne 0.3$.
 
 
 
@@ -137,43 +137,41 @@ $1-2\pi = \psi(1-\pi)$
 
 $1-2\pi = \psi-\psi\pi$
 
-$\psi\pi-2\pi = \psi- 1$
+$1-\psi = \pi(2 -\psi)$
 
-$\pi(\psi-2) = \psi-1$
+$\pi = \frac{1 -\psi}{2 -\psi}$
 
-$\pi = \frac{\psi- 1}{\psi-2}$
-
-We know that $L^{\ast}(\pi)  = \binom{n}{x} (\pi)^{x} \times (1-\pi)^{n-x}$. In this case, $n$ represents the number of people included in the sample and $x$ is the number of people who got infected with COVID. Using $\pi$ in terms of $\psi$, we get: $L^{\ast}(\psi) = \binom{n}{x} (\frac{\psi- 1}{\psi-2})^{x} \times (1-\frac{\psi- 1}{\psi-2})^{n-x}$
+We know that $L^{\ast}(\pi)  = \binom{n}{t} (\pi)^{t} \times (1-\pi)^{n-t}$. In this case, $n$ represents the number of people included in the sample and $t$ is the number of people who got infected with COVID. Using $\pi$ in terms of $\psi$, we get: $L^{\ast}(\psi) = \binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t} \times (1-\frac{1 -\psi}{2 -\psi})^{n-t}$
 
 Next, we solve for $\hat{\psi}^{mle}$. In order to do this, we need to find the log-likelihood function of $L^{\ast}(\psi)$: 
 
-$\ell(\psi) = \ln{\left[\binom{n}{x} (\frac{\psi- 1}{\psi-2})^{x}\right]} + \ln\left[{(1-\frac{\psi- 1}{\psi-2})^{n-x}}\right]$
+$\ell(\psi) = \ln{\left[\binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t}\right]} + \ln\left[{(1-\frac{1 -\psi}{2 -\psi})^{n-t}}\right]$
 
-$\ell(\psi) = \ln{\binom{n}{x}} + x\ln{(\psi- 1)} -x\ln{(\psi-2)} + (n-x)\ln{(\frac{\psi- 2 - (\psi- 1)}{\psi-2})}$
+$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)} + (n-t)\ln{(\frac{2-\psi - (1-\psi)}{2-\psi})}$
 
-$\ell(\psi) = \ln{\binom{n}{x}} + x\ln{(\psi- 1)} -x\ln{(\psi-2)} + (n-x)\ln{(\frac{-1}{\psi-2})}$
+$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
 
 Now, we take the first derivative with respect to $\psi$:
 
-$\frac{d}{d \psi}\ell(\psi) = 0 + \frac{x}{\psi - 1} - \frac{x}{\psi - 2} - \frac{n-x}{\psi-2} = \frac{x}{\psi - 1} - \frac{x + (n-x)}{\psi - 2}$
+$\frac{d}{d \psi}\ell(\psi) = 0 - \frac{t}{1-\psi} + \frac{t}{2-\psi} + \frac{n-t}{2-\psi} = \frac{t}{1-\psi} - \frac{t + (n-t)}{2-\psi}$
 
-$\frac{d}{d \psi}\ell(\psi) = \frac{x}{\psi - 1} - \frac{n}{\psi - 2}$
+$\frac{d}{d \psi}\ell(\psi) = \frac{t}{1-\psi} - \frac{n}{2-\psi}$
 
-Setting $\frac{d}{d \psi}\ell(\psi) = 0$: $\frac{x}{\psi - 1} - \frac{n}{\psi - 2} = 0$
+Setting $\frac{d}{d \psi}\ell(\psi) = 0$: $\frac{t}{1-\psi} - \frac{n}{2-\psi} = 0$
 
-$\frac{x}{\psi - 1} = \frac{n}{\psi - 2}$
+$\frac{t}{1-\psi} = \frac{n}{2-\psi}$
 
-$x\psi - 2x = n\psi - n$
+$2t - t\psi = n - n\psi$
 
-$n- 2x = \psi(n - x)$
+$n- 2t = \psi(n - t)$
 
-Therefore, $\boxed{\hat{\psi}^{mle} = \frac{n - 2x}{n-x}}$, which can also be rewritten as $\frac{1 - 2\hat{\pi}^{mle}}{1 - \hat{\pi}^{mle}}$.
+Therefore, $\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$, which can also be rewritten as $\frac{1 - 2\hat{\pi}^{mle}}{1 - \hat{\pi}^{mle}}$.
 
 To see if $\hat{\psi}^{mle}$, we do the 2nd derivative test:
 
-$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{x}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2}$
+$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
 
-Since $\frac{n}{\psi - 2}$ will always be less than $\frac{x}{\psi - 1}$, $\hat{\psi}^{mle}$ is a \fbox{Strict Global Maximum}.
+Since $\frac{n}{2-\psi}$ will always be less than $\frac{t}{1-\psi}$, $\hat{\psi}^{mle}$ is a \fbox{Strict Global Maximum}.
 
 ## Bayesian Inference
 
@@ -183,33 +181,84 @@ Detail the Bayesian approach.
 
 ## Frequentist Way
 
+### Confidence Interval
+
 The equation for the large sample confidence interval of $\psi$ is $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$
 
-Using Theorem 12.1 under regularity conditions, we know that $I(\hat{\psi}^{mle}) = -E\left[\frac{d^2}{d\psi^2}\ell(\psi)\right]$
+Using Theorem 12.1 under regularity conditions, we know that $I(\hat{\psi}^{mle}) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right]$
 
-$-E\left[-\frac{t}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2} \right] = \frac{t}{(\psi - 1)^2} - \frac{n}{(\psi - 2)^2} $
+$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
 
-$\ell(\psi) = \ln{\binom{n}{x}} + x\ln{(\psi- 1)} -x\ln{(\psi-2)} + (n-x)\ln{(\frac{-1}{\psi-2})}$
+$E\left[-(-\frac{T}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2} )\right] = \frac{E\left[T\right]}{(1-\psi)^2} - \frac{n}{(2-\psi)^2}$
 
+$E[T] = n\pi = n\frac{1-\psi}{2-\psi}$
+
+$I(\hat{\psi}^{mle}) = n\frac{1-\psi}{2-\psi} \cdot \frac{1}{{(1-\psi)^2}} - \frac{n}{(2-\psi)^2} = \frac{n}{(2-\psi)(1-\psi)}   - \frac{n}{(2-\psi)^2}$
+
+$\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \frac{n}{(2-\psi)^2(1-\psi)} = I(\hat{\psi}^{mle})$
+
+Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
+
+Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 160$: 
+
+```{r}
+n <- 170
+t <- 8
+psi_mle <- (n - 2*t) / (n - t)
+psi_se <- sqrt(((1-psi)*(2-psi_mle)^2) / n)
+
+lower <- psi_mle - qnorm(0.975)*psi_se
+upper <- psi_mle + qnorm(0.975)*psi_se
+
+lower
+upper
+
+```
+
+$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
 ```{r}
 
 
-loglik.psi<-function(pi,x, n){ #first argument must be parameter
-ifelse((pi < 0 | pi > 1), NA,
-x*log((1-2*pi) / (1-pi))+(n-x)*log((1-((1-2*pi) / (1-pi))) ) )
+loglik.psi<-function(psi,x, n){
+if(psi >= 1) NA
+else{  
+  log(choose(n, x)) + x*log(1-psi) - x*log(2-psi) +(n-x)*log(1 / (2-psi))
 }
-#annoying: loglik argument is lowercase "l"
+}
+
 ml.psi <- maxLik2(loglik=loglik.psi,
-start = 0.3, x = 8,n =170)
+start = 0.3, x = 8,n = 170)
+
 plot(ml.psi) +
-labs(title = "Second order approximation for Psi Reparametrization",
-subtitle = "n = 170, x = 8)",
-x = expression(pi))
+labs(title = "Second order approximation for Psi (Parametrization for Pi)",
+subtitle = "n = 170, t = 8",
+x = expression(psi))
 
 
 
 ```
 
+```{r}
+set.seed(414)
+# psi_mle <- 0.3
+# data_sets <- rbinom(n = 10000, size = 8, prob = 8/170)
+# 
+# psi_mle <- function(x){
+#   psi <- (1-2*x) / (1-x)
+#   return((psi[1] + psi[2] - psi[3])/sum(psi))
+# }
+# mles <- apply(data_sets, MARGIN= 2, psi_mle)
+# sd(mles)
+
+pi_samples <- rbinom(n = 100, size = 170, prob =  8/170)
+psi_samples <- replicate(n = 10000, expr= (1 - 2*pi_samples) / (1-pi_samples))
+sd(psi_samples)
+
+```
+
+### Likelihood Ratio Test Statistic
+
+The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})})$. Since $H_0: \psi = 0.3$, we are solving for $2\frac{\ell(\hat{\psi}^{mle})}{\ell(0.3)}$.
 
 Present your findings.
 
