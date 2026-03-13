@@ -1,7 +1,7 @@
 ---
 title: "BNT162b2 Decieving Public or Saving Lives?"
 author: 'Krish Doshi, Lauren Yee, Kian Sharifzadeh'
-date: '`r Sys.Date()`'
+date: '2026-03-13'
 output: pdf_document
 urlcolor: blue
 header-includes:
@@ -17,21 +17,7 @@ header-includes:
 fontsize: 11pt
 ---
 
-```{r setup, include=FALSE}
-#Use this code chunk to include libraries, and set global options.
-#install.packages("janitor")
-knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(MASS)
-library(janitor)
-library(fastR2)
 
-data <- data.frame("Covid_Case" = c(8, 162, 170), "No_Covid_Case" = c(17403, 17349, 34752), "Total"= c(17411, 17511, 34922))
-
-row.names(data) <- c("BNT162b2", "Placebo", "Total")
-
-extended_df <- data.frame("Treatment"=c(rep("BNT162b2", 17411), rep("Placebo", 17511)), "Has_Covid" = c(rep("Yes", 8), rep("No", 17403), rep("Yes", 162), rep("No", 17349)))
-```
 
 # Abstract
 
@@ -47,33 +33,40 @@ Write your abstract here.
 
 Provide an introduction with background information.
 
-```{r label="important_R_code", eval=TRUE, echo=FALSE}
-# You can reference your code in the appendix (sample here).
-```
+
 
 ## Visualization
 
 
 
-```{r table}
+
+``` r
 table_test <- extended_df %>% 
 tabyl(Treatment, Has_Covid) %>%
 adorn_totals(where = c("row", "col")) %>%
 adorn_title()
-
-
 ```
 
-```{r boxplot}
+
+``` r
 ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
   geom_bar(position="fill")
-
 ```
 
-```{r mosaic-plot}
+![](Final-Paper-Template_files/figure-latex/boxplot-1.pdf)<!-- --> 
+
+
+``` r
 mosaicplot(table_test, main = "Covid Cases", color = TRUE)
+```
+
+![](Final-Paper-Template_files/figure-latex/mosaic-plot-1.pdf)<!-- --> 
+
+``` r
 mosaicplot(~ Treatment + Has_Covid, data = extended_df, color = TRUE)
 ```
+
+![](Final-Paper-Template_files/figure-latex/mosaic-plot-2.pdf)<!-- --> 
 
 # Statistical Methods
 
@@ -83,19 +76,42 @@ mosaicplot(~ Treatment + Has_Covid, data = extended_df, color = TRUE)
 
 ## Make sure to prove why T is binomial in Appendix (see last slides for example slides)
 
-```{r}
+
+``` r
 pfizer_estimator <- 8/17411
 placebo_estimator <- 162 / 17511
 
 pfizer_estimator
-placebo_estimator
+```
 
+```
+## [1] 0.0004594796
+```
+
+``` r
+placebo_estimator
+```
+
+```
+## [1] 0.009251328
+```
+
+``` r
 relative_risk <- pfizer_estimator / placebo_estimator
 relative_risk
+```
 
+```
+## [1] 0.04966635
+```
+
+``` r
 psi <- 1 - relative_risk
 psi
+```
 
+```
+## [1] 0.9503337
 ```
 
 From these calculations, we find that $\pi_{v} = \frac{8}{17411}$ and $\pi_{p} = \frac{162}{17511}$. In other words, $\pi_{v} \approx 0.00046$ and $\pi_{p} \approx 0.00925$.
@@ -144,15 +160,15 @@ $\ell(\psi) = \ln{\left[\binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t}\right]} + \ln
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)} + (n-t)\ln{(\frac{2-\psi - (1-\psi)}{2-\psi})}$
 
-$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{1} - (n-t)\ln{(2-\psi)}$
+$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
 
 Now, we take the first derivative with respect to $\psi$:
 
-$\frac{d}{d \psi}\ell(\psi) = 0 - \frac{t}{1-\psi} + \frac{t}{2-\psi} + \frac{n-t}{2-\psi} = -\frac{t}{1-\psi} + \frac{t + (n-t)}{2-\psi}$
+$\frac{d}{d \psi}\ell(\psi) = 0 - \frac{t}{1-\psi} + \frac{t}{2-\psi} + \frac{n-t}{2-\psi} = \frac{t}{1-\psi} - \frac{t + (n-t)}{2-\psi}$
 
-$\frac{d}{d \psi}\ell(\psi) = -\frac{t}{1-\psi} + \frac{n}{2-\psi}$
+$\frac{d}{d \psi}\ell(\psi) = \frac{t}{1-\psi} - \frac{n}{2-\psi}$
 
-Setting $\frac{d}{d \psi}\ell(\psi) = 0$: $-\frac{t}{1-\psi} + \frac{n}{2-\psi} = 0$
+Setting $\frac{d}{d \psi}\ell(\psi) = 0$: $\frac{t}{1-\psi} - \frac{n}{2-\psi} = 0$
 
 $\frac{t}{1-\psi} = \frac{n}{2-\psi}$
 
@@ -164,9 +180,9 @@ Therefore, $\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$, which can also be re
 
 To see if $\hat{\psi}^{mle}$, we do the 2nd derivative test:
 
-$\frac{d^2}{d \psi^2}\ell(\psi) = \frac{t}{(1-\psi)^2} -\frac{n}{(2-\psi)^2}$
+$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
 
-Depending on the values of $n$ and $t$, our estimate will not always be considered a global maximum. In our case, $\frac{d^2}{d \psi^2}\ell(\psi)$ is negative, which means $\hat{\psi}^{mle}$ is a \fbox{Maximum}.
+Since $\frac{n}{2-\psi}$ will always be less than $\frac{t}{1-\psi}$, $\hat{\psi}^{mle}$ is a \fbox{Strict Global Maximum}.
 
 ## Bayesian Inference
 
@@ -194,25 +210,44 @@ $\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \
 
 Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
 
-Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 170$: 
+Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 160$: 
 
-```{r}
+
+``` r
 n <- 170
 t <- 8
 psi_mle <- (n - 2*t) / (n - t)
+psi_mle
+```
+
+```
+## [1] 0.9506173
+```
+
+``` r
 psi_se <- sqrt(((1-psi_mle)*(2-psi_mle)^2) / n)
 
 lower <- psi_mle - qnorm(0.975)*psi_se
 upper <- psi_mle + qnorm(0.975)*psi_se
 
 lower
-upper
-psi_se 
+```
 
+```
+## [1] 0.9155627
+```
+
+``` r
+upper
+```
+
+```
+## [1] 0.9856719
 ```
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
-```{r}
+
+``` r
 loglik.psi<-function(psi,x, n){
 if(psi >= 1) NA
 else{  
@@ -227,19 +262,41 @@ plot(ml.psi) +
 labs(title = "Second order approximation for Psi (Parametrization for Pi)",
 subtitle = "n = 170, t = 8",
 x = expression(psi))
-
-
-
 ```
 
-```{r}
+```
+## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+## i Please use `linewidth` instead.
+## i The deprecated feature was likely used in the fastR2 package.
+##   Please report the issue at <https://github.com/rpruim/fastR2/issues>.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+## generated.
+```
+
+```
+## Warning: Removed 4 rows containing missing values or values outside the scale range
+## (`geom_function()`).
+```
+
+```
+## Warning: Removed 101 rows containing missing values or values outside the scale range
+## (`geom_function()`).
+```
+
+![](Final-Paper-Template_files/figure-latex/unnamed-chunk-3-1.pdf)<!-- --> 
+
+
+``` r
 set.seed(414)
 
-pi_samples <- rbinom(n = 100000, size = 170, prob =  8/170)
-pi_mle <- pi_samples / 170
-psi_samples <- (1 - 2*pi_mle) / (1-pi_mle)
+pi_samples <- rbinom(n = 100, size = 170, prob =  8/170)
+psi_samples <- replicate(n = 10000, expr= (1 - 2*pi_samples) / (1-pi_samples))
 sd(psi_samples)
+```
 
+```
+## [1] 0.1141392
 ```
 
 ### Likelihood Ratio Test Statistic
@@ -254,64 +311,85 @@ Then, $W = 2(-1.945 + 62.746) \approx \boxed{121.601}$
 
 
 Likelihood Ratio Test Statistic
-```{r}
+
+``` r
 log_lik_func <- function(psi, n , t){
-  log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) -(n-t)*log((2-psi))
+  log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) +(n-t)*log(1 / (2-psi))
 }
 
 log_mle <- log_lik_func(psi_mle, 170, 8)
 log_null <- log_lik_func(0.3, 170, 8)
 
 log_mle
-log_null
+```
 
+```
+## [1] -1.944994
+```
+
+``` r
+log_null
+```
+
+```
+## [1] -62.7456
+```
+
+``` r
 W_stat <- 2*(log_mle - log_null)
 W_stat
-
 ```
 
-```{r}
+```
+## [1] 121.6012
+```
+
+
+$\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$
+
+``` r
 pchisq(W_stat, 1, lower.tail = F)
-
-
-set.seed(414)
-values <- c()
-
-for(i in 1:10000){
-  t_star <- rbinom(30, 170, 0.3)
-  pi_mle <- t_star / 170
-  psi_star <- (170 - 2*t_star) / (170-t_star)
-  wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
-  values <- c(values, wstar)
-  
-}
-# sim_func <- function(B){
-#   t_star <- rbinom(B, 170, 0.3)
-#   pi_mle <- t_star / 170
-#   psi_star <- (1 - 2*pi_mle) / (1-pi_mle)
-#   wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
-#   wstar
-#   return(wstar)
-# }
-# 
-# sim_func(B)
-
-# null_sim <- lapply(1:B, sim_func)
-# Wstar <- c(unlist(null_sim))
-# which.min(Wstar)
-
-emp_p_value <- mean(values >= W_stat)
-emp_p_value
-# cat("Empirical P value = ", emp_p_value)
-
-# ggplot(data = NULL,
-# mapping = aes(x = Wstar))+
-# geom_histogram() +
-# geom_vline(xintercept = W_stat) +
-# labs(title = "Counts of W from Bootstrapping", 
-#      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
+```
 
 ```
+## [1] 2.822294e-28
+```
+
+``` r
+set.seed(414)
+B <- 1000
+sim_func <- function(i){
+  t_star <- rbinom(30, 170, 0.3)
+  psi_star <- (170 - 2*t_star) / (170 - t_star)
+  wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
+  return(wstar)
+}
+
+null_sim <- lapply(1:B, sim_func)
+Wstar <- c(unlist(null_sim))
+
+emp_p_value <- sum(Wstar >= W_stat)/B
+cat("Empirical P value = ", emp_p_value)
+```
+
+```
+## Empirical P value =  0
+```
+
+``` r
+ggplot(data = NULL,
+mapping = aes(x = Wstar))+
+geom_histogram() +
+geom_vline(xintercept = W_stat) + 
+labs(title = "Counts of W from Bootstrapping", 
+     x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+```
+
+![](Final-Paper-Template_files/figure-latex/unnamed-chunk-6-1.pdf)<!-- --> 
 
 
 Present your findings.
@@ -334,7 +412,9 @@ Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <
 
 ## Code
 
-```{r ref.label = "important_R_code", eval=FALSE}
+
+``` r
+# You can reference your code in the appendix (sample here).
 ```
 
 ## Proofs
