@@ -56,28 +56,33 @@ Provide an introduction with background information.
 
 
 ```{r table}
-
 table_test <- extended_df %>% 
-  tabyl(Group, Has_Covid) %>%
-    adorn_totals(where = c("row", "col")) %>%
-    adorn_title()
+tabyl(Group, Has_Covid) %>%
+adorn_totals(where = c("row", "col")) %>%
+adorn_title()
 
 
 ```
 
 ```{r boxplot}
-ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) + 
+ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
   geom_bar(position="fill")
-
 
 ```
 
 ```{r mosaic-plot}
-
 mosaicplot(table_test, main = "Covid Cases", color = TRUE)
-
 mosaicplot(~ Group + Has_Covid, data = extended_df, color = TRUE)
+```
 
+```{r boxplot}
+ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
+geom_bar(position="fill")
+```
+
+```{r mosaic-plot}
+mosaicplot(table_test, main = "Covid Cases", color = TRUE)
+mosaicplot(~ Group + Has_Covid, data = extended_df, color = TRUE)
 ```
 
 # Statistical Methods
@@ -205,7 +210,8 @@ Using all the information given, we can solve the 95\% confidence interval with 
 n <- 170
 t <- 8
 psi_mle <- (n - 2*t) / (n - t)
-psi_se <- sqrt(((1-psi)*(2-psi_mle)^2) / n)
+psi_mle
+psi_se <- sqrt(((1-psi_mle)*(2-psi_mle)^2) / n)
 
 lower <- psi_mle - qnorm(0.975)*psi_se
 upper <- psi_mle + qnorm(0.975)*psi_se
@@ -240,15 +246,6 @@ x = expression(psi))
 
 ```{r}
 set.seed(414)
-# psi_mle <- 0.3
-# data_sets <- rbinom(n = 10000, size = 8, prob = 8/170)
-# 
-# psi_mle <- function(x){
-#   psi <- (1-2*x) / (1-x)
-#   return((psi[1] + psi[2] - psi[3])/sum(psi))
-# }
-# mles <- apply(data_sets, MARGIN= 2, psi_mle)
-# sd(mles)
 
 pi_samples <- rbinom(n = 100, size = 170, prob =  8/170)
 psi_samples <- replicate(n = 10000, expr= (1 - 2*pi_samples) / (1-pi_samples))
@@ -258,7 +255,61 @@ sd(psi_samples)
 
 ### Likelihood Ratio Test Statistic
 
-The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})})$. Since $H_0: \psi = 0.3$, we are solving for $2\frac{\ell(\hat{\psi}^{mle})}{\ell(0.3)}$.
+The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$. Given that $\hat{\psi}^{mle} \approx 0.9506$ and $H_0: \psi = 0.3$, we are solving for $2\left[\ell{(0.9506)} - \ell{(0.3)}\right]$. Using that $t = 8$ and $n = 160$, we can calculation $\ell(0.9506)$ and $\ell(0.3)$:
+
+$\ell(0.9506) = \ln{\binom{160}{8}} + 8\ln{(1-0.9506)} -8\ln{(2 - 0.9506)}  + (162)\ln{(\frac{1}{2-0.9506})} \approx -1.945$
+
+$\ell(0.3) = \ln{\binom{160}{8}} + 8\ln{(0.7)} -8\ln{(1.3)}  + (162)\ln{(\frac{1}{1.3})} \approx - 62.746$
+
+Then, $W = 2(-1.945 + 62.746) \approx \boxed{121.601}$
+
+
+Likelihood Ratio Test Statistic
+```{r}
+log_lik_func <- function(psi, n , t){
+  log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) +(n-t)*log(1 / (2-psi))
+}
+
+log_mle <- log_lik_func(psi_mle, 170, 8)
+log_null <- log_lik_func(0.3, 170, 8)
+
+log_mle
+log_null
+
+W_stat <- 2*(log_mle - log_null)
+W_stat
+
+```
+
+
+$\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$
+```{r}
+pchisq(W_stat, 1, lower.tail = F)
+
+set.seed(414)
+B <- 1000
+sim_func <- function(i){
+  t_star <- rbinom(30, 170, 0.3)
+  psi_star <- (170 - 2*t_star) / (170 - t_star)
+  wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
+  return(wstar)
+}
+
+null_sim <- lapply(1:B, sim_func)
+Wstar <- c(unlist(null_sim))
+
+emp_p_value <- sum(Wstar >= W_stat)/B
+cat("Empirical P value = ", emp_p_value)
+
+ggplot(data = NULL,
+mapping = aes(x = Wstar))+
+geom_histogram() +
+geom_vline(xintercept = W_stat) + 
+labs(title = "Counts of W from Bootstrapping", 
+     x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
+
+```
+
 
 Present your findings.
 
