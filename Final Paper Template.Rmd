@@ -29,6 +29,12 @@ Write your abstract here.
 # Introduction / Background
 Provide an introduction with background information.
 
+On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the SARS-CoV-2 virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore this finding further, we test two hypotheses with Frequentist and Bayesian methods for inference: $H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$ where $\psi$ denotes the vaccine efficacy.
+
+https://www.nejm.org/doi/full/10.1056/nejmoa2034577
+https://www.cdc.gov/museum/timeline/covid19.html
+https://pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world.
+
 ```{r label="important_R_code", eval=TRUE, echo=FALSE}
 # You can reference your code in the appendix (sample here).
 ```
@@ -43,6 +49,90 @@ Detail the likelihood approach.
 
 ## Bayesian Inference
 Detail the Bayesian approach.
+
+In the paper, the authors mention that they used a beta binomial model with the transformation $$\pi = \frac{\pi_v}{\pi_v + \pi_p}$$ where $\pi_v$ and $\pi_p$ are the probabilities of an infection in the vaccine and placebo groups respectively. Here, the binomial $\pi$ was modeled with a minimally informative beta prior, Beta(0.700102, 1), and the parameter of interest is $\psi = \frac{1 - 2\pi}{1 - \pi}$. It was estimated to be 95% with the 95% Bayesian credible interval reported as [90.3%, 97.6%] and the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999.
+
+### Prior Elicitation
+
+We use two apriori beliefs about $\psi$ in 5 different cases.
+
+$$P(\psi \geq 0.3) = P\left(\frac{1 - 2\pi}{1 - \pi} \geq 0.3\right)$$
+$$= P(1 - 2\pi \geq 0.3(1 - \pi))$$
+$$= P(1 - 2\pi \geq 0.3 - 0.3\pi)$$
+$$= P(-1.7\pi \geq -0.7)$$
+$$= P\left(\pi \leq \frac{7}{17}\right)$$
+1 - Most Pessimistic
+
+- $P(\psi \geq 0.3) = 0.025$
+- $P(\psi \geq 0) = 0.35$
+
+2 - Pessimestic
+
+- $P(\psi \geq 0.3) = 0.05$
+- $P(\psi \geq 0) = 0.5$
+
+3 - Neutral
+
+- $P(\psi \geq 0.3) = 0.1$
+- $P(\psi \geq 0) = 0.65$
+
+4 - Optimistic
+
+- $P(\psi \geq 0.3) = 0.2$
+- $P(\psi \geq 0) = 0.8$
+
+5 - More Optimistic
+
+- $P(\psi \geq 0.3) = 0.4$
+- $P(\psi \geq 0) = 0.95$
+
+```{r}
+library(LearnBayes)
+
+beta.select(quantile1 = list(p = 0.025, x = 7/17),
+            quantile2 = list(p = 0.35, x = 0.5))
+
+beta.select(quantile1 = list(p = 0.05, x = 7/17),
+            quantile2 = list(p = 0.5, x = 0.5))
+
+beta.select(quantile1 = list(p = 0.1, x = 7/17),
+            quantile2 = list(p = 0.65, x = 0.5))
+
+beta.select(quantile1 = list(p = 0.2, x = 7/17),
+            quantile2 = list(p = 0.8, x = 0.5))
+
+beta.select(quantile1 = list(p = 0.4, x = 7/17),
+            quantile2 = list(p = 0.95, x = 0.5))
+```
+We choose these apriori beliefs to analyze the data and sensitivity of the prior. In other words, there are more pessimestic to more optimistic probabilities assigned to the events where the vaccine exceeds the FDA efficacy threshold of 30%, and whether it provides any beneficial value.
+
+### Posterior Distributions 
+(with data model $f(T|\pi) \sim Binom(170, \pi)$ & where $t = 8$)
+
+1 - Most Pessimistic
+
+$$g(\pi) = Beta(41.05, 37.63) \quad prior$$
+$$h(\pi|t) = Beta(41.05 + t, 170 - t + 37.63) \quad posterior$$
+
+2 - Pessimistic
+
+$$g(\pi) = Beta(43.03, 43.03) \quad prior$$
+$$h(\pi|t) = Beta(43.03 + t, 170 - t + 43.03) \quad posterior$$
+
+3 - Neutral
+
+$$g(\pi) = Beta(42.4, 46.0) \quad prior$$
+$$h(\pi|t) = Beta(37.63 + t, 170 - t + 41.05) \quad posterior$$
+
+4 - Optimistic
+
+$$g(\pi) = Beta(41.23, 49.20) \quad prior$$
+$$h(\pi|t) = Beta(41.23 + t, 170 - t + 49.20) \quad posterior$$
+
+5 - More Optimistic
+
+$$g(\pi) = Beta(48.96, 66.55) \quad prior$$
+$$h(\pi|t) = Beta(48.96 + t, 170 - t + 66.55) \quad posterior$$
 
 # Results
 Present your findings. 
