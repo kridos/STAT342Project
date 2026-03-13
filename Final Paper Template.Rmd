@@ -55,35 +55,27 @@ Provide an introduction with background information.
 
 
 
-```{r table}
-table_test <- extended_df %>% 
-tabyl(Group, Has_Covid) %>%
-adorn_totals(where = c("row", "col")) %>%
-adorn_title()
+# ```{r table}
+# table_test <- extended_df %>% 
+# tabyl(Group, Has_Covid) %>%
+# adorn_totals(where = c("row", "col")) %>%
+# adorn_title()
+# 
+# 
+# ```
+# 
+# ```{r boxplot}
+# ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
+#   geom_bar(position="fill")
+# 
+# ```
+# 
+# ```{r mosaic-plot}
+# mosaicplot(table_test, main = "Covid Cases", color = TRUE)
+# mosaicplot(~ Group + Has_Covid, data = extended_df, color = TRUE)
+# ```
 
 
-```
-
-```{r boxplot}
-ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
-  geom_bar(position="fill")
-
-```
-
-```{r mosaic-plot}
-mosaicplot(table_test, main = "Covid Cases", color = TRUE)
-mosaicplot(~ Group + Has_Covid, data = extended_df, color = TRUE)
-```
-
-```{r boxplot}
-ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
-geom_bar(position="fill")
-```
-
-```{r mosaic-plot}
-mosaicplot(table_test, main = "Covid Cases", color = TRUE)
-mosaicplot(~ Group + Has_Covid, data = extended_df, color = TRUE)
-```
 
 # Statistical Methods
 
@@ -154,15 +146,15 @@ $\ell(\psi) = \ln{\left[\binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t}\right]} + \ln
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)} + (n-t)\ln{(\frac{2-\psi - (1-\psi)}{2-\psi})}$
 
-$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
+$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{1} - (n-t)\ln{(2-\psi)}$
 
 Now, we take the first derivative with respect to $\psi$:
 
-$\frac{d}{d \psi}\ell(\psi) = 0 - \frac{t}{1-\psi} + \frac{t}{2-\psi} + \frac{n-t}{2-\psi} = \frac{t}{1-\psi} - \frac{t + (n-t)}{2-\psi}$
+$\frac{d}{d \psi}\ell(\psi) = 0 - \frac{t}{1-\psi} + \frac{t}{2-\psi} + \frac{n-t}{2-\psi} = -\frac{t}{1-\psi} + \frac{t + (n-t)}{2-\psi}$
 
-$\frac{d}{d \psi}\ell(\psi) = \frac{t}{1-\psi} - \frac{n}{2-\psi}$
+$\frac{d}{d \psi}\ell(\psi) = -\frac{t}{1-\psi} + \frac{n}{2-\psi}$
 
-Setting $\frac{d}{d \psi}\ell(\psi) = 0$: $\frac{t}{1-\psi} - \frac{n}{2-\psi} = 0$
+Setting $\frac{d}{d \psi}\ell(\psi) = 0$: $-\frac{t}{1-\psi} + \frac{n}{2-\psi} = 0$
 
 $\frac{t}{1-\psi} = \frac{n}{2-\psi}$
 
@@ -174,9 +166,9 @@ Therefore, $\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$, which can also be re
 
 To see if $\hat{\psi}^{mle}$, we do the 2nd derivative test:
 
-$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
+$\frac{d^2}{d \psi^2}\ell(\psi) = \frac{t}{(1-\psi)^2} -\frac{n}{(2-\psi)^2}$
 
-Since $\frac{n}{2-\psi}$ will always be less than $\frac{t}{1-\psi}$, $\hat{\psi}^{mle}$ is a \fbox{Strict Global Maximum}.
+Depending on the values of $n$ and $t$, our estimate will not always be considered a global maximum. In our case, $\frac{d^2}{d \psi^2}\ell(\psi)$ is negative, which means $\hat{\psi}^{mle}$ is a \fbox{Maximum}.
 
 ## Bayesian Inference
 
@@ -204,13 +196,12 @@ $\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \
 
 Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
 
-Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 160$: 
+Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 170$: 
 
 ```{r}
 n <- 170
 t <- 8
 psi_mle <- (n - 2*t) / (n - t)
-psi_mle
 psi_se <- sqrt(((1-psi_mle)*(2-psi_mle)^2) / n)
 
 lower <- psi_mle - qnorm(0.975)*psi_se
@@ -218,13 +209,12 @@ upper <- psi_mle + qnorm(0.975)*psi_se
 
 lower
 upper
+psi_se 
 
 ```
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
 ```{r}
-
-
 loglik.psi<-function(psi,x, n){
 if(psi >= 1) NA
 else{  
@@ -247,8 +237,9 @@ x = expression(psi))
 ```{r}
 set.seed(414)
 
-pi_samples <- rbinom(n = 100, size = 170, prob =  8/170)
-psi_samples <- replicate(n = 10000, expr= (1 - 2*pi_samples) / (1-pi_samples))
+pi_samples <- rbinom(n = 100000, size = 170, prob =  8/170)
+pi_mle <- pi_samples / 170
+psi_samples <- (1 - 2*pi_mle) / (1-pi_mle)
 sd(psi_samples)
 
 ```
@@ -267,7 +258,7 @@ Then, $W = 2(-1.945 + 62.746) \approx \boxed{121.601}$
 Likelihood Ratio Test Statistic
 ```{r}
 log_lik_func <- function(psi, n , t){
-  log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) +(n-t)*log(1 / (2-psi))
+  log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) -(n-t)*log((2-psi))
 }
 
 log_mle <- log_lik_func(psi_mle, 170, 8)
@@ -281,32 +272,46 @@ W_stat
 
 ```
 
-
-$\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$
 ```{r}
 pchisq(W_stat, 1, lower.tail = F)
 
+
 set.seed(414)
-B <- 1000
-sim_func <- function(i){
+values <- c()
+
+for(i in 1:10000){
   t_star <- rbinom(30, 170, 0.3)
-  psi_star <- (170 - 2*t_star) / (170 - t_star)
+  pi_mle <- t_star / 170
+  psi_star <- (170 - 2*t_star) / (170-t_star)
   wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
-  return(wstar)
+  values <- c(values, wstar)
+  
 }
+# sim_func <- function(B){
+#   t_star <- rbinom(B, 170, 0.3)
+#   pi_mle <- t_star / 170
+#   psi_star <- (1 - 2*pi_mle) / (1-pi_mle)
+#   wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
+#   wstar
+#   return(wstar)
+# }
+# 
+# sim_func(B)
 
-null_sim <- lapply(1:B, sim_func)
-Wstar <- c(unlist(null_sim))
+# null_sim <- lapply(1:B, sim_func)
+# Wstar <- c(unlist(null_sim))
+# which.min(Wstar)
 
-emp_p_value <- sum(Wstar >= W_stat)/B
-cat("Empirical P value = ", emp_p_value)
+emp_p_value <- mean(values >= W_stat)
+emp_p_value
+# cat("Empirical P value = ", emp_p_value)
 
-ggplot(data = NULL,
-mapping = aes(x = Wstar))+
-geom_histogram() +
-geom_vline(xintercept = W_stat) + 
-labs(title = "Counts of W from Bootstrapping", 
-     x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
+# ggplot(data = NULL,
+# mapping = aes(x = Wstar))+
+# geom_histogram() +
+# geom_vline(xintercept = W_stat) +
+# labs(title = "Counts of W from Bootstrapping", 
+#      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
 
 ```
 
