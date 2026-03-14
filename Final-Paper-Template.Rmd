@@ -20,11 +20,13 @@ fontsize: 11pt
 ```{r setup, include=FALSE}
 #Use this code chunk to include libraries, and set global options.
 #install.packages("janitor")
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warnings=FALSE, message=FALSE)
 library(tidyverse)
 library(MASS)
 library(janitor)
 library(fastR2)
+library(patchwork)
+options(warn = -1)
 
 data <- data.frame("Covid_Case" = c(8, 162, 170), "No_Covid_Case" = c(17403, 17349, 34752), "Total"= c(17411, 17511, 34922))
 
@@ -53,30 +55,28 @@ https://www.nejm.org/doi/full/10.1056/nejmoa2034577
 https://www.cdc.gov/museum/timeline/covid19.html
 https://pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world.
 
-```{r label="important_R_code", eval=TRUE, echo=FALSE}
-# You can reference your code in the appendix (sample here).
-```
-
-## Visualization
 
 
-
-```{r table}
-table_test <- extended_df %>% 
+```{r label="table", echo=FALSE, fig.height = 4, fig.width = 4, fig.align="center"}
+extended_df %>% 
 tabyl(Treatment, Has_Covid) %>%
 adorn_totals(where = c("row", "col")) %>%
-adorn_title()
-
+adorn_title() 
 
 ```
 
-``` {r barplot}
+When observing the data, we notice a couple things. First of all, there are far more cases of Covid in the Placebo group (162) than in the treatment group (8). When comparing the percentage, about `r 100*round(162/17511,4)`\% of people in the Placebo group have covid versus `r 100*round(8/17411,4)`\% in the Treatment Group. In total, there are 170 cases of Covid, which is about `r 100*round(170/34922,4)`\%. Overall, we can see that the number of people in the treatment group and the placebo group are approximately equal. This allows us to say that our randomization is 1:1.
+
+
+``` {r label="barplot", echo=FALSE, fig.height = 4, fig.width = 5, fig.align="center"}
 ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
   geom_bar(position="fill") + 
   scale_fill_manual(values = c("lightblue", "#F5F5F5")) + 
   theme_minimal()
 
 ```
+
+Looking at the visual of the segmented barplot allows us to further see that the relative percentage of individuals with Covid is far lower in the treatment group than in the Placebo group while the relative percentage of people without Covid is quite similar in both groups.
 
 
 
@@ -88,7 +88,7 @@ ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
 
 ## Make sure to prove why T is binomial in Appendix (see last slides for example slides)
 
-```{r}
+```{r label = "efficacy", echo=FALSE, results = FALSE}
 pfizer_estimator <- 8/17411
 placebo_estimator <- 162 / 17511
 
@@ -213,7 +213,7 @@ $$= P\left(\pi \leq \frac{7}{17}\right)$$
 - $P(\psi \geq 0.3) = 0.4$
 - $P(\psi \geq 0) = 0.95$
 
-```{r}
+```{r, label="priors", echo=FALSE, results = FALSE}
 library(LearnBayes)
 
 beta.select(quantile1 = list(p = 0.025, x = 7/17),
@@ -285,7 +285,7 @@ Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{
 
 Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 170$: 
 
-```{r}
+```{r label="mle_confidence", echo=FALSE, results = FALSE}
 n <- 170
 t <- 8
 psi_mle <- (n - 2*t) / (n - t)
@@ -301,7 +301,9 @@ psi_se
 ```
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
-```{r}
+
+
+```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
 loglik.psi<-function(psi,x, n){
 if(psi >= 1) NA
 else{  
@@ -312,8 +314,8 @@ else{
 ml.psi <- maxLik2(loglik=loglik.psi,
 start = 0.3, x = 8,n = 170)
 
-plot(ml.psi) +
-labs(title = "Second order approximation for Psi (Parametrization for Pi)",
+psi.plot <- plot(ml.psi) +
+labs(title = "Second order approximation for \nPsi (Parametrization for Pi)",
 subtitle = "n = 170, t = 8",
 x = expression(psi))
 
@@ -329,14 +331,16 @@ else{
 ml.pi <- maxLik2(loglik=loglik.pi,
 start = 0.3, x = 8,n = 170)
 
-plot(ml.pi) +
+pi.plot <- plot(ml.pi) +
 labs(title = "Second order approximation for Pi",
 subtitle = "n = 170, t = 8",
 x = expression(pi))
 
+psi.plot + pi.plot
+
 ```
 
-```{r}
+```{r label="mle_empirical_sd", echo=FALSE, results = FALSE}
 set.seed(414)
 
 pi_samples <- rbinom(n = 100000, size = 170, prob =  8/170)
@@ -358,7 +362,7 @@ Then, $W = 2(-1.945 + 62.746) \approx \boxed{121.601}$
 
 
 Likelihood Ratio Test Statistic
-```{r}
+```{r label="mle_ratio_stat", echo=FALSE, results = FALSE}
 log_lik_func <- function(psi, n , t){
   log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) -(n-t)*log((2-psi))
 }
@@ -374,7 +378,7 @@ W_stat
 
 ```
 
-```{r}
+```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, fig.height=4, fig.width=4}
 pchisq(W_stat, 1, lower.tail = F)
 
 
@@ -425,8 +429,41 @@ Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <
 
 ## Code
 
-```{r ref.label = "important_R_code", eval=FALSE}
+### Visualizations
+```{r ref.label = "table", eval=FALSE}
 ```
+
+```{r ref.label = "barplot", eval=FALSE}
+```
+
+
+### Observed Efficacy
+```{r ref.label = "efficacy", eval=FALSE}
+```
+
+### MLE
+
+```{r ref.label="mle_confidence", eval=FALSE}
+```
+
+```{r ref.label="mle_graph", eval=FALSE}
+```
+
+```{r, ref.label="mle_empirical_sd", echo=FALSE}
+```
+
+```{r ref.label="mle_ratio_stat", echo=FALSE}
+```
+
+```{r ref.label="mle_empirical_p", echo=FALSE}
+```
+
+### Bayesian
+
+```{r, ref.label="priors", eval=FALSE}
+```
+
+
 
 ## Proofs
 
