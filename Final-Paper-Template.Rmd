@@ -227,9 +227,11 @@ beta.select(quantile1 = list(p = 0.2, x = 7/17),
 beta.select(quantile1 = list(p = 0.4, x = 7/17),
             quantile2 = list(p = 0.95, x = 0.5))
 ```
-We choose these apriori beliefs to analyze the data and sensitivity of the prior. In other words, there are more pessimistic to more optimistic probabilities assigned to the events where the vaccine exceeds the FDA efficacy threshold of 30%, and whether it provides any beneficial value.
+We choose these apriori beliefs to analyze the data and sensitivity of the prior. In other words, these priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect.
 
-Next, we calculate the posterior distributions and Bayesian p-values for the five priors with data model $f(T|\pi) \sim Binom(170, \pi)$. Here, the hypotheses are:
+Next, we find the posterior distributions and Bayesian p-values for the five priors with data model $f(T|\pi) \sim Binom(170, \pi)$. 
+
+For all five prior, the hypotheses are:
 
 $H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$ where $\psi$ denotes the vaccine efficacy
 
@@ -241,12 +243,14 @@ To calculate the Bayesian probabilities: $P(\pi \geq \frac{7}{17}|t) = 1 - P(\pi
 
 $$g(\pi) = Beta(41.05, 37.63) \quad prior$$
 $$h(\pi|t) = Beta(41.05 + t, 170 - t + 37.63) \quad posterior$$
+
 p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(49.05, 199.63) \approx 0$
 
 2 - Pessimistic
 
 $$g(\pi) = Beta(43.03, 43.03) \quad prior$$
 $$h(\pi|t) = Beta(43.03 + t, 170 - t + 43.03) \quad posterior$$
+
 p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(51.03, 205.03) \approx 0$
 
 3 - Neutral
@@ -267,19 +271,12 @@ p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(49.23, 211.2)
 
 $$g(\pi) = Beta(48.96, 66.55) \quad prior$$
 $$h(\pi|t) = Beta(48.96 + t, 170 - t + 66.55) \quad posterior$$
+
 p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(56.96, 228.55) \approx 0$
 
-### Calculating Bayesian P-values
-
-For all five prior, the hypotheses are:
-
-$H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$ where $\psi$ denotes the vaccine efficacy
-
-Since $\psi \geq 0.3 \Leftrightarrow \pi \leq \frac{7}{17}$, we get that $P(\psi  \leq 0.3|t) = P\left(\pi \geq \frac{7}{17}|t\right)$.
-
-Thus, to calculate the Bayesian probabilities: $P(\pi \geq \frac{7}{17}|t) = 1 - P(\pi \leq \frac{7}{17}|t)$ where $t = 8$.
-
 ```{r bay_pvals}
+# Calculating Bayesian P-values
+
 x = 7/17
 n = 170
 t = 8
