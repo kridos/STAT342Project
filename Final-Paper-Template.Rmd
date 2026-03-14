@@ -115,7 +115,12 @@ Let $t$ be the number of COVID infections from the vaccine group. We observe $t 
 
 ## Likelihood Inference
 
-First, we find our likelihood function $L^{\ast}(\psi)$. Using our parameterization $\frac{1-2\pi}{1-\pi} = \psi$:
+
+### Maximum Likelihood Estimator
+
+One approach to finding a similar confidence interval to what was reported in the efficacy study is using likelihood inference, which follows the Frequentist framework. Even though the Bayesian framework is used in the study, we thought using the likelihood approach would still help us come to similar conclusions about the data. 
+
+The first method we will use in likelihood inference is maximum likelihood, which identifies the values of the model parameters that makes our data most likely. For maximum likelihood, we need to find a likelihood function for $\psi$ and the maximum likelihood estimator of $\psi_0$. To find our likelihood function $L^{\ast}(\psi)$, we can use theorem 11.1. This states how the likelihood function for a discrete random variable $X$, parameterized by $\theta$, is $L(\theta) = P_{\theta}(X = x_{obs})$, where $x_obs$ is our observed data. Since $T$ follows the binomial distribution, the likelihood function in terms of $\pi$ is $L^{\ast}(\pi)  = \binom{n}{t} (\pi)^{t} \times (1-\pi)^{n-t}$. In this case, $n$ represents the number of people included in the sample and $t$ is the number of people who got infected with COVID. To get $L^{\ast}(\psi)$, we must find $\pi$ in terms of $\psi$ and replace the respective $\pi$ values. To do this, we can use our parameterization $\frac{1-2\pi}{1-\pi} = \psi$:
 
 $1-2\pi = \psi(1-\pi)$
 
@@ -125,9 +130,9 @@ $1-\psi = \pi(2 -\psi)$
 
 $\pi = \frac{1 -\psi}{2 -\psi}$
 
-We know that $L^{\ast}(\pi)  = \binom{n}{t} (\pi)^{t} \times (1-\pi)^{n-t}$. In this case, $n$ represents the number of people included in the sample and $t$ is the number of people who got infected with COVID. Using $\pi$ in terms of $\psi$, we get: $L^{\ast}(\psi) = \binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t} \times (1-\frac{1 -\psi}{2 -\psi})^{n-t}$
+Using $\pi$ in terms of $\psi$, we get the likelihood function: $L^{\ast}(\psi) = \binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t} \times (1-\frac{1 -\psi}{2 -\psi})^{n-t}$
 
-Next, we solve for $\hat{\psi}^{mle}$. In order to do this, we need to find the log-likelihood function of $L^{\ast}(\psi)$: 
+Now that we have the likelihood function of $\psi$, the next step is to solve for the maximum likelihood estimator (MLE) of $\psi$, $\hat{\psi}^{mle}$. Definition 11.3 explains how the maximum likelihood estimator of the true, unknown parameter value is the value that makes the likelihood function the largest. In order to find this value, we need to find the log-likelihood function of $L^{\ast}(\psi)$, denoted as $\ell(\psi)$. We use $\ell{(\psi)}$ since $\ell{(\psi)}$ is easier to differentiate and has the maximum at the same $\psi$ location as $L^{\ast}(\psi)$.
 
 $\ell(\psi) = \ln{\left[\binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t}\right]} + \ln\left[{(1-\frac{1 -\psi}{2 -\psi})^{n-t}}\right]$
 
@@ -135,7 +140,7 @@ $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)} + (n-t)\ln{(\
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{1} - (n-t)\ln{(2-\psi)}$
 
-Now, we take the first derivative with respect to $\psi$:
+Now that we have obtained $\ell{(\psi)}$, we take the first derivative with respect to $\psi$. This is a method that helps us maximize the function, where setting the first derivative of the log-likelihood function equal to 0 allows us to find a maximum value, specifically the MLE!
 
 $\frac{d}{d \psi}\ell(\psi) = 0 - \frac{t}{1-\psi} + \frac{t}{2-\psi} + \frac{n-t}{2-\psi} = -\frac{t}{1-\psi} + \frac{t + (n-t)}{2-\psi}$
 
@@ -151,11 +156,33 @@ $n- 2t = \psi(n - t)$
 
 Therefore, $\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$, which can also be rewritten as $\frac{1 - 2\hat{\pi}^{mle}}{1 - \hat{\pi}^{mle}}$.
 
-To see if $\hat{\psi}^{mle}$, we perform the 2nd derivative test:
+Next we have to to check if $\hat{\psi}^{mle}$ is truly a maximum. To do this, we perform the 2nd derivative test. We check if the 2nd derivative is less than 0:
 
 $\frac{d^2}{d \psi^2}\ell(\psi) = \frac{t}{(1-\psi)^2} -\frac{n}{(2-\psi)^2}$
 
 Depending on the values of $n$ and $t$, our estimate will not always be considered a global maximum. In our case, $\frac{d^2}{d \psi^2}\ell(\psi)$ is negative, which means $\hat{\psi}^{mle}$ is a \fbox{Maximum}.
+
+### Confidence Interval
+
+The equation for the large sample confidence interval of $\psi$ is $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$
+
+Using Theorem 12.1 under regularity conditions, we know that $I(\hat{\psi}^{mle}) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right]$
+
+$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
+
+$E\left[-(-\frac{T}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2} )\right] = \frac{E\left[T\right]}{(1-\psi)^2} - \frac{n}{(2-\psi)^2}$
+
+$E[T] = n\pi = n\frac{1-\psi}{2-\psi}$
+
+$I(\hat{\psi}^{mle}) = n\frac{1-\psi}{2-\psi} \cdot \frac{1}{{(1-\psi)^2}} - \frac{n}{(2-\psi)^2} = \frac{n}{(2-\psi)(1-\psi)}   - \frac{n}{(2-\psi)^2}$
+
+$\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \frac{n}{(2-\psi)^2(1-\psi)} = I(\hat{\psi}^{mle})$
+
+Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
+
+### Significance Test for $\psi_0$
+
+The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$.
 
 ## Bayesian Inference
 
@@ -256,7 +283,7 @@ $$h(\pi|t) = Beta(48.96 + t, 170 - t + 66.55) \quad posterior$$
 
 p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(56.96, 228.55) \approx 0$
 
-```{r bay_pvals}
+```{r label="bay_pvals", echo=FALSE, results='hide'}
 # Calculating Bayesian P-values
 
 x = 7/17
@@ -288,22 +315,6 @@ The Bayesian P-values are essentially 0, indicating extremely strong posterior e
 
 ### Confidence Interval
 
-The equation for the large sample confidence interval of $\psi$ is $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$
-
-Using Theorem 12.1 under regularity conditions, we know that $I(\hat{\psi}^{mle}) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right]$
-
-$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
-
-$E\left[-(-\frac{T}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2} )\right] = \frac{E\left[T\right]}{(1-\psi)^2} - \frac{n}{(2-\psi)^2}$
-
-$E[T] = n\pi = n\frac{1-\psi}{2-\psi}$
-
-$I(\hat{\psi}^{mle}) = n\frac{1-\psi}{2-\psi} \cdot \frac{1}{{(1-\psi)^2}} - \frac{n}{(2-\psi)^2} = \frac{n}{(2-\psi)(1-\psi)}   - \frac{n}{(2-\psi)^2}$
-
-$\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \frac{n}{(2-\psi)^2(1-\psi)} = I(\hat{\psi}^{mle})$
-
-Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
-
 Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 170$: 
 
 ```{r label="mle_confidence", echo=FALSE, results = FALSE}
@@ -319,8 +330,6 @@ lower
 upper
 psi_se 
 ```
-
-$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
 
 
 ```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
@@ -378,7 +387,7 @@ upper_boot
 
 ### Likelihood Ratio Test Statistic
 
-The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$. Given that $\hat{\psi}^{mle} \approx 0.9506$ and $H_0: \psi = 0.3$, we are solving for $2\left[\ell{(0.9506)} - \ell{(0.3)}\right]$. Using that $t = 8$ and $n = 160$, we can calculation $\ell(0.9506)$ and $\ell(0.3)$:
+Given that $\hat{\psi}^{mle} \approx 0.9506$ and $H_0: \psi = 0.3$, we are solving for $2\left[\ell{(0.9506)} - \ell{(0.3)}\right]$. Using that $t = 8$ and $n = 160$, we can calculation $\ell(0.9506)$ and $\ell(0.3)$:
 
 $\ell(0.9506) = \ln{\binom{160}{8}} + 8\ln{(1-0.9506)} -8\ln{(2 - 0.9506)}  + (162)\ln{(\frac{1}{2-0.9506})} \approx -1.945$
 
@@ -448,7 +457,7 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 
 ## Code
 
-### Visualizations
+## Visualizations
 ```{r ref.label = "table", eval=FALSE}
 ```
 
@@ -456,28 +465,41 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 ```
 
 
-### Observed Efficacy
+## Observed Efficacy
+
 ```{r ref.label = "efficacy", eval=FALSE}
 ```
 
-### MLE
+## MLE
+### Confidence Interval
+
 ```{r ref.label="mle_confidence", eval=FALSE}
 ```
 
+### Second Order Approximation
 ```{r ref.label="mle_graph", eval=FALSE}
 ```
 
-```{r, ref.label="mle_empirical_sd", echo=FALSE}
+### Empirical Standard Deviation
+```{r, ref.label="mle_empirical_sd", eval=FALSE}
 ```
 
-```{r ref.label="mle_ratio_stat", echo=FALSE}
+### Ratio Statistic
+```{r ref.label="mle_ratio_stat", eval=FALSE}
 ```
 
-```{r ref.label="mle_empirical_p", echo=FALSE}
+### Empirical P-Value
+```{r ref.label="mle_empirical_p", eval=FALSE}
 ```
 
-### Bayesian
+## Bayesian
+
+### Priors
 ```{r, ref.label="priors", eval=FALSE}
+```
+
+### P-values
+```{r ref.label="bay_pvals", eval=FALSE}
 ```
 
 
@@ -485,3 +507,59 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 ## Proofs
 
 If applicable, include detailed mathematical derivations or additional theoretical explanations.
+
+### T $\approx$ Binomial
+Suppose X denotes the number of Covid cases among the $n_1$ patients randomly assigned to the BNT162b2 vaccine group and Y is the number of Covid cases among the $n_2$ patients assigned to the placebo.
+
+```{r ref.label = "table", echo=FALSE}
+```
+
+Let us restrict our attention to just the 170 cases that had Covid. We want ot know the PMF of the random variable T which is defined as the count in the BNT162b2 vaccine cell given this restriction. That is, T is the value of X but with the restriction that X + Y = 170.
+
+The binomial distribution for T can be justified by the following argument. Since the sample sizes - $n_1$ and $n_2$ - in each group are LARGE and the event rates are small, we may assume 
+
+$X \approx Pois(n_1\pi_a) \qquad \text{independently} \qquad Y \approx Pois(n_2\pi_p)$
+
+This is because the Poisson distribution approximates a binomial very well in this setting.
+
+Therefore the PMF of T can be found as follows:
+
+$P(T = t) = P(X = t \mid X + Y = n) \quad t = 0, 1, ..., n$
+
+$= \frac{P(X = t \;\cap\, X + Y = n)}{P(X + Y = n)}$
+
+$= \frac{P(X = t \;\cap\, Y = n - t)}{P(X + Y = n)}$
+
+$= \frac{P(X = t) \;\cdot\; P(Y = n - t)}{P(X + Y = n)} \quad X, Y \text{ ind}$
+
+$= \frac{\frac{(n_1\pi_a)^{n_1} \cdot e^{-(n_1\pi_a)}}{n_1!} \cdot \frac{(n_2\pi_p)^{n_2} \cdot e^{-(n_2\pi_p)}}{n_2!}}{\frac{(n_1\pi_a + n_2\pi_p)^n \cdot e^{-(n_1\pi_a + n_2\pi_p)}}{n!}}$
+
+$= \frac{\frac{(n_1\pi_a)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!}}{\frac{(n_1\pi_a + n_2\pi_p)^n}{n!}}$
+
+$= \frac{n!(n_1\pi_a)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!(n_1\pi_a + n_2\pi_p)^n}$
+
+$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_a)^{n_1}(n_2\pi_p)^{n_2}}{(n_1\pi_a + n_2\pi_p)^n}$
+
+$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + n_2\pi_p)^{n_1}}\frac{(n_2\pi_p)^{n_2}}{(n_1\pi_a + n_2\pi_p)^{n_2}}$
+
+$= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{n - n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{(n - n_1)}}$
+
+$= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{(n - n_1)}}{(n_1\pi_a + (n - n_1)\pi_p)^{(n - n_1)}}$
+
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + (n - n_1)\pi_p})^{n_1} \cdot (\frac{((n - n_1)\pi_p)}{(n_1\pi_a + (n - n_1)\pi_p)})^{n - n_1}$
+
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{ n_1\pi_a + n\pi_p - n_1\pi_p-n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n_1\pi_a + n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p} - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (1 - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+
+
+Therefore, we can see that $T \sim Binom(n, \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p}) =  Binom(n, \frac{n_1\pi_a}{n_1\pi_a + n_2\pi_p})$
+
+When X and Y are independent and approximately follow a Poisson distribution (large group size and small event rate)
+
+
+
