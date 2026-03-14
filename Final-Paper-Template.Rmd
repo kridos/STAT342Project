@@ -164,21 +164,34 @@ Depending on the values of $n$ and $t$, our estimate will not always be consider
 
 ### Confidence Interval
 
-The equation for the large sample confidence interval of $\psi$ is $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$
+We can calculate the confidence interval for $\psi_0$ in two different ways.
 
-Using Theorem 12.1 under regularity conditions, we know that $I(\hat{\psi}^{mle}) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right]$
+#### Large Sample Confidence Interval
 
-$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
+The first method is to calculate the large sample confidence interval. First, we establish that for large $n$ values under certain regularity conditions, $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\hat{\psi}^{mle})}})$, where $I(\psi_0) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right] \vert_{\psi = \psi_0}$. This is based on Theorem 12.1. Some of the regularity conditions include:
+   - The possible values for the observed value does not depend on the parameter
+   - The true value of the parameter does not fall on a boundary
+
+After establishing $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\psi_0)}})$, we can calculate a $100(1-\alpha)\%$ large sample confidence interval $\psi_0$ using the equation $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$.
+
+Using the fact that $\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$, we can solve $I(\psi_0)$
 
 $E\left[-(-\frac{T}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2} )\right] = \frac{E\left[T\right]}{(1-\psi)^2} - \frac{n}{(2-\psi)^2}$
 
 $E[T] = n\pi = n\frac{1-\psi}{2-\psi}$
 
-$I(\hat{\psi}^{mle}) = n\frac{1-\psi}{2-\psi} \cdot \frac{1}{{(1-\psi)^2}} - \frac{n}{(2-\psi)^2} = \frac{n}{(2-\psi)(1-\psi)}   - \frac{n}{(2-\psi)^2}$
+$I(\psi_0) = n\frac{1-\psi}{2-\psi} \cdot \frac{1}{{(1-\psi)^2}} - \frac{n}{(2-\psi)^2} = \frac{n}{(2-\psi)(1-\psi)}   - \frac{n}{(2-\psi)^2}$
 
 $\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \frac{n}{(2-\psi)^2(1-\psi)} = I(\hat{\psi}^{mle})$
 
-Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
+Since we got $I(\psi_0)$, the standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
+
+Now, the equation for a large sample confidence interval for $\hat{\psi}^{mle}$ is 
+$\hat{\psi}^{mle} \pm z_{\alpha/2} \sqrt{\frac{(2-\hat{\psi}^{mle})^2(1-\hat{\psi}^{mle})}{n}}$
+
+#### Parametric Bootstrap Percentile Interval
+
+
 
 ### Significance Test for $\psi_0$
 
@@ -403,7 +416,7 @@ The Bayesian P-values are essentially 0, indicating extremely strong posterior e
 
 # Results
 
-## Frequentist Way
+## Frequentist Approach
 
 ### Confidence Interval
 
@@ -422,7 +435,6 @@ lower
 upper
 psi_se 
 ```
-
 
 ```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
 loglik.psi<-function(psi,x, n){
