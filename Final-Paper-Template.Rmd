@@ -215,7 +215,7 @@ beta.select(quantile1 = list(p = 0.2, x = 7/17),
 beta.select(quantile1 = list(p = 0.4, x = 7/17),
             quantile2 = list(p = 0.95, x = 0.5))
 ```
-We choose these apriori beliefs to analyze the sensitivity of the prior. More specifically, these five priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect.
+We choose these apriori beliefs to analyze the sensitivity of the prior. More specifically, these five priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect at all.
 
 Next, we find the posterior distributions and Bayesian p-values for the five priors with data model $f(T|\pi) \sim Binom(170, \pi)$. 
 
@@ -286,7 +286,7 @@ opt
 most_opt
 ```
 
-The resulting Bayesian P-values are essentially 0. This indicates extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+The resulting Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 # Results
 
@@ -449,25 +449,11 @@ Discuss / conclude here.
 
 # Bibliography
 
-<!-- Brown, B. (2024). *Lecture Title*. Lecture slides, Course Name, University Name. -->
+David J. Sencer CDC Museum. “CDC Museum COVID-19 Timeline.” Centers for Disease Control and Prevention, CDC, 8 July 2024, www.cdc.gov/museum/timeline/covid19.html. Accessed 14 Mar. 2026.
 
-<!-- Doe, J. (2020). Title of the Paper. *Journal Name*, 12(3), 45-67. -->
+Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world., https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
 
-<!-- Last, F., & Last, F. (2025). *Book Title*. Publisher. -->
-
-Polack, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://www.nejm.org/doi/full/10.1056/nejmoa2034577>.
-
-Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://www.cdc.gov/museum/timeline/covid19.html.
-
-Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world.>.
-
-
-
-
-
-
-
-
+Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19 Vaccine.” The New England Journal of Medicine, vol. 383, no. 27, 10 Dec. 2020, www.nejm.org/doi/full/10.1056/NEJMoa2034577, https://doi.org/10.1056/NEJMoa2034577. Accessed 14 Mar. 2026.
 
 # Appendix
 
