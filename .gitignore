@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-=======
 *.pdf 
 *.log
 *.tex
->>>>>>> 41bf1f7b58cd95bb784cb03940524e18ddcd6254
+*.aux
