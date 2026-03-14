@@ -380,10 +380,10 @@ pchisq(W_stat, 1, lower.tail = F)
 
 set.seed(414)
 values <- c()
+pi_null <- (1 - 2*0.3) / (1-0.3)
 
 for(i in 1:10000){
-  t_star <- rbinom(1, 170, 0.3)
-  pi_mle <- t_star / 170
+  t_star <- rbinom(1, 170, pi_null)
   psi_star <- (170 - 2*t_star) / (170-t_star)
   wstar <- 2*(log_lik_func(psi_star, 170, t_star) - log_lik_func(0.3,170, t_star))
   values <- c(values, wstar)
@@ -397,7 +397,7 @@ cat("Empirical P value = ", emp_p_value)
 
 ggplot(data = NULL,
 mapping = aes(x = values))+
-geom_histogram() +
+geom_histogram(bins = 40) +
 geom_vline(xintercept = W_stat, color = "red") +
 labs(title = "Counts of W from Bootstrapping",
      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
