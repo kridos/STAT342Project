@@ -49,10 +49,6 @@ Write your abstract here.
 
 On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide and urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore the BNT162b2 vaccine findings further, we conduct analyses with Frequentist and Bayesian methods for inference.
 
-
-
-
-
 ```{r label="table", echo=FALSE, fig.height = 4, fig.width = 4, fig.align="center"}
 extended_df %>% 
 tabyl(Treatment, Has_Covid) %>%
@@ -74,11 +70,13 @@ ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
 
 Looking at the visual of the segmented barplot allows us to further see that the relative percentage of individuals with Covid is far lower in the treatment group than in the Placebo group while the relative percentage of people without Covid is quite similar in both groups.
 
-
+In the paper, the authors mention that they used a beta binomial model with the transformation $$\pi = \frac{\pi_v}{\pi_v + \pi_p}$$ where $\pi_v$ and $\pi_p$ are the probabilities of an infection in the vaccine and placebo groups respectively. Here, the binomial $\pi$ was modeled with a beta prior, Beta(0.700102, 1), and the parameter of interest was $\psi = \frac{1 - 2\pi}{1 - \pi}$. It was estimated to be 95% with the 95% Bayesian credible interval reported as [90.3%, 97.6%] and the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999.
 
 # Statistical Methods
 
 ## Model
+
+Deriving from the original report, we let $T \sim Binom(170, \pi)$, where $\pi$ is equivalent to P(Vaccine|Infection). T denotes the number of COVID cases in the vaccine group out of all the sample cases. 170 represents the total number of COVID cases in the sample. Since $n_1$ is approximately equal to $n_2$, we can rewrite P(Vaccine|Infection) as $\pi = \frac{\pi_{v}}{\pi_{v} + \pi_{p}}$. Our parameter of interest is $\psi$, which is equal to $1 -\frac{\pi_v}{\pi_p} = \frac{\pi_p - \pi_v}{\pi_p}$. Using our value of $\pi$, we can rewrite $\psi$ as $\frac{1-2\pi}{1-\pi}$.
 
 ## Make sure to prove why T is binomial in Appendix (see last slides for example slides)
 
@@ -104,8 +102,6 @@ Pfizer vaccine estimator: 8/17411
 Placebo estimator: 162 / 17511
 
 Total: 170 / 34922
-
-With the statistical model, we let $T \sim Binom(170, \pi)$, where $\pi$ is equivalent to P(Vaccine|Infection). T denotes the number of COVID cases in the vaccine group out of all the sample cases. 170 represents the total number of COVID cases in the sample. Since $n_1$ is approximately equal to $n_2$, we can rewrite P(Vaccine|Infection) as $\pi = \frac{\pi_{v}}{\pi_{v} + \pi_{p}}$. Our parameter of interest is $\psi$, which is equal to $1 -\frac{\pi_v}{\pi_p} = \frac{\pi_p - \pi_v}{\pi_p}$. Using our value of $\pi$, we can rewrite $\psi$ as $\frac{1-2\pi}{1-\pi}$.
 
 Proof: 
 
@@ -190,8 +186,6 @@ The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equi
 
 ## Bayesian Inference
 
-In the paper, the authors mention that they used a beta binomial model with the transformation $$\pi = \frac{\pi_v}{\pi_v + \pi_p}$$ where $\pi_v$ and $\pi_p$ are the probabilities of an infection in the vaccine and placebo groups respectively. Here, the binomial $\pi$ was modeled with a beta prior, Beta(0.700102, 1), and the parameter of interest was $\psi = \frac{1 - 2\pi}{1 - \pi}$. It was estimated to be 95% with the 95% Bayesian credible interval reported as [90.3%, 97.6%] and the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999.
-
 While the original paper used a minimally informative Beta(0.700102, 1) prior, we further investigate the robustness of this conclusion by utilizing several alternative prior beliefs based on two apriori about $\psi$.
 
 $$P(\psi \geq 0.3) = P\left(\frac{1 - 2\pi}{1 - \pi} \geq 0.3\right)$$
@@ -204,7 +198,7 @@ $$= P\left(\pi \leq \frac{7}{17}\right)$$
 - $P(\psi \geq 0.3) = 0.025$
 - $P(\psi \geq 0) = 0.35$
 
-2 - Pessimestic
+2 - Pessimistic
 
 - $P(\psi \geq 0.3) = 0.05$
 - $P(\psi \geq 0) = 0.5$
@@ -243,6 +237,8 @@ beta.select(quantile1 = list(p = 0.4, x = 7/17),
             quantile2 = list(p = 0.95, x = 0.5))
 ```
 We choose these apriori beliefs to analyze the sensitivity of the prior. More specifically, these five priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect at all.
+
+To determine the parameters of the Beta prior distributions that satisfy the specified probability conditions, numerical solutions were obtained using the beta.select function from the LearnBayes package in R. The corresponding code used to compute these parameters is provided in the Appendix.
 
 Next, we find the posterior distributions and Bayesian p-values for the five priors with data model $f(T|\pi) \sim Binom(170, \pi)$. 
 
@@ -404,7 +400,96 @@ article_model + most_pessimistic + pessimistic + neutral + optimistic + more_opt
 
 ```
 
-The resulting Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+```{r label="bay_plots", echo=FALSE}
+# Calculating Bayesian P-values
+
+most_pessimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 41.05, shape2 = 37.63),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 41.05 + t, shape2 = n-t + 37.63),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Most Pessimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+pessimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 43.03, shape2 = 43.03),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 43.03 + t, shape2 = n-t + 43.03),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Pessimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+neutral <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 42.2, shape2 = 46.0),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 42.2 + t, shape2 = n-t + 46.0),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Neutral)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+optimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 41.23, shape2 = 49.20),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 41.23 + t, shape2 = n-t + 49.20),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Optimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+more_optimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 48.96, shape2 = 66.55),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 48.96 + t, shape2 = n-t + 66.55),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (More Pessimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+
+article_model <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 0.700102, shape2 = 1),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 0.700102 + t, shape2 = n-t + 1),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (BNT162b2 Study)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+
+
+article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") & 
+  theme(legend.position = "bottom")
+
+```
+
+The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 # Results
 
@@ -507,7 +592,6 @@ log_null
 
 W_stat <- 2*(log_mle - log_null)
 W_stat
-
 ```
 
 ```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, fig.height=4, fig.width=4}
@@ -537,15 +621,11 @@ geom_histogram(bins = 40) +
 geom_vline(xintercept = W_stat, color = "red") +
 labs(title = "Counts of W from Bootstrapping",
      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
-
 ```
-
-
-Present your findings.
 
 # Discussion / Conclusion
 
-Discuss / conclude here.
+We utilized statistical inference with both Frequentist and Bayesian frameworks by computing the maximum likelihood estimate (MLE) and exploring various priors to obtain posterior distributions and Bayesian p-values. The MLE estimate of efficacy resulted in about a 95% reduction in infection risk for the vaccinated group compared to the placebo group. Accordingly, the 95% large-sample confidence interval for the efficacy rate using the MLE emerged to be [91.56%, 98.57%], which lies in approximately the same region as the Bayesian credible interval reported in the original paper, [90.3%, 97.6%]. Both the likelihood ratio test and the Bayesian hypothesis tests also produced p-values approximately equal to zero, providing overwhelming evidence that vaccine efficacy exceeds the FDA threshold of 30%. Furthermore, the Bayesian results remained consistent across a range of pessimistic and optimistic prior beliefs, supporting that the conclusion is robust to the choice of prior. 
 
 # Bibliography
 
