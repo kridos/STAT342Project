@@ -41,19 +41,15 @@ Write your abstract here.
 
 # Keywords
 
-*Keyword 1*, *Keyword 2*, *Keyword 3*, *Keyword 4*
+*Bayesian Inference*, *Maximum Likelihood Estimation*, *BNT162b2*, *Efficacy*
 
 \newpage
 
 # Introduction / Background
 
-Provide an introduction with background information.
-
 On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide and urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore the BNT162b2 vaccine findings further, we conduct analyses with Frequentist and Bayesian methods for inference.
 
-https://www.nejm.org/doi/full/10.1056/nejmoa2034577
-https://www.cdc.gov/museum/timeline/covid19.html
-https://pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world.
+
 
 
 
@@ -453,13 +449,40 @@ Discuss / conclude here.
 
 # Bibliography
 
-Brown, B. (2024). *Lecture Title*. Lecture slides, Course Name, University Name.
+<!-- Brown, B. (2024). *Lecture Title*. Lecture slides, Course Name, University Name. -->
 
-Doe, J. (2020). Title of the Paper. *Journal Name*, 12(3), 45-67.
+<!-- Doe, J. (2020). Title of the Paper. *Journal Name*, 12(3), 45-67. -->
 
-Last, F., & Last, F. (2025). *Book Title*. Publisher.
+<!-- Last, F., & Last, F. (2025). *Book Title*. Publisher. -->
 
-Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://www.example.com>.
+Polack, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://www.nejm.org/doi/full/10.1056/nejmoa2034577>.
+
+Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://www.cdc.gov/museum/timeline/covid19.html.
+
+Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world.>.
+
+
+@article{doi:10.1056/NEJMoa2034577,
+author = {Fernando P. Polack  and Stephen J. Thomas  and Nicholas Kitchin  and Judith Absalon  and Alejandra Gurtman  and Stephen Lockhart  and John L. Perez  and Gonzalo Pérez Marc  and Edson D. Moreira  and Cristiano Zerbini  and Ruth Bailey  and Kena A. Swanson  and Satrajit Roychoudhury  and Kenneth Koury  and Ping Li  and Warren V. Kalina  and David Cooper  and Robert W. Frenck  and Laura L. Hammitt  and Özlem Türeci  and Haylene Nell  and Axel Schaefer  and Serhat Ünal  and Dina B. Tresnan  and Susan Mather  and Philip R. Dormitzer  and Uğur Şahin  and Kathrin U. Jansen  and William C. Gruber },
+title = {Safety and Efficacy of the BNT162b2 mRNA Covid-19 Vaccine},
+journal = {New England Journal of Medicine},
+volume = {383},
+number = {27},
+pages = {2603-2615},
+year = {2020},
+doi = {10.1056/NEJMoa2034577},
+
+URL = {https://www.nejm.org/doi/full/10.1056/NEJMoa2034577},
+eprint = {https://www.nejm.org/doi/pdf/10.1056/NEJMoa2034577}
+,
+    abstract = { A vaccine containing an RNA molecule encoding the SARS-CoV-2 spike protein was tested in a trial in which two injections were given 3 weeks apart. After the second injection, Covid-19 developed in 162 patients receiving placebo, with a median follow-up of 2 months, and in 8 patients receiving the vaccine. Side effects were mainly mild-to-moderate injection-site pain and swelling. }
+}
+
+
+
+
+
+
 
 # Appendix
 
