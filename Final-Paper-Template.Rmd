@@ -168,8 +168,25 @@ Depending on the values of $n$ and $t$, our estimate will not always be consider
 
 ### Confidence Interval
 
+The equation for the large sample confidence interval of $\psi$ is $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$
+
+Using Theorem 12.1 under regularity conditions, we know that $I(\hat{\psi}^{mle}) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right]$
+
+$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
+
+$E\left[-(-\frac{T}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2} )\right] = \frac{E\left[T\right]}{(1-\psi)^2} - \frac{n}{(2-\psi)^2}$
+
+$E[T] = n\pi = n\frac{1-\psi}{2-\psi}$
+
+$I(\hat{\psi}^{mle}) = n\frac{1-\psi}{2-\psi} \cdot \frac{1}{{(1-\psi)^2}} - \frac{n}{(2-\psi)^2} = \frac{n}{(2-\psi)(1-\psi)}   - \frac{n}{(2-\psi)^2}$
+
+$\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \frac{n}{(2-\psi)^2(1-\psi)} = I(\hat{\psi}^{mle})$
+
+Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
+
 ### Significance Test for $\psi_0$
 
+The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$.
 
 ## Bayesian Inference
 
@@ -304,22 +321,6 @@ The resulting Bayesian P-values are essentially 0, indicating extremely strong p
 
 ### Confidence Interval
 
-The equation for the large sample confidence interval of $\psi$ is $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$
-
-Using Theorem 12.1 under regularity conditions, we know that $I(\hat{\psi}^{mle}) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right]$
-
-$\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$
-
-$E\left[-(-\frac{T}{(\psi - 1)^2} + \frac{n}{(\psi - 2)^2} )\right] = \frac{E\left[T\right]}{(1-\psi)^2} - \frac{n}{(2-\psi)^2}$
-
-$E[T] = n\pi = n\frac{1-\psi}{2-\psi}$
-
-$I(\hat{\psi}^{mle}) = n\frac{1-\psi}{2-\psi} \cdot \frac{1}{{(1-\psi)^2}} - \frac{n}{(2-\psi)^2} = \frac{n}{(2-\psi)(1-\psi)}   - \frac{n}{(2-\psi)^2}$
-
-$\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \frac{n}{(2-\psi)^2(1-\psi)} = I(\hat{\psi}^{mle})$
-
-Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
-
 Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 170$: 
 
 ```{r label="mle_confidence", echo=FALSE, results = FALSE}
@@ -335,8 +336,6 @@ lower
 upper
 psi_se 
 ```
-
-$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
 
 
 ```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
@@ -394,7 +393,7 @@ upper_boot
 
 ### Likelihood Ratio Test Statistic
 
-The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$. Given that $\hat{\psi}^{mle} \approx 0.9506$ and $H_0: \psi = 0.3$, we are solving for $2\left[\ell{(0.9506)} - \ell{(0.3)}\right]$. Using that $t = 8$ and $n = 160$, we can calculation $\ell(0.9506)$ and $\ell(0.3)$:
+Given that $\hat{\psi}^{mle} \approx 0.9506$ and $H_0: \psi = 0.3$, we are solving for $2\left[\ell{(0.9506)} - \ell{(0.3)}\right]$. Using that $t = 8$ and $n = 160$, we can calculation $\ell(0.9506)$ and $\ell(0.3)$:
 
 $\ell(0.9506) = \ln{\binom{160}{8}} + 8\ln{(1-0.9506)} -8\ln{(2 - 0.9506)}  + (162)\ln{(\frac{1}{2-0.9506})} \approx -1.945$
 
