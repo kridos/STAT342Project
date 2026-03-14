@@ -47,7 +47,7 @@ Write your abstract here.
 
 Provide an introduction with background information.
 
-On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the SARS-CoV-2 virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore this finding further, we test two hypotheses with Frequentist and Bayesian methods for inference: $H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$ where $\psi$ denotes the vaccine efficacy.
+On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the SARS-CoV-2 virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore the BNT162b2 vaccine data further, we conduct analyses with Frequentist and Bayesian methods for inference.
 
 https://www.nejm.org/doi/full/10.1056/nejmoa2034577
 https://www.cdc.gov/museum/timeline/covid19.html
@@ -66,8 +66,6 @@ table_test <- extended_df %>%
 tabyl(Treatment, Has_Covid) %>%
 adorn_totals(where = c("row", "col")) %>%
 adorn_title()
-
-
 ```
 
 ```{r boxplot}
@@ -180,8 +178,6 @@ Detail the Bayesian approach.
 
 In the paper, the authors mention that they used a beta binomial model with the transformation $$\pi = \frac{\pi_v}{\pi_v + \pi_p}$$ where $\pi_v$ and $\pi_p$ are the probabilities of an infection in the vaccine and placebo groups respectively. Here, the binomial $\pi$ was modeled with a minimally informative beta prior, Beta(0.700102, 1), and the parameter of interest is $\psi = \frac{1 - 2\pi}{1 - \pi}$. It was estimated to be 95% with the 95% Bayesian credible interval reported as [90.3%, 97.6%] and the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999.
 
-### Prior Elicitation
-
 We use two apriori beliefs about $\psi$ in 5 different cases.
 
 $$P(\psi \geq 0.3) = P\left(\frac{1 - 2\pi}{1 - \pi} \geq 0.3\right)$$
@@ -232,35 +228,81 @@ beta.select(quantile1 = list(p = 0.2, x = 7/17),
 beta.select(quantile1 = list(p = 0.4, x = 7/17),
             quantile2 = list(p = 0.95, x = 0.5))
 ```
-We choose these apriori beliefs to analyze the data and sensitivity of the prior. In other words, there are more pessimestic to more optimistic probabilities assigned to the events where the vaccine exceeds the FDA efficacy threshold of 30%, and whether it provides any beneficial value.
+We choose these apriori beliefs to analyze the data and sensitivity of the prior. In other words, there are more pessimistic to more optimistic probabilities assigned to the events where the vaccine exceeds the FDA efficacy threshold of 30%, and whether it provides any beneficial value.
 
-### Posterior Distributions 
-(with data model $f(T|\pi) \sim Binom(170, \pi)$ & where $t = 8$)
+Next, we calculate the posterior distributions and Bayesian p-values for the five priors with data model $f(T|\pi) \sim Binom(170, \pi)$. Here, the hypotheses are:
+
+$H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$ where $\psi$ denotes the vaccine efficacy
+
+Since $\psi \geq 0.3 \Leftrightarrow \pi \leq \frac{7}{17}$, we get that $P(\psi  \leq 0.3|t) = P\left(\pi \geq \frac{7}{17}|t\right)$.
+
+To calculate the Bayesian probabilities: $P(\pi \geq \frac{7}{17}|t) = 1 - P(\pi \leq \frac{7}{17}|t)$ where $t = 8$.
 
 1 - Most Pessimistic
 
 $$g(\pi) = Beta(41.05, 37.63) \quad prior$$
 $$h(\pi|t) = Beta(41.05 + t, 170 - t + 37.63) \quad posterior$$
+p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(49.05, 199.63) \approx 0$
 
 2 - Pessimistic
 
 $$g(\pi) = Beta(43.03, 43.03) \quad prior$$
 $$h(\pi|t) = Beta(43.03 + t, 170 - t + 43.03) \quad posterior$$
+p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(51.03, 205.03) \approx 0$
 
 3 - Neutral
 
 $$g(\pi) = Beta(42.4, 46.0) \quad prior$$
-$$h(\pi|t) = Beta(37.63 + t, 170 - t + 41.05) \quad posterior$$
+$$h(\pi|t) = Beta(42.4 + t, 170 - t + 46.0) \quad posterior$$
+
+p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(50.4, 208) \approx 0$
 
 4 - Optimistic
 
 $$g(\pi) = Beta(41.23, 49.20) \quad prior$$
 $$h(\pi|t) = Beta(41.23 + t, 170 - t + 49.20) \quad posterior$$
 
+p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(49.23, 211.2) \approx 0$
+
 5 - More Optimistic
 
 $$g(\pi) = Beta(48.96, 66.55) \quad prior$$
 $$h(\pi|t) = Beta(48.96 + t, 170 - t + 66.55) \quad posterior$$
+p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(56.96, 228.55) \approx 0$
+
+### Calculating Bayesian P-values
+
+For all five prior, the hypotheses are:
+
+$H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$ where $\psi$ denotes the vaccine efficacy
+
+Since $\psi \geq 0.3 \Leftrightarrow \pi \leq \frac{7}{17}$, we get that $P(\psi  \leq 0.3|t) = P\left(\pi \geq \frac{7}{17}|t\right)$.
+
+Thus, to calculate the Bayesian probabilities: $P(\pi \geq \frac{7}{17}|t) = 1 - P(\pi \leq \frac{7}{17}|t)$ where $t = 8$.
+
+```{r bay_pvals}
+x = 7/17
+n = 170
+t = 8
+
+most_pess <- pbeta(q = x, shape1 = 41.05 + t, shape2 = n - t + 37.63, lower.tail = F)
+
+pess <- pbeta(q = x, shape1 = 43.03 + t, shape2 = n - t + 43.03, lower.tail = F)
+
+neutral <- pbeta(q = x, shape1 = 42.4 + t, shape2 = n - t + 46, lower.tail = F)
+
+opt <- pbeta(q = x, shape1 = 41.23 + t, shape2 = n - t + 49.2, lower.tail = F)
+
+most_opt <- pbeta(q = x, shape1 = 48.96 + t, shape2 = n - t + 66.55, lower.tail = F)
+
+most_pess
+pess
+neutral
+opt
+most_opt
+```
+
+For all five priors, the resulting Bayesian P-values are essentially 0. This indicates extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 # Results
 
@@ -304,10 +346,10 @@ psi_se
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
 ```{r}
 loglik.psi<-function(psi,x, n){
-if(psi >= 1) NA
-else{  
-  log(choose(n, x)) + x*log(1-psi) - x*log(2-psi) +(n-x)*log(1 / (2-psi))
-}
+  if(psi >= 1) NA
+  else{  
+    log(choose(n, x)) + x*log(1-psi) - x*log(2-psi) +(n-x)*log(1 / (2-psi))
+  }
 }
 
 ml.psi <- maxLik2(loglik=loglik.psi,
@@ -321,10 +363,10 @@ x = expression(psi))
 
 
 loglik.pi<-function(pi,x, n){
-if(pi < 0 || pi > 1) NA
-else{  
-  log(choose(n, x)) + x*log(pi) +(n-x)*log(1 - pi)
-}
+  if(pi < 0 || pi > 1) NA
+  else{  
+    log(choose(n, x)) + x*log(pi) +(n-x)*log(1 - pi)
+  }
 }
 
 ml.psi <- maxLik2(loglik=loglik.pi,
@@ -334,7 +376,6 @@ plot(ml.pi) +
 labs(title = "Second order approximation for Pi",
 subtitle = "n = 170, t = 8",
 x = expression(pi))
-
 ```
 
 ```{r}
