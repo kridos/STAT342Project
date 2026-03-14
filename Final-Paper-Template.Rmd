@@ -225,7 +225,7 @@ beta.select(quantile1 = list(p = 0.2, x = 7/17),
 beta.select(quantile1 = list(p = 0.4, x = 7/17),
             quantile2 = list(p = 0.95, x = 0.5))
 ```
-We choose these apriori beliefs to analyze the sensitivity of the prior. More specifically, these five priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect.
+We choose these apriori beliefs to analyze the sensitivity of the prior. More specifically, these five priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect at all.
 
 Next, we find the posterior distributions and Bayesian p-values for the five priors with data model $f(T|\pi) \sim Binom(170, \pi)$. 
 
@@ -272,7 +272,7 @@ $$h(\pi|t) = Beta(48.96 + t, 170 - t + 66.55) \quad posterior$$
 
 p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(56.96, 228.55) \approx 0$
 
-```{r bay_pvals}
+```{r label="bay_pvals", echo=FALSE, results='hide'}
 # Calculating Bayesian P-values
 
 x = 7/17
@@ -296,7 +296,7 @@ opt
 most_opt
 ```
 
-The resulting Bayesian P-values are essentially 0. This indicates extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+The resulting Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 # Results
 
@@ -459,46 +459,17 @@ Discuss / conclude here.
 
 # Bibliography
 
-<!-- Brown, B. (2024). *Lecture Title*. Lecture slides, Course Name, University Name. -->
+David J. Sencer CDC Museum. “CDC Museum COVID-19 Timeline.” Centers for Disease Control and Prevention, CDC, 8 July 2024, www.cdc.gov/museum/timeline/covid19.html. Accessed 14 Mar. 2026.
 
-<!-- Doe, J. (2020). Title of the Paper. *Journal Name*, 12(3), 45-67. -->
+Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world., https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
 
-<!-- Last, F., & Last, F. (2025). *Book Title*. Publisher. -->
-
-Polack, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://www.nejm.org/doi/full/10.1056/nejmoa2034577>.
-
-Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://www.cdc.gov/museum/timeline/covid19.html.
-
-Smith, A., & Johnson, C. (2023). *Title of the Online Article*. Retrieved from <https://pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world.>.
-
-
-@article{doi:10.1056/NEJMoa2034577,
-author = {Fernando P. Polack  and Stephen J. Thomas  and Nicholas Kitchin  and Judith Absalon  and Alejandra Gurtman  and Stephen Lockhart  and John L. Perez  and Gonzalo Pérez Marc  and Edson D. Moreira  and Cristiano Zerbini  and Ruth Bailey  and Kena A. Swanson  and Satrajit Roychoudhury  and Kenneth Koury  and Ping Li  and Warren V. Kalina  and David Cooper  and Robert W. Frenck  and Laura L. Hammitt  and Özlem Türeci  and Haylene Nell  and Axel Schaefer  and Serhat Ünal  and Dina B. Tresnan  and Susan Mather  and Philip R. Dormitzer  and Uğur Şahin  and Kathrin U. Jansen  and William C. Gruber },
-title = {Safety and Efficacy of the BNT162b2 mRNA Covid-19 Vaccine},
-journal = {New England Journal of Medicine},
-volume = {383},
-number = {27},
-pages = {2603-2615},
-year = {2020},
-doi = {10.1056/NEJMoa2034577},
-
-URL = {https://www.nejm.org/doi/full/10.1056/NEJMoa2034577},
-eprint = {https://www.nejm.org/doi/pdf/10.1056/NEJMoa2034577}
-,
-    abstract = { A vaccine containing an RNA molecule encoding the SARS-CoV-2 spike protein was tested in a trial in which two injections were given 3 weeks apart. After the second injection, Covid-19 developed in 162 patients receiving placebo, with a median follow-up of 2 months, and in 8 patients receiving the vaccine. Side effects were mainly mild-to-moderate injection-site pain and swelling. }
-}
-
-
-
-
-
-
+Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19 Vaccine.” The New England Journal of Medicine, vol. 383, no. 27, 10 Dec. 2020, www.nejm.org/doi/full/10.1056/NEJMoa2034577, https://doi.org/10.1056/NEJMoa2034577. Accessed 14 Mar. 2026.
 
 # Appendix
 
 ## Code
 
-### Visualizations
+## Visualizations
 ```{r ref.label = "table", eval=FALSE}
 ```
 
@@ -506,30 +477,41 @@ eprint = {https://www.nejm.org/doi/pdf/10.1056/NEJMoa2034577}
 ```
 
 
-### Observed Efficacy
+## Observed Efficacy
+
 ```{r ref.label = "efficacy", eval=FALSE}
 ```
 
-### MLE
+## MLE
+### Confidence Interval
 
 ```{r ref.label="mle_confidence", eval=FALSE}
 ```
 
+### Second Order Approximation
 ```{r ref.label="mle_graph", eval=FALSE}
 ```
 
-```{r, ref.label="mle_empirical_sd", echo=FALSE}
+### Empirical Standard Deviation
+```{r, ref.label="mle_empirical_sd", eval=FALSE}
 ```
 
-```{r ref.label="mle_ratio_stat", echo=FALSE}
+### Ratio Statistic
+```{r ref.label="mle_ratio_stat", eval=FALSE}
 ```
 
-```{r ref.label="mle_empirical_p", echo=FALSE}
+### Empirical P-Value
+```{r ref.label="mle_empirical_p", eval=FALSE}
 ```
 
-### Bayesian
+## Bayesian
 
+### Priors
 ```{r, ref.label="priors", eval=FALSE}
+```
+
+### P-values
+```{r ref.label="bay_pvals", eval=FALSE}
 ```
 
 
@@ -537,3 +519,59 @@ eprint = {https://www.nejm.org/doi/pdf/10.1056/NEJMoa2034577}
 ## Proofs
 
 If applicable, include detailed mathematical derivations or additional theoretical explanations.
+
+### T $\approx$ Binomial
+Suppose X denotes the number of Covid cases among the $n_1$ patients randomly assigned to the BNT162b2 vaccine group and Y is the number of Covid cases among the $n_2$ patients assigned to the placebo.
+
+```{r ref.label = "table", echo=FALSE}
+```
+
+Let us restrict our attention to just the 170 cases that had Covid. We want ot know the PMF of the random variable T which is defined as the count in the BNT162b2 vaccine cell given this restriction. That is, T is the value of X but with the restriction that X + Y = 170.
+
+The binomial distribution for T can be justified by the following argument. Since the sample sizes - $n_1$ and $n_2$ - in each group are LARGE and the event rates are small, we may assume 
+
+$X \approx Pois(n_1\pi_a) \qquad \text{independently} \qquad Y \approx Pois(n_2\pi_p)$
+
+This is because the Poisson distribution approximates a binomial very well in this setting.
+
+Therefore the PMF of T can be found as follows:
+
+$P(T = t) = P(X = t \mid X + Y = n) \quad t = 0, 1, ..., n$
+
+$= \frac{P(X = t \;\cap\, X + Y = n)}{P(X + Y = n)}$
+
+$= \frac{P(X = t \;\cap\, Y = n - t)}{P(X + Y = n)}$
+
+$= \frac{P(X = t) \;\cdot\; P(Y = n - t)}{P(X + Y = n)} \quad X, Y \text{ ind}$
+
+$= \frac{\frac{(n_1\pi_a)^{n_1} \cdot e^{-(n_1\pi_a)}}{n_1!} \cdot \frac{(n_2\pi_p)^{n_2} \cdot e^{-(n_2\pi_p)}}{n_2!}}{\frac{(n_1\pi_a + n_2\pi_p)^n \cdot e^{-(n_1\pi_a + n_2\pi_p)}}{n!}}$
+
+$= \frac{\frac{(n_1\pi_a)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!}}{\frac{(n_1\pi_a + n_2\pi_p)^n}{n!}}$
+
+$= \frac{n!(n_1\pi_a)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!(n_1\pi_a + n_2\pi_p)^n}$
+
+$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_a)^{n_1}(n_2\pi_p)^{n_2}}{(n_1\pi_a + n_2\pi_p)^n}$
+
+$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + n_2\pi_p)^{n_1}}\frac{(n_2\pi_p)^{n_2}}{(n_1\pi_a + n_2\pi_p)^{n_2}}$
+
+$= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{n - n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{(n - n_1)}}$
+
+$= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{(n - n_1)}}{(n_1\pi_a + (n - n_1)\pi_p)^{(n - n_1)}}$
+
+$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + (n - n_1)\pi_p)})^{n_1} \cdot (\frac{((n - n_1)\pi_p)}{(n_1\pi_a + (n - n_1)\pi_p)})^{n - n_1}$
+
+$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + n\pi_p - n_1\pi_p)})^{n_1} \cdot (\frac{n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+
+$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + n\pi_p - n_1\pi_p)})^{n_1} \cdot (\frac{ n_1\pi_a + n\pi_p - n_1\pi_p-n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+
+$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + n\pi_p - n_1\pi_p)})^{n_1} \cdot (\frac{ n_1\pi_a + n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p} - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+
+$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + n\pi_p - n_1\pi_p)})^{n_1} \cdot (1 - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+
+
+Therefore, we can see that $T \sim Binom(n, \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p}) =  Binom(n, \frac{n_1\pi_a}{n_1\pi_a + n_2\pi_p})$
+
+When X and Y are independent and approximately follow a Poisson distribution (large group size and small event rate)
+
+
+
