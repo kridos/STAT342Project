@@ -548,15 +548,15 @@ $= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + (n - n_1)\p
 
 $= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{(n - n_1)}}{(n_1\pi_a + (n - n_1)\pi_p)^{(n - n_1)}}$
 
-$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + (n - n_1)\pi_p)})^{n_1} \cdot (\frac{((n - n_1)\pi_p)}{(n_1\pi_a + (n - n_1)\pi_p)})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + (n - n_1)\pi_p})^{n_1} \cdot (\frac{((n - n_1)\pi_p)}{(n_1\pi_a + (n - n_1)\pi_p)})^{n - n_1}$
 
-$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + n\pi_p - n_1\pi_p)})^{n_1} \cdot (\frac{n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
 
-$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + n\pi_p - n_1\pi_p)})^{n_1} \cdot (\frac{ n_1\pi_a + n\pi_p - n_1\pi_p-n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{ n_1\pi_a + n\pi_p - n_1\pi_p-n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
 
-$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + n\pi_p - n_1\pi_p)})^{n_1} \cdot (\frac{ n_1\pi_a + n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p} - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n_1\pi_a + n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p} - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
 
-$= \binom{n}{n_1}\cdot(\frac{(n_1\pi_a)}{(n_1\pi_a + n\pi_p - n_1\pi_p)})^{n_1} \cdot (1 - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (1 - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
 
 
 Therefore, we can see that $T \sim Binom(n, \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p}) =  Binom(n, \frac{n_1\pi_a}{n_1\pi_a + n_2\pi_p})$
