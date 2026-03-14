@@ -289,6 +289,8 @@ $$h(\pi|t) = Beta(48.96 + t, 170 - t + 66.55) \quad posterior$$
 
 p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(56.96, 228.55) \approx 0$
 
+
+
 ```{r label="bay_pvals", echo=FALSE, results='hide'}
 # Calculating Bayesian P-values
 
@@ -311,6 +313,95 @@ pess
 neutral
 opt
 most_opt
+```
+
+```{r label="bay_plots", echo=FALSE}
+# Calculating Bayesian P-values
+
+most_pessimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 41.05, shape2 = 37.63),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 41.05 + t, shape2 = n-t + 37.63),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Most Pessimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+pessimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 43.03, shape2 = 43.03),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 43.03 + t, shape2 = n-t + 43.03),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Pessimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+neutral <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 42.2, shape2 = 46.0),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 42.2 + t, shape2 = n-t + 46.0),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Neutral)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+optimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 41.23, shape2 = 49.20),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 41.23 + t, shape2 = n-t + 49.20),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Optimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+more_optimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 48.96, shape2 = 66.55),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 48.96 + t, shape2 = n-t + 66.55),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (More Pessimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+
+article_model <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 0.700102, shape2 = 1),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 0.700102 + t, shape2 = n-t + 1),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (BNT162b2 Study)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+
+
+article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") & 
+  theme(legend.position = "bottom")
+
 ```
 
 The resulting Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
@@ -509,6 +600,10 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 ```{r, ref.label="priors", eval=FALSE}
 ```
 
+### Prior Vs. Posterior Plots
+```{r ref.label="bay_plots", eval=FALSE}
+```
+
 ### P-values
 ```{r ref.label="bay_pvals", eval=FALSE}
 ```
@@ -529,7 +624,7 @@ Let us restrict our attention to just the 170 cases that had Covid. We want ot k
 
 The binomial distribution for T can be justified by the following argument. Since the sample sizes - $n_1$ and $n_2$ - in each group are LARGE and the event rates are small, we may assume 
 
-$X \approx Pois(n_1\pi_a) \qquad \text{independently} \qquad Y \approx Pois(n_2\pi_p)$
+$X \approx Pois(n_1\pi_v) \qquad \text{independently} \qquad Y \approx Pois(n_2\pi_p)$
 
 This is because the Poisson distribution approximates a binomial very well in this setting.
 
@@ -543,32 +638,32 @@ $= \frac{P(X = t \;\cap\, Y = n - t)}{P(X + Y = n)}$
 
 $= \frac{P(X = t) \;\cdot\; P(Y = n - t)}{P(X + Y = n)} \quad X, Y \text{ ind}$
 
-$= \frac{\frac{(n_1\pi_a)^{n_1} \cdot e^{-(n_1\pi_a)}}{n_1!} \cdot \frac{(n_2\pi_p)^{n_2} \cdot e^{-(n_2\pi_p)}}{n_2!}}{\frac{(n_1\pi_a + n_2\pi_p)^n \cdot e^{-(n_1\pi_a + n_2\pi_p)}}{n!}}$
+$= \frac{\frac{(n_1\pi_v)^{n_1} \cdot e^{-(n_1\pi_v)}}{n_1!} \cdot \frac{(n_2\pi_p)^{n_2} \cdot e^{-(n_2\pi_p)}}{n_2!}}{\frac{(n_1\pi_v + n_2\pi_p)^n \cdot e^{-(n_1\pi_v + n_2\pi_p)}}{n!}}$
 
-$= \frac{\frac{(n_1\pi_a)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!}}{\frac{(n_1\pi_a + n_2\pi_p)^n}{n!}}$
+$= \frac{\frac{(n_1\pi_v)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!}}{\frac{(n_1\pi_v + n_2\pi_p)^n}{n!}}$
 
-$= \frac{n!(n_1\pi_a)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!(n_1\pi_a + n_2\pi_p)^n}$
+$= \frac{n!(n_1\pi_v)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!(n_1\pi_v + n_2\pi_p)^n}$
 
-$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_a)^{n_1}(n_2\pi_p)^{n_2}}{(n_1\pi_a + n_2\pi_p)^n}$
+$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_v)^{n_1}(n_2\pi_p)^{n_2}}{(n_1\pi_v + n_2\pi_p)^n}$
 
-$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + n_2\pi_p)^{n_1}}\frac{(n_2\pi_p)^{n_2}}{(n_1\pi_a + n_2\pi_p)^{n_2}}$
+$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_v)^{n_1}}{(n_1\pi_v + n_2\pi_p)^{n_1}}\frac{(n_2\pi_p)^{n_2}}{(n_1\pi_v + n_2\pi_p)^{n_2}}$
 
-$= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{n - n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{(n - n_1)}}$
+$= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_v)^{n_1}}{(n_1\pi_v + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{n - n_1}}{(n_1\pi_v + (n - n_1)\pi_p)^{(n - n_1)}}$
 
-$= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_a)^{n_1}}{(n_1\pi_a + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{(n - n_1)}}{(n_1\pi_a + (n - n_1)\pi_p)^{(n - n_1)}}$
+$= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_v)^{n_1}}{(n_1\pi_v + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{(n - n_1)}}{(n_1\pi_v + (n - n_1)\pi_p)^{(n - n_1)}}$
 
-$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + (n - n_1)\pi_p})^{n_1} \cdot (\frac{((n - n_1)\pi_p)}{(n_1\pi_a + (n - n_1)\pi_p)})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + (n - n_1)\pi_p})^{n_1} \cdot (\frac{((n - n_1)\pi_p)}{(n_1\pi_v + (n - n_1)\pi_p)})^{n - n_1}$
 
-$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n\pi_p - n_1\pi_p}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n - n_1}$
 
-$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{ n_1\pi_a + n\pi_p - n_1\pi_p-n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{ n_1\pi_v + n\pi_p - n_1\pi_p-n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n - n_1}$
 
-$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n_1\pi_a + n\pi_p - n_1\pi_p}{n_1\pi_a + n\pi_p - n_1\pi_p} - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n_1\pi_v + n\pi_p - n_1\pi_p}{n_1\pi_v + n\pi_p - n_1\pi_p} - \frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n - n_1}$
 
-$= \binom{n}{n_1}\cdot(\frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n_1} \cdot (1 - \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p})^{n - n_1}$
+$= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdot (1 - \frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n - n_1}$
 
 
-Therefore, we can see that $T \sim Binom(n, \frac{n_1\pi_a}{n_1\pi_a + n\pi_p - n_1\pi_p}) =  Binom(n, \frac{n_1\pi_a}{n_1\pi_a + n_2\pi_p})$
+Therefore, we can see that $T \sim Binom(n, \frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p}) =  Binom(n, \frac{n_1\pi_v}{n_1\pi_v + n_2\pi_p})$
 
 When X and Y are independent and approximately follow a Poisson distribution (large group size and small event rate)
 
