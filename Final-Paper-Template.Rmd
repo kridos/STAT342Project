@@ -324,7 +324,6 @@ upper
 psi_se 
 ```
 
-$\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
 ```{r}
 loglik.psi<-function(psi,x, n){
   if(psi >= 1) NA
@@ -365,8 +364,14 @@ set.seed(414)
 pi_samples <- rbinom(n = 100000, size = 170, prob =  8/170)
 pi_mle <- pi_samples / 170
 psi_samples <- (1 - 2*pi_mle) / (1-pi_mle)
+mean(psi_samples)
 sd(psi_samples)
 
+lower_boot <- mean(psi_samples) - qnorm(0.975)* sd(psi_samples)
+lower_boot
+
+upper_boot <- mean(psi_samples) + qnorm(0.975)* sd(psi_samples)
+upper_boot
 ```
 
 ### Likelihood Ratio Test Statistic
