@@ -1,5 +1,5 @@
 ---
-title: "BNT162b2 Decieving Public or Saving Lives?"
+title: "BNT162b2 Deceiving Public or Saving Lives?"
 author: 'Krish Doshi, Lauren Yee, Kian Sharifzadeh'
 date: '`r Sys.Date()`'
 output: pdf_document
@@ -47,7 +47,7 @@ Write your abstract here.
 
 Provide an introduction with background information.
 
-On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the SARS-CoV-2 virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore the BNT162b2 vaccine data further, we conduct analyses with Frequentist and Bayesian methods for inference.
+On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide and urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore the BNT162b2 vaccine findings further, we conduct analyses with Frequentist and Bayesian methods for inference.
 
 https://www.nejm.org/doi/full/10.1056/nejmoa2034577
 https://www.cdc.gov/museum/timeline/covid19.html
@@ -58,8 +58,6 @@ https://pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governm
 ```
 
 ## Visualization
-
-
 
 ```{r table}
 table_test <- extended_df %>% 
@@ -76,11 +74,7 @@ ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
 
 ```
 
-
-
 # Statistical Methods
-
-
 
 ## Model
 
@@ -109,9 +103,7 @@ Placebo estimator: 162 / 17511
 
 Total: 170 / 34922
 
-Describe the statistical model used.
-
-Let $T \sim Binom(170, \pi)$, where $\pi$ is equivalent to P(Vaccine|Infection). T denotes the number of COVID cases in the vaccine group out of all the sample cases. 170 represents the total number of COVID cases in the sample. Since $n_1$ is approximately equal to $n_2$, we can rewrite P(Vaccine|Infection) as $\pi = \frac{\pi_{v}}{\pi_{v} + \pi_{p}}$. Our parameter of interest is $\psi$, which is equal to $1 -\frac{\pi_v}{\pi_p} = \frac{\pi_p - \pi_v}{\pi_p}$. Using our value of $\pi$, we can rewrite $\psi$ as $\frac{1-2\pi}{1-\pi}$.
+With the statistical model, we let $T \sim Binom(170, \pi)$, where $\pi$ is equivalent to P(Vaccine|Infection). T denotes the number of COVID cases in the vaccine group out of all the sample cases. 170 represents the total number of COVID cases in the sample. Since $n_1$ is approximately equal to $n_2$, we can rewrite P(Vaccine|Infection) as $\pi = \frac{\pi_{v}}{\pi_{v} + \pi_{p}}$. Our parameter of interest is $\psi$, which is equal to $1 -\frac{\pi_v}{\pi_p} = \frac{\pi_p - \pi_v}{\pi_p}$. Using our value of $\pi$, we can rewrite $\psi$ as $\frac{1-2\pi}{1-\pi}$.
 
 Proof: 
 
@@ -123,13 +115,9 @@ $\frac{\pi_p - \pi_v}{\pi_p} = \psi$
 
 Let $t$ be the number of COVID infections from the vaccine group. We observe $t = 8$. We want to test: $H_0: \psi = 0.3$, $H_1: \psi \ne 0.3$.
 
-
-
 ## Likelihood Inference
 
-Detail the likelihood approach.
-
-First, we need to find our likelihood function $L^{\ast}(\psi)$. Using our parameterization $\frac{1-2\pi}{1-\pi} = \psi$:
+First, we find our likelihood function $L^{\ast}(\psi)$. Using our parameterization $\frac{1-2\pi}{1-\pi} = \psi$:
 
 $1-2\pi = \psi(1-\pi)$
 
@@ -165,7 +153,7 @@ $n- 2t = \psi(n - t)$
 
 Therefore, $\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$, which can also be rewritten as $\frac{1 - 2\hat{\pi}^{mle}}{1 - \hat{\pi}^{mle}}$.
 
-To see if $\hat{\psi}^{mle}$, we do the 2nd derivative test:
+To see if $\hat{\psi}^{mle}$, we perform the 2nd derivative test:
 
 $\frac{d^2}{d \psi^2}\ell(\psi) = \frac{t}{(1-\psi)^2} -\frac{n}{(2-\psi)^2}$
 
@@ -173,11 +161,9 @@ Depending on the values of $n$ and $t$, our estimate will not always be consider
 
 ## Bayesian Inference
 
-Detail the Bayesian approach.
+In the paper, the authors mention that they used a beta binomial model with the transformation $$\pi = \frac{\pi_v}{\pi_v + \pi_p}$$ where $\pi_v$ and $\pi_p$ are the probabilities of an infection in the vaccine and placebo groups respectively. Here, the binomial $\pi$ was modeled with a beta prior, Beta(0.700102, 1), and the parameter of interest was $\psi = \frac{1 - 2\pi}{1 - \pi}$. It was estimated to be 95% with the 95% Bayesian credible interval reported as [90.3%, 97.6%] and the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999.
 
-In the paper, the authors mention that they used a beta binomial model with the transformation $$\pi = \frac{\pi_v}{\pi_v + \pi_p}$$ where $\pi_v$ and $\pi_p$ are the probabilities of an infection in the vaccine and placebo groups respectively. Here, the binomial $\pi$ was modeled with a minimally informative beta prior, Beta(0.700102, 1), and the parameter of interest is $\psi = \frac{1 - 2\pi}{1 - \pi}$. It was estimated to be 95% with the 95% Bayesian credible interval reported as [90.3%, 97.6%] and the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999.
-
-We use two apriori beliefs about $\psi$ in 5 different cases.
+While the original paper used a minimally informative Beta(0.700102, 1) prior, we further investigate the robustness of this conclusion by utilizing several alternative prior beliefs based on two apriori about $\psi$.
 
 $$P(\psi \geq 0.3) = P\left(\frac{1 - 2\pi}{1 - \pi} \geq 0.3\right)$$
 $$= P(1 - 2\pi \geq 0.3(1 - \pi))$$
@@ -227,7 +213,7 @@ beta.select(quantile1 = list(p = 0.2, x = 7/17),
 beta.select(quantile1 = list(p = 0.4, x = 7/17),
             quantile2 = list(p = 0.95, x = 0.5))
 ```
-We choose these apriori beliefs to analyze the data and sensitivity of the prior. In other words, these priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect.
+We choose these apriori beliefs to analyze the sensitivity of the prior. More specifically, these five priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect.
 
 Next, we find the posterior distributions and Bayesian p-values for the five priors with data model $f(T|\pi) \sim Binom(170, \pi)$. 
 
@@ -298,7 +284,7 @@ opt
 most_opt
 ```
 
-For all five priors, the resulting Bayesian P-values are essentially 0. This indicates extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+The resulting Bayesian P-values are essentially 0. This indicates extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 # Results
 
@@ -336,7 +322,6 @@ upper <- psi_mle + qnorm(0.975)*psi_se
 lower
 upper
 psi_se 
-
 ```
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{(\frac{1}{2-\psi})}$
