@@ -87,17 +87,6 @@ $\frac{\pi_p - \pi_v}{\pi_p} = \psi$
 
 \end{center}
 
-```{r label = "efficacy", echo=FALSE, results = FALSE}
-pfizer_estimator <- 8/17411
-placebo_estimator <- 162 / 17511
-pfizer_estimator
-placebo_estimator
-relative_risk <- pfizer_estimator / placebo_estimator
-relative_risk
-psi <- 1 - relative_risk
-psi
-```
-
 Let $t$ be the number of COVID infections from the vaccine group. We observe $t = 8$ and want to test: $H_0: \psi = 0.3$, $H_1: \psi > 0.3$.
 
 ## Likelihood Inference
@@ -309,12 +298,6 @@ pess <- pbeta(q = x, shape1 = 43.03 + t, shape2 = n - t + 43.03, lower.tail = F)
 neutral <- pbeta(q = x, shape1 = 42.4 + t, shape2 = n - t + 46, lower.tail = F)
 opt <- pbeta(q = x, shape1 = 41.23 + t, shape2 = n - t + 49.2, lower.tail = F)
 most_opt <- pbeta(q = x, shape1 = 48.96 + t, shape2 = n - t + 66.55, lower.tail = F)
-
-most_pess
-pess
-neutral
-opt
-most_opt
 ```
 
 # Results
@@ -523,7 +506,6 @@ xlim = c(0,1)) +
        x = expression(pi),
        y = "PDF")
 
-
 article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") &
   theme(legend.position = "bottom")
 ```
@@ -548,28 +530,22 @@ convert_to_psi_reverse <- function(x){
   conversion <- convert_to_psi(x)
   c(conversion[2], conversion[1])
 }
-
-# Most pessimistic
 ci_mp_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 41.05 + t, n - t + 37.63))
 samples_mp <- rbeta(B, 41.05 + t, n - t + 37.63)
 ci_mp_boot <- quantile(convert_to_psi(samples_mp), c(0.025,0.975))
 
-# Pessimistic
 ci_p_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 43.03 + t, n - t + 43.03))
 samples_p <- rbeta(B, 43.03 + t, n - t + 43.03)
 ci_p_boot <- quantile(convert_to_psi(samples_p), c(0.025,0.975))
 
-# Neutral
 ci_n_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 42.2 + t, n - t + 46.0))
 samples_n <- rbeta(B, 42.2 + t, n - t + 46.0)
 ci_n_boot <- quantile(convert_to_psi(samples_n), c(0.025,0.975))
 
-# Optimistic
 ci_o_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 41.23 + t, n - t + 49.20))
 samples_o <- rbeta(B, 41.23 + t, n - t + 49.20)
 ci_o_boot <- quantile(convert_to_psi(samples_o), c(0.025,0.975))
 
-# More optimistic
 ci_mo_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 48.96 + t, n - t + 66.55))
 samples_mo <- rbeta(B, 48.96 + t, n - t + 66.55)
 ci_mo_boot <- quantile(convert_to_psi(samples_mo), c(0.025,0.975))
@@ -626,7 +602,9 @@ Notably, the priors constructed in this analysis are stronger than the minimally
 
 David J. Sencer CDC Museum. “CDC Museum COVID-19 Timeline.” Centers for Disease Control and Prevention, CDC, 8 July 2024, www.cdc.gov/museum/timeline/covid19.html. Accessed 14 Mar. 2026.
 
-Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world., https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
+Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:
+~:text=Abstract,the%20governments%20across%20the%20world., 
+https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
 
 Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19 Vaccine.” The New England Journal of Medicine, vol. 383, no. 27, 10 Dec. 2020, www.nejm.org/doi/full/10.1056/NEJMoa2034577, https://doi.org/10.1056/NEJMoa2034577. Accessed 14 Mar. 2026.
 
@@ -641,11 +619,6 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 ```{r ref.label = "barplot", eval=FALSE}
 ```
 
-
-## Observed Efficacy
-
-```{r ref.label = "efficacy", eval=FALSE}
-```
 
 ## MLE
 ### Confidence Interval
