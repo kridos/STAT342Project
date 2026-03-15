@@ -665,13 +665,12 @@ The MLE estimate of efficacy resulted in about a 95% reduction in infection risk
 
 Notably, the priors constructed in this analysis are stronger than the minimally informative prior used in the original study. Despite these stronger assumptions, the estimated efficacy appears to be heavily driven by the observed data. This robustness is considered a strength, especially in vaccine studies, where findings must remain reliable even under differing prior assumptions. A potential limitation is the fact that the model relies on independence and large-sample approximations, which may not generalize well to smaller studies or populations outside the original clinical trials.
 
-# Bibliography
+# References
 
 David J. Sencer CDC Museum. “CDC Museum COVID-19 Timeline.” Centers for Disease Control and Prevention, CDC, 8 July 2024, www.cdc.gov/museum/timeline/covid19.html. Accessed 14 Mar. 2026.
 
 Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:
-~:text=Abstract,the%20governments%20across%20the%20world., 
-https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
+~:text=Abstract,the%20governments%20across%20the%20world., https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
 
 Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19 Vaccine.” The New England Journal of Medicine, vol. 383, no. 27, 10 Dec. 2020, www.nejm.org/doi/full/10.1056/NEJMoa2034577, https://doi.org/10.1056/NEJMoa2034577. Accessed 14 Mar. 2026.
 
