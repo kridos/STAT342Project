@@ -409,7 +409,7 @@ Bootstrap & 0.9503 & 0.0181 & 0.9149 & 0.9857 \\ \hline
 \end{tabular}
 \end{table}
 
-Both the numeric and bootstrapped confidence intervals do not contain values that are less than or equal to 0.3. With this reasoning, we have sufficient evidence to reject our null hypothesis. Therefore, using the frequentist approach, we can say that we have a sufficient amount of evidence support the notion that the vaccine efficacy is greater than 0.3.
+Both the numeric and bootstrapped confidence intervals do not contain values that are less than or equal to 0.3. Therefore, using the frequentist approach, we have sufficient evidence to reject our null hypothesis.
 
 ### Likelihood Ratio Test Statistic and P-values
 
@@ -664,7 +664,7 @@ Most Optimistic &  $9.61\cdot 10^{-15}$ \\ \hline
 \end{tabular}
 \end{table}
 
-The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This observation is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence to reject our null hypothesis. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 # Discussion / Conclusion
 
@@ -676,7 +676,9 @@ Notably, the priors constructed in this analysis are stronger than the minimally
 
 David J. Sencer CDC Museum. “CDC Museum COVID-19 Timeline.” Centers for Disease Control and Prevention, CDC, 8 July 2024, www.cdc.gov/museum/timeline/covid19.html. Accessed 14 Mar. 2026.
 
-Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world., https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
+Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:
+~:text=Abstract,the%20governments%20across%20the%20world., 
+https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
 
 Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19 Vaccine.” The New England Journal of Medicine, vol. 383, no. 27, 10 Dec. 2020, www.nejm.org/doi/full/10.1056/NEJMoa2034577, https://doi.org/10.1056/NEJMoa2034577. Accessed 14 Mar. 2026.
 
@@ -732,6 +734,10 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 
 ### Prior Vs. Posterior Plots
 ```{r ref.label="bay_plots", eval=FALSE}
+```
+
+### Confidence Interval
+```{r ref.label='bays_ci', eval=FALSE}
 ```
 
 ### P-values
