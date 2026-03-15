@@ -168,7 +168,7 @@ We can calculate the confidence interval for $\psi_0$ in two different ways.
 
 #### Large Sample Confidence Interval
 
-The first method is to calculate the large sample confidence interval. First, we establish that for large $n$ values under certain regularity conditions, $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\hat{\psi}^{mle})}})$, where $I(\psi_0) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right] \vert_{\psi = \psi_0}$. This is based on Theorem 12.1. Some of the regularity conditions include that the possible values for the observed value does not depend on the parameter and the true value of the parameter does not fall on a boundary
+The first method is to calculate the large sample confidence interval. First, we establish that for large $n$ values under certain regularity conditions, $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\hat{\psi}^{mle})}})$, where $I(\psi_0) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right] \vert_{\psi = \psi_0}$. This is based on Theorem 12.1. Some of the regularity conditions include that the possible values for the observed value does not depend on the parameter and the true value of the parameter does not fall on a boundary.
 
 ```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
 loglik.psi<-function(psi,x, n){
