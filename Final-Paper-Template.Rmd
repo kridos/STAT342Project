@@ -330,11 +330,8 @@ opt
 most_opt
 ```
 
-<<<<<<< HEAD
 The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This observation is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
-=======
->>>>>>> 7aea1ed8ba70aedf0a24746cc904d2193eaed9b2
 ```{r label="bay_plots", echo=FALSE}
 # Calculating Bayesian P-values
 
@@ -424,11 +421,6 @@ article_model + most_pessimistic + pessimistic + neutral + optimistic + more_opt
 
 ```
 
-<<<<<<< HEAD
-=======
-The resulting Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
-
->>>>>>> 7aea1ed8ba70aedf0a24746cc904d2193eaed9b2
 # Results
 
 ## Frequentist Approach
@@ -584,11 +576,7 @@ labs(title = "Counts of W from Bootstrapping",
 
 The MLE estimate of efficacy resulted in about a 95% reduction in infection risk for the vaccinated group compared to the placebo group. Accordingly, the 95% large-sample confidence interval for the efficacy rate using the MLE emerged to be [91.56%, 98.57%], which lies in approximately the same region as the Bayesian credible interval reported in the original paper, [90.3%, 97.6%]. Both the likelihood ratio test and the Bayesian hypothesis tests also produced extremely small p-values, providing overwhelming evidence that vaccine efficacy exceeds the FDA threshold of 30%. Furthermore, the Bayesian results remained consistent across a range of pessimistic and optimistic prior beliefs, supporting that the conclusion is robust to the choice of prior. 
 
-<<<<<<< HEAD
-Notably, the priors constructed in this analysis are stronger than the minimally informative prior used in the original study. Despite these stronger assumptions, the estimated efficacy appears to be heavily driven by the observed data. This robustness is considered a strength, especially in vaccine studies, where findings must remain reliable even under differing prior assumptions. A potential limitation is the fact that the model relies on independence and large-sample approximations, which may not generalize well to smaller studies or populations outside the original clinical trials.  
-=======
 Notably, the priors constructed in this analysis are stronger than the minimally informative prior used in the original study. Despite these stronger assumptions, the estimated efficacy appears to be heavily driven by the observed data. This robustness is considered a strength, especially in vaccine studies, where findings must remain reliable even under differing prior assumptions. A potential limitation is the fact that the model relies on independence and large-sample approximations, which may not generalize well to smaller studies or populations outside the original clinical trials.
->>>>>>> 7aea1ed8ba70aedf0a24746cc904d2193eaed9b2
 
 # Bibliography
 
