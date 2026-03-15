@@ -406,8 +406,8 @@ ggplot(data = NULL,
 mapping = aes(x = values))+
 geom_histogram(bins = 40) +
 geom_vline(xintercept = W_stat, color = "red") +
-labs(title = "Counts of W from Bootstrapping",
-     x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
+labs(title = "Counts of W",
+     x = "Likelihood Ratio Test Statistic Value", y = "Count")
 ```
 
 We represent our empirical p-value with a histogram after bootstrapping 10000 values of W and comparing those values to our observed ratio test statistic ($W \approx 121.601$), resulting p-value $\approx$ 0.
