@@ -697,23 +697,16 @@ $= \frac{P(X = t) \;\cdot\; P(Y = n - t)}{P(X + Y = n)} \quad X, Y \text{ ind}$
 
 $= \frac{\frac{(n_1\pi_v)^{n_1} \cdot e^{-(n_1\pi_v)}}{n_1!} \cdot \frac{(n_2\pi_p)^{n_2} \cdot e^{-(n_2\pi_p)}}{n_2!}}{\frac{(n_1\pi_v + n_2\pi_p)^n \cdot e^{-(n_1\pi_v + n_2\pi_p)}}{n!}}$
 
-$= \frac{\frac{(n_1\pi_v)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!}}{\frac{(n_1\pi_v + n_2\pi_p)^n}{n!}}$
-
 $= \frac{n!(n_1\pi_v)^{n_1}(n_2\pi_p)^{n_2}}{n_1!n_2!(n_1\pi_v + n_2\pi_p)^n}$
 
-$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_v)^{n_1}(n_2\pi_p)^{n_2}}{(n_1\pi_v + n_2\pi_p)^n}$
 
-$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_v)^{n_1}}{(n_1\pi_v + n_2\pi_p)^{n_1}}\frac{(n_2\pi_p)^{n_2}}{(n_1\pi_v + n_2\pi_p)^{n_2}}$
+$= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_v)^{n_1}}{(n_1\pi_v + n_2\pi_p)^{n_1}}\cdot\frac{(n_2\pi_p)^{n_2}}{(n_1\pi_v + n_2\pi_p)^{n_2}}$
 
 $= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_v)^{n_1}}{(n_1\pi_v + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{n - n_1}}{(n_1\pi_v + (n - n_1)\pi_p)^{(n - n_1)}}$
-
-$= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + (n - n_1)\pi_p})^{n_1} \cdot (\frac{((n - n_1)\pi_p)}{(n_1\pi_v + (n - n_1)\pi_p)})^{n - n_1}$
 
 $= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n\pi_p - n_1\pi_p}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n - n_1}$
 
 $= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{ n_1\pi_v + n\pi_p - n_1\pi_p-n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n - n_1}$
-
-$= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdot (\frac{n_1\pi_v + n\pi_p - n_1\pi_p}{n_1\pi_v + n\pi_p - n_1\pi_p} - \frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n - n_1}$
 
 $= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdot (1 - \frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n - n_1}$
 
