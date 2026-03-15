@@ -78,7 +78,14 @@ In the paper, the authors mention that they used a beta binomial model with the 
 
 Deriving from the original report, we let $T \sim Binom(170, \pi)$, where $\pi$ is equivalent to P(Vaccine|Infection). T denotes the number of COVID cases in the vaccine group out of all the sample cases. 170 represents the total number of COVID cases in the sample. Since $n_1$ is approximately equal to $n_2$, we can rewrite P(Vaccine|Infection) as $\pi = \frac{\pi_{v}}{\pi_{v} + \pi_{p}}$. Our parameter of interest is $\psi$, which is equal to $1 -\frac{\pi_v}{\pi_p} = \frac{\pi_p - \pi_v}{\pi_p}$. Using our value of $\pi$, we can rewrite $\psi$ as $\frac{1-2\pi}{1-\pi}$.
 
-## Make sure to prove why T is binomial in Appendix (see last slides for example slides)
+Proof: 
+
+$\frac{1-2\pi}{1-\pi} = \frac{1 - 2(\frac{\pi_{v}}{\pi_{v} + \pi_{p}})}{1- \frac{\pi_{v}}{\pi_{v} + \pi_{p}}}$
+
+$\frac{\pi_v + \pi_p - 2\pi_v}{\pi_v + \pi_p - \pi_v}$
+
+$\frac{\pi_p - \pi_v}{\pi_p} = \psi$
+
 
 ```{r label = "efficacy", echo=FALSE, results = FALSE}
 pfizer_estimator <- 8/17411
@@ -95,21 +102,7 @@ psi
 
 ```
 
-From these calculations, we find that $\pi_{v} = \frac{8}{17411}$ and $\pi_{p} = \frac{162}{17511}$. In other words, $\pi_{v} \approx 0.00046$ and $\pi_{p} \approx 0.00925$.
-
-Pfizer vaccine estimator: 8 / 17411
-
-Placebo estimator: 162 / 17511
-
-Total: 170 / 34922
-
-Proof: 
-
-$\frac{1-2\pi}{1-\pi} = \frac{1 - 2(\frac{\pi_{v}}{\pi_{v} + \pi_{p}})}{1- \frac{\pi_{v}}{\pi_{v} + \pi_{p}}}$
-
-$\frac{\pi_v + \pi_p - 2\pi_v}{\pi_v + \pi_p - \pi_v}$
-
-$\frac{\pi_p - \pi_v}{\pi_p} = \psi$
+We can find that $\pi_{v} = \frac{8}{17411}$ and $\pi_{p} = \frac{162}{17511}$. In other words, $\pi_{v} \approx 0.00046$ and $\pi_{p} \approx 0.00925$.
 
 Let $t$ be the number of COVID infections from the vaccine group. We observe $t = 8$ and want to test: $H_0: \psi = 0.3$, $H_1: \psi > 0.3$.
 
@@ -129,6 +122,8 @@ $1-2\pi = \psi-\psi\pi$
 $1-\psi = \pi(2 -\psi)$
 
 $\pi = \frac{1 -\psi}{2 -\psi}$
+
+
 
 With $\pi$ in terms of $\psi$, we get the likelihood function: $L^{\ast}(\psi) = \binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t} \times (1-\frac{1 -\psi}{2 -\psi})^{n-t}$
 
