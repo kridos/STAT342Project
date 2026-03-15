@@ -1,6 +1,6 @@
 ---
-title: "BNT162b2 Deceiving Public or Saving Lives?"
-author: 'Krish Doshi, Lauren Yee, Kian Sharifzadeh'
+title: "BNT162b2 Vaccine Efficacy: Frequentist vs Bayesian Approaches"
+author: 'Lauren Yee, Kian Sharifzadeh, Krish Doshi'
 date: '`r Sys.Date()`'
 output: pdf_document
 urlcolor: blue
@@ -111,7 +111,7 @@ $\frac{\pi_v + \pi_p - 2\pi_v}{\pi_v + \pi_p - \pi_v}$
 
 $\frac{\pi_p - \pi_v}{\pi_p} = \psi$
 
-Let $t$ be the number of COVID infections from the vaccine group. We observe $t = 8$ and want to test: $H_0: \psi = 0.3$, $H_1: \psi \ne 0.3$.
+Let $t$ be the number of COVID infections from the vaccine group. We observe $t = 8$ and want to test: $H_0: \psi = 0.3$, $H_1: \psi > 0.3$.
 
 ## Likelihood Inference
 
@@ -481,6 +481,8 @@ geom_vline(xintercept = W_stat, color = "red") +
 labs(title = "Counts of W from Bootstrapping",
      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
 ```
+
+The histogram is a graphical representation of the empirical p-value. This is done by generating a plethora of sample likelihood ratio test statistic values.  The red line indicates our observed likelihood ratio test statistic of $W \approx 121.601$. Based on the output, we can see that our observed $W$ value is much greater than the sampled values through bootstrapped, which leads to the empirical p-value of 0.
 
 ## Bayesian Approach
 
