@@ -37,7 +37,7 @@ extended_df <- data.frame("Treatment"=c(rep("BNT162b2", 17411), rep("Placebo", 1
 
 # Abstract
 
-Write your abstract here.
+Following the declaration of the COVID-19 pandemic, the U.S. Food and Drug Administration (FDA) granted Emergency Use Authorization (EUA) for Pfizer and BioNTech’s two-dose COVID-19 vaccine. This report evaluates the efficacy of the Pfizer-BioNTech vaccine (BNT162b2) using both Frequentist and Bayesian inference frameworks by computing the maximum likelihood estimate (MLE) and exploring various priors to obtain posterior distributions and Bayesian p-values. Clinical trial data with 170 confirmed infections included 8 in the vaccinated group and 162 in the placebo group. The MLE for vaccine efficacy was approximately 95%, and the 95% large sample confidence interval was [91.56%, 98.57%]. Both likelihood ratio and Bayesian hypothesis tests produced p-values approximately equal to zero. These results provide strong evidence that the vaccine efficacy exceeds the FDA threshold of 30% and remain consistent across a range of prior assumptions.
 
 # Keywords
 
@@ -47,7 +47,7 @@ Write your abstract here.
 
 # Introduction / Background
 
-On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide and urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore the BNT162b2 vaccine findings further, we conduct analyses with Frequentist and Bayesian methods for inference.
+On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide and urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the virus, including the Pfizer-BioNTech vaccine (BNT162b2) examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". Thus, we investigate whether the vaccine efficacy exceeds the FDA minimum threshold of 30%. This leads to the hypotheses $H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$, where $\psi$ denotes the vaccine efficacy.
 
 ```{r label="table", echo=FALSE, fig.height = 4, fig.width = 4, fig.align="center"}
 extended_df %>% 
@@ -263,9 +263,7 @@ To determine the parameters of the Beta prior distributions that satisfy the spe
 
 Next, we find the posterior distributions and Bayesian p-values for the five priors with data model $f(T|\pi) \sim Binom(170, \pi)$. 
 
-For all five prior, the hypotheses are:
-
-$H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$ where $\psi$ denotes the vaccine efficacy
+For all five prior, the hypotheses are $H_0: \psi = 0.3$ vs $H_1: \psi > 0.3$, where $\psi$ denotes the vaccine efficacy.
 
 Since $\psi \geq 0.3 \Leftrightarrow \pi \leq \frac{7}{17}$, we get that $P(\psi  \leq 0.3|t) = P\left(\pi \geq \frac{7}{17}|t\right)$.
 
@@ -331,6 +329,8 @@ neutral
 opt
 most_opt
 ```
+
+The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This observation is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 ```{r label="bay_plots", echo=FALSE}
 # Calculating Bayesian P-values
@@ -420,8 +420,6 @@ article_model + most_pessimistic + pessimistic + neutral + optimistic + more_opt
   theme(legend.position = "bottom")
 
 ```
-
-The resulting Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 # Results
 
