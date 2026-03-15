@@ -418,8 +418,8 @@ xlim = c(0,1)) +
        y = "PDF")
 
 
-article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") &
-  theme(legend.position = "bottom")
+# article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") &
+#   theme(legend.position = "bottom")
 
 ```
 
@@ -446,6 +446,7 @@ upper <- psi_mle + qnorm(0.975)*psi_se
 lower
 upper
 psi_se 
+psi_mle
 ```
 
 ```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
@@ -501,6 +502,15 @@ upper_boot <- mean(psi_samples) + qnorm(0.975)* sd(psi_samples)
 upper_boot
 ```
 
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccc} 
+Confidence Interval & MLE & SE & Lower & Upper \\ \hline
+Large Sample & 0.9506 & 0.0179 & 0.9156 & 0.9857 \\
+Bootstrap & 0.9503 & 0.0181 & 0.9149 & 0.9857 \\ \hline
+\end{tabular}
+\end{table}
+
 ### Likelihood Ratio Test Statistic
 
 Given that $\hat{\psi}^{mle} \approx 0.9506$ and $H_0: \psi = 0.3$, we are solving for $2\left[\ell{(0.9506)} - \ell{(0.3)}\right]$. Using that $t = 8$ and $n = 160$, we can calculation $\ell(0.9506)$ and $\ell(0.3)$:
@@ -527,6 +537,16 @@ log_null
 W_stat <- 2*(log_mle - log_null)
 W_stat
 ```
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccc} 
+Type & P-value \\ \hline
+Chi Square &  $2.82\cdot 10^{-28}$ \\
+Empirical & 0 \\ \hline
+\end{tabular}
+\end{table}
 
 ```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, fig.height=4, fig.width=4}
 pchisq(W_stat, 1, lower.tail = F)
