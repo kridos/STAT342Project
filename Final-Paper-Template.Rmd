@@ -436,7 +436,8 @@ labs(title = "Counts of W from Bootstrapping",
      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
 ```
 
-The histogram is a graphical representation of the empirical p-value. This is done by generating a plethora of sample likelihood ratio test statistic values. The red line indicates our observed likelihood ratio test statistic of $W \approx 121.601$. Based on the output, we can see that our observed $W$ value is much greater than the sampled values through bootstrapped, which leads to the empirical p-value of 0.
+We represent our empirical p-value with a histogram after bootstrapping 10000 values of W and comparing those values to our observed ratio test statistic ($W \approx 121.601$), resulting p-value $\approx$ 0.
+<!-- The histogram is a graphical representation of the empirical p-value. This is done by generating a plethora of sample likelihood ratio test statistic values. The red line indicates our observed likelihood ratio test statistic of $W \approx 121.601$. Based on the output, we can see that our observed $W$ value is much greater than the sampled values through bootstrapped, which leads to the empirical p-value of 0. -->
 
 ## Bayesian Approach
 
@@ -577,6 +578,7 @@ ci_mo_boot <- quantile(convert_to_psi(samples_mo), c(0.025,0.975))
 
 \begin{table}[H]
 \centering
+\caption{Bayesian Confidence Intervals}
 \begin{tabular}{ccc}
 Prior & Lower & Upper \\ \hline
 Most Pessimistic (Equal Tail) & `r round(ci_mp_equal[1],4)` & `r round(ci_mp_equal[2],4)` \\
@@ -614,7 +616,7 @@ Most Optimistic &  $9.61\cdot 10^{-15}$ \\ \hline
 \end{tabular}
 \end{table}
 
-The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence to reject our null hypothesis. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence to reject our null hypothesis. The conclusion is therefore robust to the choice of prior.
 
 # Discussion / Conclusion
 
