@@ -621,6 +621,7 @@ ci_mo_boot <- quantile(convert_to_psi(samples_mo), c(0.025,0.975))
 
 \begin{table}[H]
 \centering
+\caption{Bayesian Confidence Intervals}
 \begin{tabular}{ccc}
 Prior & Lower & Upper \\ \hline
 Most Pessimistic (Equal Tail) & `r round(ci_mp_equal[1],4)` & `r round(ci_mp_equal[2],4)` \\
@@ -658,7 +659,7 @@ Most Optimistic &  $9.61\cdot 10^{-15}$ \\ \hline
 \end{tabular}
 \end{table}
 
-The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence to reject our null hypothesis. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence to reject our null hypothesis. The conclusion is therefore robust to the choice of prior.
 
 # Discussion / Conclusion
 
