@@ -668,10 +668,6 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 
 
 ## Proofs
-
-If applicable, include detailed mathematical derivations or additional theoretical explanations.
-
-### T $\approx$ Binomial
 Suppose X denotes the number of Covid cases among the $n_1$ patients randomly assigned to the BNT162b2 vaccine group and Y is the number of COVID-19 cases among the $n_2$ patients assigned to the placebo.
 
 ```{r ref.label = "table", echo=FALSE}
