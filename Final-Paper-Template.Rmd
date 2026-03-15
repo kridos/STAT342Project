@@ -760,12 +760,12 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 If applicable, include detailed mathematical derivations or additional theoretical explanations.
 
 ### T $\approx$ Binomial
-Suppose X denotes the number of Covid cases among the $n_1$ patients randomly assigned to the BNT162b2 vaccine group and Y is the number of Covid cases among the $n_2$ patients assigned to the placebo.
+Suppose X denotes the number of Covid cases among the $n_1$ patients randomly assigned to the BNT162b2 vaccine group and Y is the number of COVID-19 cases among the $n_2$ patients assigned to the placebo.
 
 ```{r ref.label = "table", echo=FALSE}
 ```
 
-Let us restrict our attention to just the 170 cases that had Covid. We want ot know the PMF of the random variable T which is defined as the count in the BNT162b2 vaccine cell given this restriction. That is, T is the value of X but with the restriction that X + Y = 170.
+Let us restrict our attention to just the 170 cases that had COVID-19. We want to know the PMF of the random variable T which is defined as the count in the BNT162b2 vaccine cell given this restriction. That is, T is the value of X but with the restriction that X + Y = 170.
 
 The binomial distribution for T can be justified by the following argument. Since the sample sizes - $n_1$ and $n_2$ - in each group are LARGE and the event rates are small, we may assume 
 
