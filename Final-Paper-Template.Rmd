@@ -118,7 +118,7 @@ Let $t$ be the number of COVID infections from the vaccine group. We observe $t 
 
 ### Maximum Likelihood Estimator
 
-One approach to finding a similar confidence interval to what was reported in the study is with likelihood inference, which follows the Frequentist framework. Even though the original study applied a Bayesian framework, we considered a likelihood-based approach to determine whether it would lead to similar conclusions about the data.
+One approach to finding a similar confidence interval to what was reported in the study is with likelihood inference, which follows a Frequentist framework. Even though the original study applied a Bayesian framework, we considered a likelihood-based approach to determine whether it would lead to similar conclusions about the data.
 
 The first method considered in likelihood inference is maximum likelihood, which identifies the values of the model parameters that makes our data most likely. For maximum likelihood, we need to find a likelihood function for $\psi$ and the maximum likelihood estimator of $\psi_0$. To find our likelihood function $L^{\ast}(\psi)$, we use Theorem 11.1. This states how the likelihood function for a discrete random variable $X$, parameterized by $\theta$, is $L(\theta) = P_{\theta}(X = x_{obs})$, where $x_obs$ is our observed data. Since $T$ follows the binomial distribution, the likelihood function in terms of $\pi$ is $L^{\ast}(\pi)  = \binom{n}{t} (\pi)^{t} \times (1-\pi)^{n-t}$. In this case, $n$ represents the number of people included in the sample and $t$ is the number of people infected with COVID. To get $L^{\ast}(\psi)$, we must find $\pi$ in terms of $\psi$ and replace the respective $\pi$ values. Starting from the parameterization $\frac{1-2\pi}{1-\pi} = \psi$:
 
@@ -389,9 +389,6 @@ lower
 upper
 psi_se 
 ```
-
-
-
 
 ```{r label="mle_empirical_sd", echo=FALSE, results = FALSE}
 set.seed(414)
