@@ -473,7 +473,8 @@ labs(title = "Counts of W from Bootstrapping",
      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
 ```
 
-The histogram is a graphical representation of the empirical p-value. This is done by generating a plethora of sample likelihood ratio test statistic values. The red line indicates our observed likelihood ratio test statistic of $W \approx 121.601$. Based on the output, we can see that our observed $W$ value is much greater than the sampled values through bootstrapped, which leads to the empirical p-value of 0.
+We represent our empirical p-value with a histogram after bootstrapping 10000 values of W and comparing those values to our observed ratio test statistic ($W \approx 121.601$), resulting p-value $\approx$ 0.
+<!-- The histogram is a graphical representation of the empirical p-value. This is done by generating a plethora of sample likelihood ratio test statistic values. The red line indicates our observed likelihood ratio test statistic of $W \approx 121.601$. Based on the output, we can see that our observed $W$ value is much greater than the sampled values through bootstrapped, which leads to the empirical p-value of 0. -->
 
 ## Bayesian Approach
 
