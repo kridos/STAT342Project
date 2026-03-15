@@ -155,7 +155,7 @@ To check if $\hat{\psi}^{mle}$ is truly a maximum, we perform the 2nd derivative
 
 $\frac{d^2}{d \psi^2}\ell(\psi) = \frac{t}{(1-\psi)^2} -\frac{n}{(2-\psi)^2}$
 
-Depending on the values of $n$ and $t$, our estimate will not always be considered a global maximum. In our case, $\frac{d^2}{d \psi^2}\ell(\psi)$ is negative, which means $\hat{\psi}^{mle}$ is a \fbox{Maximum}.
+Depending on the values of $n$ and $t$, our estimate will not always be considered a global maximum. In our case, $\frac{d^2}{d \psi^2}\ell(\psi)$ is negative, which means $\hat{\psi}^{mle}$ is a \fbox{Local Maximum}.
 
 ### Confidence Interval
 
