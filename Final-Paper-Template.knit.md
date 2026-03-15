@@ -1,7 +1,7 @@
 ---
 title: "BNT162b2 Deceiving Public or Saving Lives?"
 author: 'Krish Doshi, Lauren Yee, Kian Sharifzadeh'
-date: '`r Sys.Date()`'
+date: '2026-03-14'
 output: pdf_document
 urlcolor: blue
 header-includes:
@@ -17,23 +17,7 @@ header-includes:
 fontsize: 11pt
 ---
 
-```{r setup, include=FALSE}
-#Use this code chunk to include libraries, and set global options.
-#install.packages("janitor")
-knitr::opts_chunk$set(echo = TRUE, warnings=FALSE, message=FALSE)
-library(tidyverse)
-library(MASS)
-library(janitor)
-library(fastR2)
-library(patchwork)
-options(warn = -1)
 
-data <- data.frame("Covid_Case" = c(8, 162, 170), "No_Covid_Case" = c(17403, 17349, 34752), "Total"= c(17411, 17511, 34922))
-
-row.names(data) <- c("BNT162b2", "Placebo", "Total")
-
-extended_df <- data.frame("Treatment"=c(rep("BNT162b2", 17411), rep("Placebo", 17511)), "Has_Covid" = c(rep("Yes", 8), rep("No", 17403), rep("Yes", 162), rep("No", 17349)))
-```
 
 # Abstract
 
@@ -49,24 +33,20 @@ Following the declaration of the COVID-19 pandemic, the U.S. Food and Drug Admin
 
 On March 11, 2020, Coronavirus disease 2019 (Covid-19) was declared a pandemic by the World Health Organization. The disease affected tens of millions of people worldwide and urged the production of safe and effective vaccines to prevent additional consequences. Shortly after the declaration, major pharmaceutical companies raced to develop vaccines against the virus, including the Pfizer-BioNTech vaccine, BNT162b2 examined in this report. Beyond its unprecedented use of mRNA and pace of development in about 10 months compared to the typical vaccine that takes 10 to 15 years, the efficacy rate easily passed the FDA standard. Specifically, the original article states that the "95.0% credible interval for vaccine efficacy and the probability of vaccine efficacy greater than 30% were calculated with the use of a Bayesian beta-binomial model". To explore the BNT162b2 vaccine findings further, we conduct analyses with Frequentist and Bayesian methods for inference.
 
-```{r label="table", echo=FALSE, fig.height = 4, fig.width = 4, fig.align="center"}
-extended_df %>% 
-tabyl(Treatment, Has_Covid) %>%
-adorn_totals(where = c("row", "col")) %>%
-adorn_title() 
 
 ```
-
-When observing the data, we notice a couple things. First of all, there are far more cases of Covid in the Placebo group (162) than in the treatment group (8). When comparing the percentage, about `r 100*round(162/17511,4)`\% of people in the Placebo group have covid versus `r 100*round(8/17411,4)`\% in the Treatment Group. In total, there are 170 cases of Covid, which is about `r 100*round(170/34922,4)`\%. Overall, we can see that the number of people in the treatment group and the placebo group are approximately equal. This allows us to say that our randomization is 1:1.
-
-
-``` {r label="barplot", echo=FALSE, fig.height = 4, fig.width = 5, fig.align="center"}
-ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
-  geom_bar(position="fill") + 
-  scale_fill_manual(values = c("lightblue", "#F5F5F5")) + 
-  theme_minimal()
-
+##            Has_Covid          
+##  Treatment        No Yes Total
+##   BNT162b2     17403   8 17411
+##    Placebo     17349 162 17511
+##      Total     34752 170 34922
 ```
+
+When observing the data, we notice a couple things. First of all, there are far more cases of Covid in the Placebo group (162) than in the treatment group (8). When comparing the percentage, about 0.93\% of people in the Placebo group have covid versus 0.05\% in the Treatment Group. In total, there are 170 cases of Covid, which is about 0.49\%. Overall, we can see that the number of people in the treatment group and the placebo group are approximately equal. This allows us to say that our randomization is 1:1.
+
+
+
+\begin{center}\includegraphics{Final-Paper-Template_files/figure-latex/barplot-1} \end{center}
 
 Looking at the visual of the segmented barplot allows us to further see that the relative percentage of individuals with Covid is far lower in the treatment group than in the Placebo group while the relative percentage of people without Covid is quite similar in both groups.
 
@@ -80,20 +60,7 @@ Deriving from the original report, we let $T \sim Binom(170, \pi)$, where $\pi$ 
 
 ## Make sure to prove why T is binomial in Appendix (see last slides for example slides)
 
-```{r label = "efficacy", echo=FALSE, results = FALSE}
-pfizer_estimator <- 8/17411
-placebo_estimator <- 162 / 17511
 
-pfizer_estimator
-placebo_estimator
-
-relative_risk <- pfizer_estimator / placebo_estimator
-relative_risk
-
-psi <- 1 - relative_risk
-psi
-
-```
 
 From these calculations, we find that $\pi_{v} = \frac{8}{17411}$ and $\pi_{p} = \frac{162}{17511}$. In other words, $\pi_{v} \approx 0.00046$ and $\pi_{p} \approx 0.00925$.
 
@@ -174,42 +141,7 @@ The first method is to calculate the large sample confidence interval. First, we
    - The possible values for the observed value does not depend on the parameter
    - The true value of the parameter does not fall on a boundary
 
-```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
-loglik.psi<-function(psi,x, n){
-  if(psi >= 1) NA
-  else{  
-    log(choose(n, x)) + x*log(1-psi) - x*log(2-psi) +(n-x)*log(1 / (2-psi))
-  }
-}
-
-ml.psi <- maxLik2(loglik=loglik.psi,
-start = 0.3, x = 8,n = 170)
-
-psi.plot <- plot(ml.psi) +
-labs(title = "Second order approximation for \nPsi (Parametrization for Pi)",
-subtitle = "n = 170, t = 8",
-x = expression(psi))
-
-
-
-loglik.pi<-function(pi,x, n){
-  if(pi < 0 || pi > 1) NA
-  else{  
-    log(choose(n, x)) + x*log(pi) +(n-x)*log(1 - pi)
-  }
-}
-
-ml.pi <- maxLik2(loglik=loglik.pi,
-start = 0.3, x = 8,n = 170)
-
-pi.plot <- plot(ml.pi) +
-labs(title = "Second order approximation for Pi",
-subtitle = "n = 170, t = 8",
-x = expression(pi))
-
-psi.plot + pi.plot
-
-```
+![](Final-Paper-Template_files/figure-latex/mle_graph-1.pdf)<!-- --> 
 
 Since the 2nd order Taylor series approximates the log-likelihood function around MLE, we can assume that the regularity conditions for the expected Fisher information are satisfied. Additionally, since MLEs are invariant, we can say that the regularity condition is met for the expected Fisher information of $\psi$ as well. After establishing $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\psi_0)}})$, we can calculate a $100(1-\alpha)\%$ large sample confidence interval $\psi_0$ using the equation $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$.
 
@@ -265,24 +197,7 @@ $$= P\left(\pi \leq \frac{7}{17}\right)$$
 - $P(\psi \geq 0.3) = 0.4$
 - $P(\psi \geq 0) = 0.95$
 
-```{r, label="priors", echo=FALSE, results = FALSE}
-library(LearnBayes)
 
-beta.select(quantile1 = list(p = 0.025, x = 7/17),
-            quantile2 = list(p = 0.35, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.05, x = 7/17),
-            quantile2 = list(p = 0.5, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.1, x = 7/17),
-            quantile2 = list(p = 0.65, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.2, x = 7/17),
-            quantile2 = list(p = 0.8, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.4, x = 7/17),
-            quantile2 = list(p = 0.95, x = 0.5))
-```
 We choose these apriori beliefs to analyze the sensitivity of the prior. More specifically, these five priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect at all.
 
 To determine the parameters of the Beta prior distributions that satisfy the specified probability conditions, numerical solutions were obtained using the beta.select function from the LearnBayes package in R. The corresponding code used to compute these parameters is provided in the Appendix.
@@ -330,29 +245,7 @@ $$h(\pi|t) = Beta(48.96 + t, 170 - t + 66.55) \quad posterior$$
 
 p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(56.96, 228.55) \approx 0$
 
-```{r label="bay_pvals", echo=FALSE, results='hide'}
-# Calculating Bayesian P-values
 
-x = 7/17
-n = 170
-t = 8
-
-most_pess <- pbeta(q = x, shape1 = 41.05 + t, shape2 = n - t + 37.63, lower.tail = F)
-
-pess <- pbeta(q = x, shape1 = 43.03 + t, shape2 = n - t + 43.03, lower.tail = F)
-
-neutral <- pbeta(q = x, shape1 = 42.4 + t, shape2 = n - t + 46, lower.tail = F)
-
-opt <- pbeta(q = x, shape1 = 41.23 + t, shape2 = n - t + 49.2, lower.tail = F)
-
-most_opt <- pbeta(q = x, shape1 = 48.96 + t, shape2 = n - t + 66.55, lower.tail = F)
-
-most_pess
-pess
-neutral
-opt
-most_opt
-```
 The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This observation is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 
@@ -368,38 +261,12 @@ Using the equation $\hat{\psi}^{mle} = \frac{n - 2t}{n-t}$, we can calculate the
 
 Using all the information given, we can solve the 95\% large sample confidence interval and bootstrap percentile interval for $\psi_0$ with $t = 8$ and $n = 170$: 
 
-```{r label="mle_confidence", echo=FALSE, include = FALSE}
-n <- 170
-t <- 8
-psi_mle <- (n - 2*t) / (n - t)
-psi_se <- sqrt(((1-psi_mle)*(2-psi_mle)^2) / n)
-
-lower <- psi_mle - qnorm(0.975)*psi_se
-upper <- psi_mle + qnorm(0.975)*psi_se
-
-lower
-upper
-psi_se 
-```
 
 
 
 
-```{r label="mle_empirical_sd", echo=FALSE, results = FALSE}
-set.seed(414)
 
-pi_samples <- rbinom(n = 100000, size = 170, prob =  8/170)
-pi_mle <- pi_samples / 170
-psi_samples <- (1 - 2*pi_mle) / (1-pi_mle)
-mean(psi_samples)
-sd(psi_samples)
 
-lower_boot <- mean(psi_samples) - qnorm(0.975)* sd(psi_samples)
-lower_boot
-
-upper_boot <- mean(psi_samples) + qnorm(0.975)* sd(psi_samples)
-upper_boot
-```
 
 \begin{table}[H]
 \centering
@@ -423,21 +290,7 @@ $\ell(0.3) = \ln{\binom{160}{8}} + 8\ln{(0.7)} -8\ln{(1.3)}  + (162)\ln{(\frac{1
 Then, $W = 2(-1.945 + 62.746) \approx \boxed{121.601}$
 
 
-```{r label="mle_ratio_stat", echo=FALSE, results = FALSE}
-log_lik_func <- function(psi, n , t){
-  log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) -(n-t)*log((2-psi))
-}
 
-log_mle <- log_lik_func(psi_mle, 170, 8)
-log_null <- log_lik_func(0.3, 170, 8)
-
-log_mle
-log_null
-
-W_stat <- 2*(log_mle - log_null)
-W_stat
-
-```
 
 
 \begin{table}[H]
@@ -452,7 +305,198 @@ Empirical & 0 \\ \hline
 
 Using table 2, we can conclude that the p-value under the chi square distribution and the empirical p-value are very similar, as both are around 0. With those p-values, we reject our null hypothesis and have sufficient evidence to conclude that $\psi_0$ does not equal 0.3.
 
-```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, include = FALSE}
+
+
+![](Final-Paper-Template_files/figure-latex/mle_empirical_hist-1.pdf)<!-- --> 
+
+## Bayesian Approach
+
+### Prior and Posterior Distribution
+
+![](Final-Paper-Template_files/figure-latex/bay_plots-1.pdf)<!-- --> 
+
+
+When performing a sensitivity analysis on the posterior distributions, we found that regardless of the apriori beliefs that we set, our posterior distribution was approximately symmetric and centered near the same value of $\pi$.
+
+### Confidence Intervals
+Since our posterior distributions are approximately symmetric, we can use the equal tails test to find a confidence interval for $\pi$ for each case of the apriori beliefs.
+
+The equal-tails credible intervals are obtained by computing the 2.5\% and 97.5\% quantiles of the posterior Beta distribution for the infection probability parameter $\pi$, with parameters updated using the observed data. These bounds are then transformed to the vaccine efficacy parameter $\psi$ using the relationship $\psi = \frac{1 - 2\pi}{1 - \pi}$.
+
+The bootstrap intervals are computed by drawing many samples from the posterior Beta distribution of $\pi$, converting each sample to $\psi$, and taking the 2.5\% and 97.5\% quantiles of the resulting simulated values.
+
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+Prior & Lower & Upper \\ \hline
+Most Pessimistic (Equal Tail) & 0.6688 & 0.8232 \\
+Most Pessimistic (Bootstrap) & 0.6673 & 0.8236 \\
+
+Pessimistic (Equal Tail) & 0.6662 & 0.8197 \\
+Pessimistic (Bootstrap) & 0.6676 & 0.8197 \\
+
+Neutral (Equal Tail) & 0.6759 & 0.8255 \\
+Neutral (Bootstrap) & 0.6743 & 0.8253 \\
+
+Optimistic (Equal Tail) & 0.6865 & 0.8319 \\
+Optimistic (Bootstrap) & 0.6854 & 0.8317 \\
+
+More Optimistic (Equal Tail) & 0.6707 & 0.8162 \\
+More Optimistic (Bootstrap) & 0.6707 & 0.8168 \\ \hline
+\end{tabular}
+\end{table}
+
+While each of the confidence intervals are significantly different than the confidence interval in the study, they all still do not contain values less than or equal to 0.3 regardless of the apriori beliefs that were used. Therefore, we have sufficient evidence to reject our null hypothesis using the confidence intervals.
+
+# Discussion / Conclusion
+
+The MLE estimate of efficacy resulted in about a 95% reduction in infection risk for the vaccinated group compared to the placebo group. Accordingly, the 95% large-sample confidence interval for the efficacy rate using the MLE emerged to be [91.56%, 98.57%], which lies in approximately the same region as the Bayesian credible interval reported in the original paper, [90.3%, 97.6%]. Both the likelihood ratio test and the Bayesian hypothesis tests also produced extremely small p-values, providing overwhelming evidence that vaccine efficacy exceeds the FDA threshold of 30%. Furthermore, the Bayesian results remained consistent across a range of pessimistic and optimistic prior beliefs, supporting that the conclusion is robust to the choice of prior. 
+
+Notably, the priors constructed in this analysis are stronger than the minimally informative prior used in the original study. Despite these stronger assumptions, the estimated efficacy appears to be heavily driven by the observed data. This robustness is considered a strength, especially in vaccine studies, where findings must remain reliable even under differing prior assumptions. A potential limitation is the fact that the model relies on independence and large-sample approximations, which may not generalize well to smaller studies or populations outside the original clinical trials.
+
+# Bibliography
+
+David J. Sencer CDC Museum. “CDC Museum COVID-19 Timeline.” Centers for Disease Control and Prevention, CDC, 8 July 2024, www.cdc.gov/museum/timeline/covid19.html. Accessed 14 Mar. 2026.
+
+Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world., https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
+
+Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19 Vaccine.” The New England Journal of Medicine, vol. 383, no. 27, 10 Dec. 2020, www.nejm.org/doi/full/10.1056/NEJMoa2034577, https://doi.org/10.1056/NEJMoa2034577. Accessed 14 Mar. 2026.
+
+# Appendix
+
+## Code
+
+## Visualizations
+
+``` r
+extended_df %>% 
+tabyl(Treatment, Has_Covid) %>%
+adorn_totals(where = c("row", "col")) %>%
+adorn_title() 
+```
+
+
+``` r
+ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
+  geom_bar(position="fill") + 
+  scale_fill_manual(values = c("lightblue", "#F5F5F5")) + 
+  theme_minimal()
+```
+
+
+## Observed Efficacy
+
+
+``` r
+pfizer_estimator <- 8/17411
+placebo_estimator <- 162 / 17511
+
+pfizer_estimator
+placebo_estimator
+
+relative_risk <- pfizer_estimator / placebo_estimator
+relative_risk
+
+psi <- 1 - relative_risk
+psi
+```
+
+## MLE
+### Confidence Interval
+
+
+``` r
+n <- 170
+t <- 8
+psi_mle <- (n - 2*t) / (n - t)
+psi_se <- sqrt(((1-psi_mle)*(2-psi_mle)^2) / n)
+
+lower <- psi_mle - qnorm(0.975)*psi_se
+upper <- psi_mle + qnorm(0.975)*psi_se
+
+lower
+upper
+psi_se 
+```
+
+### Second Order Approximation
+
+``` r
+loglik.psi<-function(psi,x, n){
+  if(psi >= 1) NA
+  else{  
+    log(choose(n, x)) + x*log(1-psi) - x*log(2-psi) +(n-x)*log(1 / (2-psi))
+  }
+}
+
+ml.psi <- maxLik2(loglik=loglik.psi,
+start = 0.3, x = 8,n = 170)
+
+psi.plot <- plot(ml.psi) +
+labs(title = "Second order approximation for \nPsi (Parametrization for Pi)",
+subtitle = "n = 170, t = 8",
+x = expression(psi))
+
+
+
+loglik.pi<-function(pi,x, n){
+  if(pi < 0 || pi > 1) NA
+  else{  
+    log(choose(n, x)) + x*log(pi) +(n-x)*log(1 - pi)
+  }
+}
+
+ml.pi <- maxLik2(loglik=loglik.pi,
+start = 0.3, x = 8,n = 170)
+
+pi.plot <- plot(ml.pi) +
+labs(title = "Second order approximation for Pi",
+subtitle = "n = 170, t = 8",
+x = expression(pi))
+
+psi.plot + pi.plot
+```
+
+### Empirical Standard Deviation
+
+``` r
+set.seed(414)
+
+pi_samples <- rbinom(n = 100000, size = 170, prob =  8/170)
+pi_mle <- pi_samples / 170
+psi_samples <- (1 - 2*pi_mle) / (1-pi_mle)
+mean(psi_samples)
+sd(psi_samples)
+
+lower_boot <- mean(psi_samples) - qnorm(0.975)* sd(psi_samples)
+lower_boot
+
+upper_boot <- mean(psi_samples) + qnorm(0.975)* sd(psi_samples)
+upper_boot
+```
+
+### Ratio Statistic
+
+``` r
+log_lik_func <- function(psi, n , t){
+  log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) -(n-t)*log((2-psi))
+}
+
+log_mle <- log_lik_func(psi_mle, 170, 8)
+log_null <- log_lik_func(0.3, 170, 8)
+
+log_mle
+log_null
+
+W_stat <- 2*(log_mle - log_null)
+W_stat
+```
+
+### Empirical P-Value
+
+``` r
 pchisq(W_stat, 1, lower.tail = F)
 
 
@@ -474,7 +518,9 @@ emp_p_value
 cat("Empirical P value = ", emp_p_value)
 ```
 
-```{r label="mle_empirical_hist", echo=FALSE, warnings=FALSE, message = FALSE, fig.height=4, fig.width=4}
+### Empirical Histogram
+
+``` r
 ggplot(data = NULL,
 mapping = aes(x = values))+
 geom_histogram(bins = 40) +
@@ -483,11 +529,32 @@ labs(title = "Counts of W from Bootstrapping",
      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
 ```
 
-## Bayesian Approach
+## Bayesian
 
-### Prior and Posterior Distribution
+### Priors
 
-```{r label="bay_plots", echo=FALSE}
+``` r
+library(LearnBayes)
+
+beta.select(quantile1 = list(p = 0.025, x = 7/17),
+            quantile2 = list(p = 0.35, x = 0.5))
+
+beta.select(quantile1 = list(p = 0.05, x = 7/17),
+            quantile2 = list(p = 0.5, x = 0.5))
+
+beta.select(quantile1 = list(p = 0.1, x = 7/17),
+            quantile2 = list(p = 0.65, x = 0.5))
+
+beta.select(quantile1 = list(p = 0.2, x = 7/17),
+            quantile2 = list(p = 0.8, x = 0.5))
+
+beta.select(quantile1 = list(p = 0.4, x = 7/17),
+            quantile2 = list(p = 0.95, x = 0.5))
+```
+
+### Prior Vs. Posterior Plots
+
+``` r
 # Calculating Bayesian P-values
 
 most_pessimistic <- ggplot() + 
@@ -573,152 +640,32 @@ xlim = c(0,1)) +
 
 article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") & 
   theme(legend.position = "bottom")
-
-```
-
-
-When performing a sensitivity analysis on the posterior distributions, we found that regardless of the apriori beliefs that we set, our posterior distribution was approximately symmetric and centered near the same value of $\pi$.
-
-### Confidence Intervals
-Since our posterior distributions are approximately symmetric, we can use the equal tails test to find a confidence interval for $\pi$ for each case of the apriori beliefs.
-
-The equal-tails credible intervals are obtained by computing the 2.5\% and 97.5\% quantiles of the posterior Beta distribution for the infection probability parameter $\pi$, with parameters updated using the observed data. These bounds are then transformed to the vaccine efficacy parameter $\psi$ using the relationship $\psi = \frac{1 - 2\pi}{1 - \pi}$.
-
-The bootstrap intervals are computed by drawing many samples from the posterior Beta distribution of $\pi$, converting each sample to $\psi$, and taking the 2.5\% and 97.5\% quantiles of the resulting simulated values.
-
-```{r label='bays_ci', echo=FALSE, include=FALSE}
-
-B <- 10000
-
-convert_to_psi <- function(x){
-  (1 - 2*x) / (1 - x)
-}
-
-convert_to_psi_reverse <- function(x){
-  conversion <- convert_to_psi(x)
-  c(conversion[2], conversion[1])
-}
-
-# Most pessimistic
-ci_mp_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 41.05 + t, n - t + 37.63))
-samples_mp <- rbeta(B, 41.05 + t, n - t + 37.63)
-ci_mp_boot <- quantile(convert_to_psi(samples_mp), c(0.025,0.975))
-
-# Pessimistic
-ci_p_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 43.03 + t, n - t + 43.03))
-samples_p <- rbeta(B, 43.03 + t, n - t + 43.03)
-ci_p_boot <- quantile(convert_to_psi(samples_p), c(0.025,0.975))
-
-# Neutral
-ci_n_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 42.2 + t, n - t + 46.0))
-samples_n <- rbeta(B, 42.2 + t, n - t + 46.0)
-ci_n_boot <- quantile(convert_to_psi(samples_n), c(0.025,0.975))
-
-# Optimistic
-ci_o_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 41.23 + t, n - t + 49.20))
-samples_o <- rbeta(B, 41.23 + t, n - t + 49.20)
-ci_o_boot <- quantile(convert_to_psi(samples_o), c(0.025,0.975))
-
-# More optimistic
-ci_mo_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 48.96 + t, n - t + 66.55))
-samples_mo <- rbeta(B, 48.96 + t, n - t + 66.55)
-ci_mo_boot <- quantile(convert_to_psi(samples_mo), c(0.025,0.975))
-
-```
-
-\begin{table}[H]
-\centering
-\begin{tabular}{ccc}
-Prior & Lower & Upper \\ \hline
-Most Pessimistic (Equal Tail) & `r round(ci_mp_equal[1],4)` & `r round(ci_mp_equal[2],4)` \\
-Most Pessimistic (Bootstrap) & `r round(ci_mp_boot[1],4)` & `r round(ci_mp_boot[2],4)` \\
-
-Pessimistic (Equal Tail) & `r round(ci_p_equal[1],4)` & `r round(ci_p_equal[2],4)` \\
-Pessimistic (Bootstrap) & `r round(ci_p_boot[1],4)` & `r round(ci_p_boot[2],4)` \\
-
-Neutral (Equal Tail) & `r round(ci_n_equal[1],4)` & `r round(ci_n_equal[2],4)` \\
-Neutral (Bootstrap) & `r round(ci_n_boot[1],4)` & `r round(ci_n_boot[2],4)` \\
-
-Optimistic (Equal Tail) & `r round(ci_o_equal[1],4)` & `r round(ci_o_equal[2],4)` \\
-Optimistic (Bootstrap) & `r round(ci_o_boot[1],4)` & `r round(ci_o_boot[2],4)` \\
-
-More Optimistic (Equal Tail) & `r round(ci_mo_equal[1],4)` & `r round(ci_mo_equal[2],4)` \\
-More Optimistic (Bootstrap) & `r round(ci_mo_boot[1],4)` & `r round(ci_mo_boot[2],4)` \\ \hline
-\end{tabular}
-\end{table}
-
-While each of the confidence intervals are significantly different than the confidence interval in the study, they all still do not contain values less than or equal to 0.3 regardless of the apriori beliefs that were used. Therefore, we have sufficient evidence to reject our null hypothesis using the confidence intervals.
-
-# Discussion / Conclusion
-
-The MLE estimate of efficacy resulted in about a 95% reduction in infection risk for the vaccinated group compared to the placebo group. Accordingly, the 95% large-sample confidence interval for the efficacy rate using the MLE emerged to be [91.56%, 98.57%], which lies in approximately the same region as the Bayesian credible interval reported in the original paper, [90.3%, 97.6%]. Both the likelihood ratio test and the Bayesian hypothesis tests also produced extremely small p-values, providing overwhelming evidence that vaccine efficacy exceeds the FDA threshold of 30%. Furthermore, the Bayesian results remained consistent across a range of pessimistic and optimistic prior beliefs, supporting that the conclusion is robust to the choice of prior. 
-
-Notably, the priors constructed in this analysis are stronger than the minimally informative prior used in the original study. Despite these stronger assumptions, the estimated efficacy appears to be heavily driven by the observed data. This robustness is considered a strength, especially in vaccine studies, where findings must remain reliable even under differing prior assumptions. A potential limitation is the fact that the model relies on independence and large-sample approximations, which may not generalize well to smaller studies or populations outside the original clinical trials.
-
-# Bibliography
-
-David J. Sencer CDC Museum. “CDC Museum COVID-19 Timeline.” Centers for Disease Control and Prevention, CDC, 8 July 2024, www.cdc.gov/museum/timeline/covid19.html. Accessed 14 Mar. 2026.
-
-Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world., https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
-
-Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19 Vaccine.” The New England Journal of Medicine, vol. 383, no. 27, 10 Dec. 2020, www.nejm.org/doi/full/10.1056/NEJMoa2034577, https://doi.org/10.1056/NEJMoa2034577. Accessed 14 Mar. 2026.
-
-# Appendix
-
-## Code
-
-## Visualizations
-```{r ref.label = "table", eval=FALSE}
-```
-
-```{r ref.label = "barplot", eval=FALSE}
-```
-
-
-## Observed Efficacy
-
-```{r ref.label = "efficacy", eval=FALSE}
-```
-
-## MLE
-### Confidence Interval
-
-```{r ref.label="mle_confidence", eval=FALSE}
-```
-
-### Second Order Approximation
-```{r ref.label="mle_graph", eval=FALSE}
-```
-
-### Empirical Standard Deviation
-```{r, ref.label="mle_empirical_sd", eval=FALSE}
-```
-
-### Ratio Statistic
-```{r ref.label="mle_ratio_stat", eval=FALSE}
-```
-
-### Empirical P-Value
-```{r ref.label="mle_empirical_p", eval=FALSE}
-```
-
-### Empirical Histogram
-```{r ref.label="mle_empirical_hist", eval = FALSE}
-
-```
-
-## Bayesian
-
-### Priors
-```{r, ref.label="priors", eval=FALSE}
-```
-
-### Prior Vs. Posterior Plots
-```{r ref.label="bay_plots", eval=FALSE}
 ```
 
 ### P-values
-```{r ref.label="bay_pvals", eval=FALSE}
+
+``` r
+# Calculating Bayesian P-values
+
+x = 7/17
+n = 170
+t = 8
+
+most_pess <- pbeta(q = x, shape1 = 41.05 + t, shape2 = n - t + 37.63, lower.tail = F)
+
+pess <- pbeta(q = x, shape1 = 43.03 + t, shape2 = n - t + 43.03, lower.tail = F)
+
+neutral <- pbeta(q = x, shape1 = 42.4 + t, shape2 = n - t + 46, lower.tail = F)
+
+opt <- pbeta(q = x, shape1 = 41.23 + t, shape2 = n - t + 49.2, lower.tail = F)
+
+most_opt <- pbeta(q = x, shape1 = 48.96 + t, shape2 = n - t + 66.55, lower.tail = F)
+
+most_pess
+pess
+neutral
+opt
+most_opt
 ```
 
 
@@ -730,7 +677,13 @@ If applicable, include detailed mathematical derivations or additional theoretic
 ### T $\approx$ Binomial
 Suppose X denotes the number of Covid cases among the $n_1$ patients randomly assigned to the BNT162b2 vaccine group and Y is the number of Covid cases among the $n_2$ patients assigned to the placebo.
 
-```{r ref.label = "table", echo=FALSE}
+
+```
+##            Has_Covid          
+##  Treatment        No Yes Total
+##   BNT162b2     17403   8 17411
+##    Placebo     17349 162 17511
+##      Total     34752 170 34922
 ```
 
 Let us restrict our attention to just the 170 cases that had Covid. We want ot know the PMF of the random variable T which is defined as the count in the BNT162b2 vaccine cell given this restriction. That is, T is the value of X but with the restriction that X + Y = 170.
