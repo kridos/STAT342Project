@@ -57,18 +57,19 @@ adorn_title()
 
 ```
 
-When observing the data, we notice a couple things. First of all, there are far more cases of Covid in the Placebo group (162) than in the treatment group (8). When comparing the percentage, about `r 100*round(162/17511,4)`\% of people in the Placebo group have covid versus `r 100*round(8/17411,4)`\% in the Treatment Group. In total, there are 170 cases of Covid, which is about `r 100*round(170/34922,4)`\%. Overall, we can see that the number of people in the treatment group and the placebo group are approximately equal. This allows us to say that our randomization is 1:1.
 
-
-``` {r label="barplot", echo=FALSE, fig.height = 4, fig.width = 5, fig.align="center"}
+``` {r label="barplot", echo=FALSE, fig.height = 3, fig.width = 4, fig.align="center"}
 ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
   geom_bar(position="fill") + 
   scale_fill_manual(values = c("lightblue", "#F5F5F5")) + 
-  theme_minimal()
+  theme_minimal() + labs(
+    y = "Percentage",
+    x = "Has Covid"
+  )
 
 ```
 
-Looking at the visual of the segmented barplot allows us to further see that the relative percentage of individuals with Covid is far lower in the treatment group than in the Placebo group while the relative percentage of people without Covid is quite similar in both groups.
+When observing the data, we notice a couple things. First of all, there are far more cases of Covid in the Placebo group (162) than in the treatment group (8). When comparing the percentage, about `r 100*round(162/17511,4)`\% of people in the Placebo group have covid versus `r 100*round(8/17411,4)`\% in the Treatment Group. In total, there are 170 cases of Covid, which is about `r 100*round(170/34922,4)`\%. Overall, we can see that the number of people in the treatment group and the placebo group are approximately equal. This allows us to say that our randomization is 1:1.
 
 In the paper, the authors mention that they used a beta binomial model with the transformation $$\pi = \frac{\pi_v}{\pi_v + \pi_p}$$ where $\pi_v$ and $\pi_p$ are the probabilities of an infection in the vaccine and placebo groups respectively. Here, the binomial $\pi$ was modeled with a beta prior, Beta(0.700102, 1), and the parameter of interest was $\psi = \frac{1 - 2\pi}{1 - \pi}$. It was estimated to be 95% with the 95% Bayesian credible interval reported as [90.3%, 97.6%] and the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999.
 
@@ -466,7 +467,7 @@ Empirical & 0 \\ \hline
 \end{tabular}
 \end{table}
 
-Using table 3, we can conclude that the p-value under the chi square distribution and the empirical p-value are very similar, as both are around 0. With those p-values, we reject our null hypothesis and have sufficient evidence to conclude that $\psi_0$ is greater than 0.3. Since the chi squared test is two sided, it also encapsulates the one-sided test. Since we rejected our two sided test, we would also reject the one sided test. 
+Using table 2, we can conclude that the p-value under the chi square distribution and the empirical p-value are very similar, as both are around 0. With those p-values, we reject our null hypothesis and have sufficient evidence to conclude that $\psi_0$ is greater than 0.3. Since the chi squared test is two sided, it also encapsulates the one-sided test. Since we rejected our two sided test, we would also reject the one sided test. 
 
 ```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, include = FALSE}
 pchisq(W_stat, 1, lower.tail = F)
@@ -490,7 +491,7 @@ emp_p_value
 cat("Empirical P value = ", emp_p_value)
 ```
 
-```{r label="mle_empirical_hist", echo=FALSE, warnings=FALSE, message = FALSE, fig.height=4, fig.width=4}
+```{r label="mle_empirical_hist", echo=FALSE, warnings=FALSE, message = FALSE, fig.height=2.5, fig.width=3, fig.align='center'}
 ggplot(data = NULL,
 mapping = aes(x = values))+
 geom_histogram(bins = 40) +
@@ -499,13 +500,13 @@ labs(title = "Counts of W from Bootstrapping",
      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
 ```
 
-The histogram is a graphical representation of the empirical p-value. This is done by generating a plethora of sample likelihood ratio test statistic values.  The red line indicates our observed likelihood ratio test statistic of $W \approx 121.601$. Based on the output, we can see that our observed $W$ value is much greater than the sampled values through bootstrapped, which leads to the empirical p-value of 0.
+The histogram is a graphical representation of the empirical p-value. This is done by generating a plethora of sample likelihood ratio test statistic values. The red line indicates our observed likelihood ratio test statistic of $W \approx 121.601$. Based on the output, we can see that our observed $W$ value is much greater than the sampled values through bootstrapped, which leads to the empirical p-value of 0.
 
 ## Bayesian Approach
 
 ### Prior and Posterior Distribution
 
-```{r label="bay_plots", echo=FALSE}
+```{r label="bay_plots", echo=FALSE, fig.height = 4}
 # Calculating Bayesian P-values
 
 most_pessimistic <- ggplot() + 
@@ -820,7 +821,7 @@ $= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdo
 
 Therefore, we can see that $T \sim Binom(n, \frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p}) =  Binom(n, \frac{n_1\pi_v}{n_1\pi_v + n_2\pi_p})$
 
-When X and Y are independent and approximately follow a Poisson distribution (large group size and small event rate)
+when X and Y are independent and approximately follow a Poisson distribution (large group size and small event rate)
 
 
 
