@@ -353,7 +353,19 @@ neutral
 opt
 most_opt
 ```
-The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This observation is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+
+\begin{table}[H]
+\centering
+\caption{Bayesian P-values}
+\begin{tabular}{ccccc} 
+Priors & P-value \\ \hline
+Most Pessimistic &  $2.42\cdot 10^{-13}$ \\
+Pessimistic &  $1.93\cdot 10^{-13}$ \\
+Neutral &  $4.67\cdot 10^{-14}$ \\
+Optimistic &  $6.64\cdot 10^{-15}$ \\
+Most Optimistic &  $9.61\cdot 10^{-15}$ \\ \hline
+\end{tabular}
+\end{table}
 
 
 # Results
@@ -646,6 +658,8 @@ More Optimistic (Equal Tail) & `r round(ci_mo_equal[1],4)` & `r round(ci_mo_equa
 More Optimistic (Bootstrap) & `r round(ci_mo_boot[1],4)` & `r round(ci_mo_boot[2],4)` \\ \hline
 \end{tabular}
 \end{table}
+
+The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This observation is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 While each of the confidence intervals are significantly different than the confidence interval in the study, they all still do not contain values less than or equal to 0.3 regardless of the apriori beliefs that were used. Therefore, we have sufficient evidence to reject our null hypothesis using the confidence intervals.
 
