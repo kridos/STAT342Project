@@ -166,7 +166,7 @@ We can calculate the confidence interval for $\psi_0$ in two different ways.
 
 The first method is to calculate the large sample confidence interval. First, we establish that for large $n$ values under certain regularity conditions, $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\hat{\psi}^{mle})}})$, where $I(\psi_0) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right] \vert_{\psi = \psi_0}$. This is based on Theorem 12.1. Some of the regularity conditions include that the possible values for the observed value does not depend on the parameter and the true value of the parameter does not fall on a boundary.
 
-```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
+```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=3.5}
 loglik.psi<-function(psi,x, n){
   if(psi >= 1) NA
   else{  
@@ -244,30 +244,18 @@ $$= P(1 - 2\pi \geq 0.3(1 - \pi))$$
 $$= P(1 - 2\pi \geq 0.3 - 0.3\pi)$$
 $$= P(-1.7\pi \geq -0.7)$$
 $$= P\left(\pi \leq \frac{7}{17}\right)$$
-1 - Most Pessimistic
-
-- $P(\psi \geq 0.3) = 0.025$
-- $P(\psi \geq 0) = 0.35$
-
-2 - Pessimistic
-
-- $P(\psi \geq 0.3) = 0.05$
-- $P(\psi \geq 0) = 0.5$
-
-3 - Neutral
-
-- $P(\psi \geq 0.3) = 0.1$
-- $P(\psi \geq 0) = 0.65$
-
-4 - Optimistic
-
-- $P(\psi \geq 0.3) = 0.2$
-- $P(\psi \geq 0) = 0.8$
-
-5 - More Optimistic
-
-- $P(\psi \geq 0.3) = 0.4$
-- $P(\psi \geq 0) = 0.95$
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{ccc}
+Prior & $P(\psi \geq 0.3)$ & $P(\psi \geq 0)$ \\ \hline
+Most Pessimistic & 0.025 & 0.35 \\
+Pessimistic & 0.05 & 0.50 \\
+Neutral & 0.10 & 0.65 \\
+Optimistic & 0.20 & 0.80 \\
+More Optimistic & 0.40 & 0.95 \\ \hline
+\end{tabular}
+\end{table}
 
 ```{r, label="priors", echo=FALSE, results = FALSE}
 library(LearnBayes)
@@ -299,39 +287,24 @@ Since $\psi \geq 0.3 \Leftrightarrow \pi \leq \frac{7}{17}$, we get that $P(\psi
 
 To calculate the Bayesian probabilities: $P(\pi \geq \frac{7}{17}|t) = 1 - P(\pi \leq \frac{7}{17}|t)$ where $t = 8$.
 
-1 - Most Pessimistic
+The p-values are computed as 
+\[
+1 - P\!\left(\pi \leq \frac{7}{17} \mid t = 8\right)
+\]
+using the corresponding posterior Beta distribution.
 
-$$g(\pi) = Beta(41.05, 37.63) \quad prior$$
-$$h(\pi|t) = Beta(41.05 + t, 170 - t + 37.63) \quad posterior$$
-p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(49.05, 199.63) \approx 0$
-
-2 - Pessimistic
-
-$$g(\pi) = Beta(43.03, 43.03) \quad prior$$
-$$h(\pi|t) = Beta(43.03 + t, 170 - t + 43.03) \quad posterior$$
-
-p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(51.03, 205.03) \approx 0$
-
-3 - Neutral
-
-$$g(\pi) = Beta(42.4, 46.0) \quad prior$$
-$$h(\pi|t) = Beta(42.4 + t, 170 - t + 46.0) \quad posterior$$
-
-p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(50.4, 208) \approx 0$
-
-4 - Optimistic
-
-$$g(\pi) = Beta(41.23, 49.20) \quad prior$$
-$$h(\pi|t) = Beta(41.23 + t, 170 - t + 49.20) \quad posterior$$
-
-p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(49.23, 211.2) \approx 0$
-
-5 - More Optimistic
-
-$$g(\pi) = Beta(48.96, 66.55) \quad prior$$
-$$h(\pi|t) = Beta(48.96 + t, 170 - t + 66.55) \quad posterior$$
-
-p-val: $1 - P(\pi \leq \frac{7}{17}|t = 8)$ where $\pi|t \sim Beta(56.96, 228.55) \approx 0$
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{cccc}
+Prior & $g(\pi)$ (Prior) & $h(\pi|t)$ (Posterior) & p-value \\ \hline
+Most Pessimistic & $Beta(41.05, 37.63)$ & $Beta(41.05+t,\,170-t+37.63)$ & $\approx 0$ \\
+Pessimistic & $Beta(43.03, 43.03)$ & $Beta(43.03+t,\,170-t+43.03)$ & $\approx 0$ \\
+Neutral & $Beta(42.4, 46.0)$ & $Beta(42.4+t,\,170-t+46.0)$ & $\approx 0$ \\
+Optimistic & $Beta(41.23, 49.20)$ & $Beta(41.23+t,\,170-t+49.20)$ & $\approx 0$ \\
+More Optimistic & $Beta(48.96, 66.55)$ & $Beta(48.96+t,\,170-t+66.55)$ & $\approx 0$ \\ \hline
+\end{tabular}
+\end{table}
 
 ```{r label="bay_pvals", echo=FALSE, results='hide'}
 # Calculating Bayesian P-values
