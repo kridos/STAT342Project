@@ -29,9 +29,7 @@ library(patchwork)
 options(warn = -1)
 
 data <- data.frame("Covid_Case" = c(8, 162, 170), "No_Covid_Case" = c(17403, 17349, 34752), "Total"= c(17411, 17511, 34922))
-
 row.names(data) <- c("BNT162b2", "Placebo", "Total")
-
 extended_df <- data.frame("Treatment"=c(rep("BNT162b2", 17411), rep("Placebo", 17511)), "Has_Covid" = c(rep("Yes", 8), rep("No", 17403), rep("Yes", 162), rep("No", 17349)))
 ```
 
@@ -54,7 +52,6 @@ extended_df %>%
 tabyl(Treatment, Has_Covid) %>%
 adorn_totals(where = c("row", "col")) %>%
 adorn_title() 
-
 ```
 
 
@@ -66,7 +63,6 @@ ggplot(data = extended_df, mapping=aes(x=Has_Covid, fill=Treatment)) +
     y = "Percentage",
     x = "Has Covid"
   )
-
 ```
 
 When observing the data, we notice a couple things. First of all, there are far more cases of Covid in the Placebo group (162) than in the treatment group (8). When comparing the percentage, about `r 100*round(162/17511,4)`\% of people in the Placebo group have covid versus `r 100*round(8/17411,4)`\% in the Treatment Group. In total, there are 170 cases of Covid, which is about `r 100*round(170/34922,4)`\%. Overall, we can see that the number of people in the treatment group and the placebo group are approximately equal. This allows us to say that our randomization is 1:1.
@@ -94,16 +90,12 @@ $\frac{\pi_p - \pi_v}{\pi_p} = \psi$
 ```{r label = "efficacy", echo=FALSE, results = FALSE}
 pfizer_estimator <- 8/17411
 placebo_estimator <- 162 / 17511
-
 pfizer_estimator
 placebo_estimator
-
 relative_risk <- pfizer_estimator / placebo_estimator
 relative_risk
-
 psi <- 1 - relative_risk
 psi
-
 ```
 
 Let $t$ be the number of COVID infections from the vaccine group. We observe $t = 8$ and want to test: $H_0: \psi = 0.3$, $H_1: \psi > 0.3$.
@@ -193,8 +185,6 @@ labs(title = "Second order approximation for \nPsi (Parametrization for Pi)",
 subtitle = "n = 170, t = 8",
 x = expression(psi))
 
-
-
 loglik.pi<-function(pi,x, n){
   if(pi < 0 || pi > 1) NA
   else{  
@@ -211,7 +201,6 @@ subtitle = "n = 170, t = 8",
 x = expression(pi))
 
 psi.plot + pi.plot
-
 ```
 
 Since the 2nd order Taylor series approximates the log-likelihood function around MLE, we can assume that the regularity conditions for the expected Fisher information are satisfied. Additionally, since MLEs are invariant, we can say that the regularity condition is met for the expected Fisher information of $\psi$ as well. After establishing $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\psi_0)}})$, we can calculate a $100(1-\alpha)\%$ large sample confidence interval $\psi_0$ using the equation $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$.
@@ -274,21 +263,11 @@ More Optimistic & 0.40 & 0.95 \\ \hline
 
 ```{r, label="priors", echo=FALSE, results = FALSE}
 library(LearnBayes)
-
-beta.select(quantile1 = list(p = 0.025, x = 7/17),
-            quantile2 = list(p = 0.35, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.05, x = 7/17),
-            quantile2 = list(p = 0.5, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.1, x = 7/17),
-            quantile2 = list(p = 0.65, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.2, x = 7/17),
-            quantile2 = list(p = 0.8, x = 0.5))
-
-beta.select(quantile1 = list(p = 0.4, x = 7/17),
-            quantile2 = list(p = 0.95, x = 0.5))
+beta.select(quantile1 = list(p = 0.025, x = 7/17), quantile2 = list(p = 0.35, x = 0.5))
+beta.select(quantile1 = list(p = 0.05, x = 7/17), quantile2 = list(p = 0.5, x = 0.5))
+beta.select(quantile1 = list(p = 0.1, x = 7/17), quantile2 = list(p = 0.65, x = 0.5))
+beta.select(quantile1 = list(p = 0.2, x = 7/17), quantile2 = list(p = 0.8, x = 0.5))
+beta.select(quantile1 = list(p = 0.4, x = 7/17), quantile2 = list(p = 0.95, x = 0.5))
 ```
 We choose these apriori beliefs to analyze the sensitivity of the prior. More specifically, these five priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect at all.
 
@@ -322,20 +301,13 @@ More Optimistic & $Beta(48.96, 66.55)$ & $Beta(48.96+t,\,170-t+66.55)$ & $\appro
 \end{table}
 
 ```{r label="bay_pvals", echo=FALSE, results='hide'}
-# Calculating Bayesian P-values
-
 x = 7/17
 n = 170
 t = 8
-
 most_pess <- pbeta(q = x, shape1 = 41.05 + t, shape2 = n - t + 37.63, lower.tail = F)
-
 pess <- pbeta(q = x, shape1 = 43.03 + t, shape2 = n - t + 43.03, lower.tail = F)
-
 neutral <- pbeta(q = x, shape1 = 42.4 + t, shape2 = n - t + 46, lower.tail = F)
-
 opt <- pbeta(q = x, shape1 = 41.23 + t, shape2 = n - t + 49.2, lower.tail = F)
-
 most_opt <- pbeta(q = x, shape1 = 48.96 + t, shape2 = n - t + 66.55, lower.tail = F)
 
 most_pess
@@ -344,9 +316,6 @@ neutral
 opt
 most_opt
 ```
-
-
-
 
 # Results
 
@@ -417,16 +386,13 @@ Then, $W = 2(-1.945 + 62.746) \approx \boxed{121.601}$
 log_lik_func <- function(psi, n , t){
   log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) -(n-t)*log((2-psi))
 }
-
 log_mle <- log_lik_func(psi_mle, 170, 8)
 log_null <- log_lik_func(0.3, 170, 8)
-
 log_mle
 log_null
 
 W_stat <- 2*(log_mle - log_null)
 W_stat
-
 ```
 
 
@@ -444,8 +410,6 @@ Using table 2, we can conclude that the p-value under the chi square distributio
 
 ```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, include = FALSE}
 pchisq(W_stat, 1, lower.tail = F)
-
-
 set.seed(414)
 values <- c()
 pi_null <- (1 - 2*0.3) / (1-0.3)
@@ -457,7 +421,6 @@ for(i in 1:10000){
   values <- c(values, wstar)
   
 }
-
 
 emp_p_value <- mean(values >= W_stat)
 emp_p_value
@@ -480,8 +443,6 @@ The histogram is a graphical representation of the empirical p-value. This is do
 ### Prior and Posterior Distribution
 
 ```{r label="bay_plots", echo=FALSE, fig.height = 4}
-# Calculating Bayesian P-values
-
 most_pessimistic <- ggplot() + 
   geom_function(fun = dbeta, 
                 mapping = aes(color = "Prior"),
@@ -563,9 +524,8 @@ xlim = c(0,1)) +
        y = "PDF")
 
 
-article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") & 
+article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") &
   theme(legend.position = "bottom")
-
 ```
 
 
@@ -579,9 +539,7 @@ The equal-tails credible intervals are obtained by computing the 2.5\% and 97.5\
 The bootstrap intervals are computed by drawing many samples from the posterior Beta distribution of $\pi$, converting each sample to $\psi$, and taking the 2.5\% and 97.5\% quantiles of the resulting simulated values.
 
 ```{r label='bays_ci', echo=FALSE, include=FALSE}
-
 B <- 10000
-
 convert_to_psi <- function(x){
   (1 - 2*x) / (1 - x)
 }
@@ -615,7 +573,6 @@ ci_o_boot <- quantile(convert_to_psi(samples_o), c(0.025,0.975))
 ci_mo_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 48.96 + t, n - t + 66.55))
 samples_mo <- rbeta(B, 48.96 + t, n - t + 66.55)
 ci_mo_boot <- quantile(convert_to_psi(samples_mo), c(0.025,0.975))
-
 ```
 
 \begin{table}[H]
