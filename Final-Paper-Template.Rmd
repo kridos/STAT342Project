@@ -332,6 +332,9 @@ opt
 most_opt
 ```
 
+<<<<<<< HEAD
+The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This observation is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+=======
 ```{r label="bay_plots", echo=FALSE}
 
 most_pessimistic <- ggplot() + 
@@ -421,6 +424,7 @@ article_model + most_pessimistic + pessimistic + neutral + optimistic + more_opt
 ```
 
 The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+>>>>>>> 43caf0358973935ac04ff4722c0e130e4e35f9df
 
 # Results
 
@@ -556,6 +560,7 @@ labs(title = "Counts of W from Bootstrapping",
 # Discussion / Conclusion
 
 We utilized statistical inference with both Frequentist and Bayesian frameworks by computing the maximum likelihood estimate (MLE) and exploring various priors to obtain posterior distributions and Bayesian p-values. The MLE estimate of efficacy resulted in about a 95% reduction in infection risk for the vaccinated group compared to the placebo group. Accordingly, the 95% large-sample confidence interval for the efficacy rate using the MLE emerged to be [91.56%, 98.57%], which lies in approximately the same region as the Bayesian credible interval reported in the original paper, [90.3%, 97.6%]. Both the likelihood ratio test and the Bayesian hypothesis tests also produced p-values approximately equal to zero, providing overwhelming evidence that vaccine efficacy exceeds the FDA threshold of 30%. Furthermore, the Bayesian results remained consistent across a range of pessimistic and optimistic prior beliefs, supporting that the conclusion is robust to the choice of prior. 
+Noticeably, the priors constructed in this analysis are stronger than the minimally informative prior used in the original study. Despite these stronger assumptions, there is substantial evidence that the high vaccine efficacy is heavily driven by the observed data. This robustness is particularly important in vaccine studies, where findings must remain reliable even under differing prior assumptions.
 
 # Bibliography
 
@@ -630,7 +635,7 @@ Suppose X denotes the number of Covid cases among the $n_1$ patients randomly as
 ```{r ref.label = "table", echo=FALSE}
 ```
 
-Let us restrict our attention to just the 170 cases that had Covid. We want ot know the PMF of the random variable T which is defined as the count in the BNT162b2 vaccine cell given this restriction. That is, T is the value of X but with the restriction that X + Y = 170.
+Let us restrict our attention to just the 170 cases that had COVID-19. We want to know the PMF of the random variable T which is defined as the count in the BNT162b2 vaccine cell given this restriction. That is, T is the value of X but with the restriction that X + Y = 170.
 
 The binomial distribution for T can be justified by the following argument. Since the sample sizes - $n_1$ and $n_2$ - in each group are LARGE and the event rates are small, we may assume 
 
