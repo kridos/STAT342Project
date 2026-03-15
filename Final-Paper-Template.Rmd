@@ -452,7 +452,7 @@ Empirical & 0 \\ \hline
 \end{tabular}
 \end{table}
 
-Using table 2, we can conclude that the p-value under the chi square distribution and the empirical p-value are very similar, as both are around 0. With those p-values, we reject our null hypothesis and have sufficient evidence to conclude that $\psi_0$ does not equal 0.3.
+Using table 3, we can conclude that the p-value under the chi square distribution and the empirical p-value are very similar, as both are around 0. With those p-values, we reject our null hypothesis and have sufficient evidence to conclude that $\psi_0$ is greater than 0.3. Since the chi squared test is two sided, it also encapsulates the one-sided test. Since we rejected our two sided test, we would also reject the one sided test. 
 
 ```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, include = FALSE}
 pchisq(W_stat, 1, lower.tail = F)
