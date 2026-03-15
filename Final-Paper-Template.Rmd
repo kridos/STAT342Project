@@ -246,7 +246,7 @@ Most Pessimistic & 0.025 & 0.35 \\
 Pessimistic & 0.05 & 0.50 \\
 Neutral & 0.10 & 0.65 \\
 Optimistic & 0.20 & 0.80 \\
-More Optimistic & 0.40 & 0.95 \\ \hline
+Most Optimistic & 0.40 & 0.95 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -285,7 +285,7 @@ Most Pessimistic & $Beta(41.05, 37.63)$ & $Beta(49.05, 199.63)$ & $\approx 0$ \\
 Pessimistic & $Beta(43.03, 43.03)$ & $Beta(51.03, 205.03)$ & $\approx 0$ \\
 Neutral & $Beta(42.4, 46.0)$ & $Beta(50.4, 208)$ & $\approx 0$ \\
 Optimistic & $Beta(41.23, 49.20)$ & $Beta(49.23, 211.2)$ & $\approx 0$ \\
-More Optimistic & $Beta(48.96, 66.55)$ & $Beta(56.96, 228.55)$ & $\approx 0$ \\ \hline
+Most Optimistic & $Beta(48.96, 66.55)$ & $Beta(56.96, 228.55)$ & $\approx 0$ \\ \hline
 \end{tabular}
 \end{table}
 
@@ -426,87 +426,33 @@ We represent our empirical p-value with a histogram after bootstrapping 10000 va
 ### Prior and Posterior Distribution
 
 ```{r label="bay_plots", echo=FALSE, fig.height = 4}
-most_pessimistic <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 41.05, shape2 = 37.63),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 41.05 + t, shape2 = n-t + 37.63),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (Most Pessimistic)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-pessimistic <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 43.03, shape2 = 43.03),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 43.03 + t, shape2 = n-t + 43.03),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (Pessimistic)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-neutral <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 42.2, shape2 = 46.0),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 42.2 + t, shape2 = n-t + 46.0),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (Neutral)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-optimistic <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 41.23, shape2 = 49.20),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 41.23 + t, shape2 = n-t + 49.20),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (Optimistic)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-more_optimistic <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 48.96, shape2 = 66.55),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 48.96 + t, shape2 = n-t + 66.55),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (More Optimistic)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
 
-article_model <- ggplot() + 
+diff_posts <- list()
+diff_priors <- list(c(0.700102, 1), c(41.05, 37.63), c(43.03, 43.03), c(42.4, 46.0), 
+                    c(41.23, 49.20), c(48.96, 66.55))
+titles <- c("BNT162b2 Study","Most Pessimistic", "Pessimistic", "Neutral", 
+            "Optimistic", "Most Optimistic")
+
+for(i in 1:6){
+  diff_posts[[i]] <- ggplot() + 
   geom_function(fun = dbeta, 
                 mapping = aes(color = "Prior"),
-                args = list(shape1 = 0.700102, shape2 = 1),
+                args = list(shape1 = diff_priors[[i]][1], shape2 = diff_priors[[i]][2]),
                 xlim = c(0,1)) + 
   geom_function(fun=dbeta,
                 mapping = aes(color="Posterior"),
-                args = list(shape1 = 0.700102 + t, shape2 = n-t + 1),
+                args = list(shape1 = diff_priors[[i]][1] + t, shape2 = 
+                              n-t + diff_priors[[i]][2]),
 xlim = c(0,1)) +
   scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (BNT162b2 Study)", subtitle="observe t=8",
+  labs(title = paste("Binomial with Beta \nPrior (", titles[i], ")"), subtitle="observe t=8",
        x = expression(pi),
        y = "PDF")
+}
 
-article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") &
+diff_posts[[1]] + diff_posts[[2]] + diff_posts[[3]] + diff_posts[[4]] + 
+  diff_posts[[5]] + diff_posts[[6]] + 
+  plot_layout(nrow = 2, ncol = 3, guides = "collect") &
   theme(legend.position = "bottom")
 ```
 
@@ -567,8 +513,8 @@ Neutral (Bootstrap) & `r round(ci_n_boot[1],4)` & `r round(ci_n_boot[2],4)` \\
 Optimistic (Equal Tail) & `r round(ci_o_equal[1],4)` & `r round(ci_o_equal[2],4)` \\
 Optimistic (Bootstrap) & `r round(ci_o_boot[1],4)` & `r round(ci_o_boot[2],4)` \\
 
-More Optimistic (Equal Tail) & `r round(ci_mo_equal[1],4)` & `r round(ci_mo_equal[2],4)` \\
-More Optimistic (Bootstrap) & `r round(ci_mo_boot[1],4)` & `r round(ci_mo_boot[2],4)` \\ \hline
+Most Optimistic (Equal Tail) & `r round(ci_mo_equal[1],4)` & `r round(ci_mo_equal[2],4)` \\
+Most Optimistic (Bootstrap) & `r round(ci_mo_boot[1],4)` & `r round(ci_mo_boot[2],4)` \\ \hline
 \end{tabular}
 \end{table}
 
