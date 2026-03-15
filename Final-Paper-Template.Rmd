@@ -343,7 +343,7 @@ Bootstrap & 0.9503 & 0.0181 & 0.9149 & 0.9857 \\ \hline
 \end{tabular}
 \end{table}
 
-Both the numeric and bootstrapped confidence intervals do not contain values that are less than or equal to 0.3. Therefore, using the frequentist approach, we have sufficient evidence to reject our null hypothesis.
+Both the numeric and bootstrapped confidence intervals do not contain values that are less than or equal to 0.3. Therefore, using the Frequentist approach, we have sufficient evidence to reject our null hypothesis.
 
 ### Likelihood Ratio Test Statistic and P-values
 
