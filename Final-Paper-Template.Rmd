@@ -172,7 +172,44 @@ The first method is to calculate the large sample confidence interval. First, we
    - The possible values for the observed value does not depend on the parameter
    - The true value of the parameter does not fall on a boundary
 
-After establishing $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\psi_0)}})$, we can calculate a $100(1-\alpha)\%$ large sample confidence interval $\psi_0$ using the equation $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$.
+```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
+loglik.psi<-function(psi,x, n){
+  if(psi >= 1) NA
+  else{  
+    log(choose(n, x)) + x*log(1-psi) - x*log(2-psi) +(n-x)*log(1 / (2-psi))
+  }
+}
+
+ml.psi <- maxLik2(loglik=loglik.psi,
+start = 0.3, x = 8,n = 170)
+
+psi.plot <- plot(ml.psi) +
+labs(title = "Second order approximation for \nPsi (Parametrization for Pi)",
+subtitle = "n = 170, t = 8",
+x = expression(psi))
+
+
+
+loglik.pi<-function(pi,x, n){
+  if(pi < 0 || pi > 1) NA
+  else{  
+    log(choose(n, x)) + x*log(pi) +(n-x)*log(1 - pi)
+  }
+}
+
+ml.pi <- maxLik2(loglik=loglik.pi,
+start = 0.3, x = 8,n = 170)
+
+pi.plot <- plot(ml.pi) +
+labs(title = "Second order approximation for Pi",
+subtitle = "n = 170, t = 8",
+x = expression(pi))
+
+psi.plot + pi.plot
+
+```
+
+Since the 2nd order Taylor series approximates the log-likelihood function around MLE, we can assume that the regularity conditions for the expected Fisher information are satisfied. Additionally, since MLEs are invariant, we can say that the regularity condition is met for the expected Fisher information of $\psi$ as well. After establishing $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\psi_0)}})$, we can calculate a $100(1-\alpha)\%$ large sample confidence interval $\psi_0$ using the equation $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$, where $\hat{SE} = \frac{1}{\sqrt{I(\hat{\psi}^{mle})}}$.
 
 Using the fact that $\frac{d^2}{d \psi^2}\ell(\psi) = -\frac{t}{(1-\psi)^2} + \frac{n}{(2-\psi)^2}$, we can solve $I(\psi_0)$
 
@@ -332,94 +369,6 @@ opt
 most_opt
 ```
 
-```{r label="bay_plots", echo=FALSE}
-# Calculating Bayesian P-values
-
-most_pessimistic <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 41.05, shape2 = 37.63),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 41.05 + t, shape2 = n-t + 37.63),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (Most Pessimistic)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-pessimistic <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 43.03, shape2 = 43.03),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 43.03 + t, shape2 = n-t + 43.03),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (Pessimistic)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-neutral <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 42.2, shape2 = 46.0),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 42.2 + t, shape2 = n-t + 46.0),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (Neutral)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-optimistic <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 41.23, shape2 = 49.20),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 41.23 + t, shape2 = n-t + 49.20),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (Optimistic)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-more_optimistic <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 48.96, shape2 = 66.55),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 48.96 + t, shape2 = n-t + 66.55),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (More Pessimistic)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-
-article_model <- ggplot() + 
-  geom_function(fun = dbeta, 
-                mapping = aes(color = "Prior"),
-                args = list(shape1 = 0.700102, shape2 = 1),
-                xlim = c(0,1)) + 
-  geom_function(fun=dbeta,
-                mapping = aes(color="Posterior"),
-                args = list(shape1 = 0.700102 + t, shape2 = n-t + 1),
-xlim = c(0,1)) +
-  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (BNT162b2 Study)", subtitle="observe t=8",
-       x = expression(pi),
-       y = "PDF")
-
-
-article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") & 
-  theme(legend.position = "bottom")
-
-```
 
 The resulting Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
@@ -431,7 +380,7 @@ The resulting Bayesian P-values are essentially 0, indicating extremely strong p
 
 Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 170$: 
 
-```{r label="mle_confidence", echo=FALSE, results = FALSE}
+```{r label="mle_confidence", echo=FALSE, include = FALSE}
 n <- 170
 t <- 8
 psi_mle <- (n - 2*t) / (n - t)
@@ -446,42 +395,7 @@ psi_se
 psi_mle
 ```
 
-```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
-loglik.psi<-function(psi,x, n){
-  if(psi >= 1) NA
-  else{  
-    log(choose(n, x)) + x*log(1-psi) - x*log(2-psi) +(n-x)*log(1 / (2-psi))
-  }
-}
 
-ml.psi <- maxLik2(loglik=loglik.psi,
-start = 0.3, x = 8,n = 170)
-
-psi.plot <- plot(ml.psi) +
-labs(title = "Second order approximation for \nPsi (Parametrization for Pi)",
-subtitle = "n = 170, t = 8",
-x = expression(psi))
-
-
-
-loglik.pi<-function(pi,x, n){
-  if(pi < 0 || pi > 1) NA
-  else{  
-    log(choose(n, x)) + x*log(pi) +(n-x)*log(1 - pi)
-  }
-}
-
-ml.pi <- maxLik2(loglik=loglik.pi,
-start = 0.3, x = 8,n = 170)
-
-pi.plot <- plot(ml.pi) +
-labs(title = "Second order approximation for Pi",
-subtitle = "n = 170, t = 8",
-x = expression(pi))
-
-psi.plot + pi.plot
-
-```
 
 ```{r label="mle_empirical_ci", echo=FALSE, results = FALSE}
 set.seed(414)
@@ -573,6 +487,173 @@ geom_vline(xintercept = W_stat, color = "red") +
 labs(title = "Counts of W from Bootstrapping",
      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
 ```
+
+
+## Bayesian Approach
+
+### Prior and Posterior Distribution
+
+```{r label="bay_plots", echo=FALSE}
+# Calculating Bayesian P-values
+
+most_pessimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 41.05, shape2 = 37.63),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 41.05 + t, shape2 = n-t + 37.63),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Most Pessimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+pessimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 43.03, shape2 = 43.03),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 43.03 + t, shape2 = n-t + 43.03),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Pessimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+neutral <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 42.2, shape2 = 46.0),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 42.2 + t, shape2 = n-t + 46.0),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Neutral)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+optimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 41.23, shape2 = 49.20),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 41.23 + t, shape2 = n-t + 49.20),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (Optimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+more_optimistic <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 48.96, shape2 = 66.55),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 48.96 + t, shape2 = n-t + 66.55),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (More Optimistic)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+
+article_model <- ggplot() + 
+  geom_function(fun = dbeta, 
+                mapping = aes(color = "Prior"),
+                args = list(shape1 = 0.700102, shape2 = 1),
+                xlim = c(0,1)) + 
+  geom_function(fun=dbeta,
+                mapping = aes(color="Posterior"),
+                args = list(shape1 = 0.700102 + t, shape2 = n-t + 1),
+xlim = c(0,1)) +
+  scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
+  labs(title = "Binomial with Beta \nPrior (BNT162b2 Study)", subtitle="observe t=8",
+       x = expression(pi),
+       y = "PDF")
+
+
+article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") & 
+  theme(legend.position = "bottom")
+
+```
+
+
+When performing a sensitivity analysis on the posterior distributions, we found that regardless of the apriori beliefs that we set, our posterior distribution was approximately symmetric and centered near the same value of $\pi$.
+
+### Confidence Intervals
+Since our posterior distributions are approximately symmetric, we can use the equal tails test to find a confidence interval for $\pi$ for each case of the apriori beliefs.
+
+The equal-tails credible intervals are obtained by computing the 2.5\% and 97.5\% quantiles of the posterior Beta distribution for the infection probability parameter $\pi$, with parameters updated using the observed data. These bounds are then transformed to the vaccine efficacy parameter $\psi$ using the relationship $\psi = \frac{1 - 2\pi}{1 - \pi}$.
+
+The bootstrap intervals are computed by drawing many samples from the posterior Beta distribution of $\pi$, converting each sample to $\psi$, and taking the 2.5\% and 97.5\% quantiles of the resulting simulated values.
+
+```{r label='bays_ci', echo=FALSE, include=FALSE}
+
+B <- 10000
+
+convert_to_psi <- function(x){
+  (1 - 2*x) / (1 - x)
+}
+
+convert_to_psi_reverse <- function(x){
+  conversion <- convert_to_psi(x)
+  c(conversion[2], conversion[1])
+}
+
+# Most pessimistic
+ci_mp_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 41.05 + t, n - t + 37.63))
+samples_mp <- rbeta(B, 41.05 + t, n - t + 37.63)
+ci_mp_boot <- quantile(convert_to_psi(samples_mp), c(0.025,0.975))
+
+# Pessimistic
+ci_p_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 43.03 + t, n - t + 43.03))
+samples_p <- rbeta(B, 43.03 + t, n - t + 43.03)
+ci_p_boot <- quantile(convert_to_psi(samples_p), c(0.025,0.975))
+
+# Neutral
+ci_n_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 42.2 + t, n - t + 46.0))
+samples_n <- rbeta(B, 42.2 + t, n - t + 46.0)
+ci_n_boot <- quantile(convert_to_psi(samples_n), c(0.025,0.975))
+
+# Optimistic
+ci_o_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 41.23 + t, n - t + 49.20))
+samples_o <- rbeta(B, 41.23 + t, n - t + 49.20)
+ci_o_boot <- quantile(convert_to_psi(samples_o), c(0.025,0.975))
+
+# More optimistic
+ci_mo_equal <- convert_to_psi_reverse(qbeta(c(0.025,0.975), 48.96 + t, n - t + 66.55))
+samples_mo <- rbeta(B, 48.96 + t, n - t + 66.55)
+ci_mo_boot <- quantile(convert_to_psi(samples_mo), c(0.025,0.975))
+
+```
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+Prior & Lower & Upper \\ \hline
+Most Pessimistic (Equal Tail) & `r round(ci_mp_equal[1],4)` & `r round(ci_mp_equal[2],4)` \\
+Most Pessimistic (Bootstrap) & `r round(ci_mp_boot[1],4)` & `r round(ci_mp_boot[2],4)` \\
+
+Pessimistic (Equal Tail) & `r round(ci_p_equal[1],4)` & `r round(ci_p_equal[2],4)` \\
+Pessimistic (Bootstrap) & `r round(ci_p_boot[1],4)` & `r round(ci_p_boot[2],4)` \\
+
+Neutral (Equal Tail) & `r round(ci_n_equal[1],4)` & `r round(ci_n_equal[2],4)` \\
+Neutral (Bootstrap) & `r round(ci_n_boot[1],4)` & `r round(ci_n_boot[2],4)` \\
+
+Optimistic (Equal Tail) & `r round(ci_o_equal[1],4)` & `r round(ci_o_equal[2],4)` \\
+Optimistic (Bootstrap) & `r round(ci_o_boot[1],4)` & `r round(ci_o_boot[2],4)` \\
+
+More Optimistic (Equal Tail) & `r round(ci_mo_equal[1],4)` & `r round(ci_mo_equal[2],4)` \\
+More Optimistic (Bootstrap) & `r round(ci_mo_boot[1],4)` & `r round(ci_mo_boot[2],4)` \\ \hline
+\end{tabular}
+\end{table}
+
+While each of the confidence intervals are significantly different than the confidence interval in the study, they all still do not contain values less than or equal to 0.3 regardless of the apriori beliefs that were used. Therefore, we have sufficient evidence to reject our null hypothesis using the confidence intervals.
 
 # Discussion / Conclusion
 
