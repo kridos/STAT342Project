@@ -118,9 +118,9 @@ Let $t$ be the number of COVID infections from the vaccine group. We observe $t 
 
 ### Maximum Likelihood Estimator
 
-One approach to finding a similar confidence interval to what was reported in the efficacy study is using likelihood inference, which follows the Frequentist framework. Even though the Bayesian framework is used in the study, we thought using the likelihood approach would still help us come to similar conclusions about the data. 
+One approach to finding a similar confidence interval to what was reported in the study is with likelihood inference, which follows the Frequentist framework. Even though the original study applied a Bayesian framework, we considered a likelihood-based approach to determine whether it would lead to similar conclusions about the data.
 
-The first method we will use in likelihood inference is maximum likelihood, which identifies the values of the model parameters that makes our data most likely. For maximum likelihood, we need to find a likelihood function for $\psi$ and the maximum likelihood estimator of $\psi_0$. To find our likelihood function $L^{\ast}(\psi)$, we can use theorem 11.1. This states how the likelihood function for a discrete random variable $X$, parameterized by $\theta$, is $L(\theta) = P_{\theta}(X = x_{obs})$, where $x_obs$ is our observed data. Since $T$ follows the binomial distribution, the likelihood function in terms of $\pi$ is $L^{\ast}(\pi)  = \binom{n}{t} (\pi)^{t} \times (1-\pi)^{n-t}$. In this case, $n$ represents the number of people included in the sample and $t$ is the number of people who got infected with COVID. To get $L^{\ast}(\psi)$, we must find $\pi$ in terms of $\psi$ and replace the respective $\pi$ values. To do this, we can use our parameterization $\frac{1-2\pi}{1-\pi} = \psi$:
+The first method considered in likelihood inference is maximum likelihood, which identifies the values of the model parameters that makes our data most likely. For maximum likelihood, we need to find a likelihood function for $\psi$ and the maximum likelihood estimator of $\psi_0$. To find our likelihood function $L^{\ast}(\psi)$, we use Theorem 11.1. This states how the likelihood function for a discrete random variable $X$, parameterized by $\theta$, is $L(\theta) = P_{\theta}(X = x_{obs})$, where $x_obs$ is our observed data. Since $T$ follows the binomial distribution, the likelihood function in terms of $\pi$ is $L^{\ast}(\pi)  = \binom{n}{t} (\pi)^{t} \times (1-\pi)^{n-t}$. In this case, $n$ represents the number of people included in the sample and $t$ is the number of people infected with COVID. To get $L^{\ast}(\psi)$, we must find $\pi$ in terms of $\psi$ and replace the respective $\pi$ values. Starting from the parameterization $\frac{1-2\pi}{1-\pi} = \psi$:
 
 $1-2\pi = \psi(1-\pi)$
 
@@ -130,9 +130,9 @@ $1-\psi = \pi(2 -\psi)$
 
 $\pi = \frac{1 -\psi}{2 -\psi}$
 
-Using $\pi$ in terms of $\psi$, we get the likelihood function: $L^{\ast}(\psi) = \binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t} \times (1-\frac{1 -\psi}{2 -\psi})^{n-t}$
+With $\pi$ in terms of $\psi$, we get the likelihood function: $L^{\ast}(\psi) = \binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t} \times (1-\frac{1 -\psi}{2 -\psi})^{n-t}$
 
-Now that we have the likelihood function of $\psi$, the next step is to solve for the maximum likelihood estimator (MLE) of $\psi$, $\hat{\psi}^{mle}$. Definition 11.3 explains how the maximum likelihood estimator of the true, unknown parameter value is the value that makes the likelihood function the largest. In order to find this value, we need to find the log-likelihood function of $L^{\ast}(\psi)$, denoted as $\ell(\psi)$. We use $\ell{(\psi)}$ since $\ell{(\psi)}$ is easier to differentiate and has the maximum at the same $\psi$ location as $L^{\ast}(\psi)$.
+Now that we have the likelihood function of $\psi$, the next step is to solve for the maximum likelihood estimator (MLE) of $\psi$, $\hat{\psi}^{mle}$. Definition 11.3 explains how the maximum likelihood estimator of the true, unknown parameter value is the value that makes the likelihood function the largest. To determine this value, we find the log-likelihood function of $L^{\ast}(\psi)$, denoted as $\ell(\psi)$. $\ell{(\psi)}$ is preferred since it is easier to differentiate and has the maximum at the same $\psi$ location as $L^{\ast}(\psi)$.
 
 $\ell(\psi) = \ln{\left[\binom{n}{t} (\frac{1 -\psi}{2 -\psi})^{t}\right]} + \ln\left[{(1-\frac{1 -\psi}{2 -\psi})^{n-t}}\right]$
 
@@ -140,7 +140,7 @@ $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)} + (n-t)\ln{(\
 
 $\ell(\psi) = \ln{\binom{n}{t}} + t\ln{(1-\psi)} -t\ln{(2 - \psi)}  + (n-t)\ln{1} - (n-t)\ln{(2-\psi)}$
 
-Now that we have obtained $\ell{(\psi)}$, we take the first derivative with respect to $\psi$. This is a method that helps us maximize the function, where setting the first derivative of the log-likelihood function equal to 0 allows us to find a maximum value, specifically the MLE!
+Now that we have obtained $\ell{(\psi)}$, we take the first derivative with respect to $\psi$. This is a method that helps us maximize the function, where setting the first derivative of the log-likelihood function equal to 0 allows us to find a maximum value, specifically the MLE.
 
 $\frac{d}{d \psi}\ell(\psi) = 0 - \frac{t}{1-\psi} + \frac{t}{2-\psi} + \frac{n-t}{2-\psi} = -\frac{t}{1-\psi} + \frac{t + (n-t)}{2-\psi}$
 
@@ -156,7 +156,7 @@ $n- 2t = \psi(n - t)$
 
 Therefore, $\boxed{\hat{\psi}^{mle} = \frac{n - 2t}{n-t}}$, which can also be rewritten as $\frac{1 - 2\hat{\pi}^{mle}}{1 - \hat{\pi}^{mle}}$.
 
-Next we have to to check if $\hat{\psi}^{mle}$ is truly a maximum. To do this, we perform the 2nd derivative test. We check if the 2nd derivative is less than 0:
+To check if $\hat{\psi}^{mle}$ is truly a maximum, we perform the 2nd derivative test to observe whether the 2nd derivative is less than 0:
 
 $\frac{d^2}{d \psi^2}\ell(\psi) = \frac{t}{(1-\psi)^2} -\frac{n}{(2-\psi)^2}$
 
@@ -283,7 +283,7 @@ beta.select(quantile1 = list(p = 0.4, x = 7/17),
 ```
 We choose these apriori beliefs to analyze the sensitivity of the prior. More specifically, these five priors represent varying degrees of pessimism and optimism regarding whether the vaccine exceeds the FDA efficacy threshold of 30% and whether it provides any beneficial effect at all.
 
-To determine the parameters of the Beta prior distributions that satisfy the specified probability conditions, numerical solutions were obtained using the beta.select function from the LearnBayes package in R. The corresponding code used to compute these parameters is provided in the Appendix.
+To determine the parameters of the Beta prior distributions that satisfy the specified probability conditions, numerical solutions were obtained using the beta.select function from the LearnBayes package in R. The corresponding code to compute these parameters is provided in the Appendix.
 
 Next, we find the posterior distributions and Bayesian p-values for the five priors with data model $f(T|\pi) \sim Binom(170, \pi)$. 
 
