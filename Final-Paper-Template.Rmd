@@ -805,7 +805,7 @@ $= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p})^{n_1} \cdo
 
 Therefore, we can see that $T \sim Binom(n, \frac{n_1\pi_v}{n_1\pi_v + n\pi_p - n_1\pi_p}) =  Binom(n, \frac{n_1\pi_v}{n_1\pi_v + n_2\pi_p})$
 
-When X and Y are independent and approximately follow a Poisson distribution (large group size and small event rate)
+when X and Y are independent and approximately follow a Poisson distribution (large group size and small event rate)
 
 
 
