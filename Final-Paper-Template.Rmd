@@ -436,8 +436,7 @@ labs(title = "Counts of W from Bootstrapping",
      x = "Likelihood Ratio Test Statistic (W) Value", y = "Count")
 ```
 
-We represent our empirical p-value with a histogram after bootstrapping 10000 values of W and comparing those values to our observed ratio test statistic ($W \approx 121.601$), resulting p-value $\approx$ 0.
-<!-- The histogram is a graphical representation of the empirical p-value. This is done by generating a plethora of sample likelihood ratio test statistic values. The red line indicates our observed likelihood ratio test statistic of $W \approx 121.601$. Based on the output, we can see that our observed $W$ value is much greater than the sampled values through bootstrapped, which leads to the empirical p-value of 0. -->
+The histogram is a graphical representation of the empirical p-value. This is done by generating a plethora of sample likelihood ratio test statistic values. The red line indicates our observed likelihood ratio test statistic of $W \approx 121.601$. Based on the output, we can see that our observed $W$ value is much greater than the sampled values through bootstrapped, which leads to the empirical p-value of 0.
 
 ## Bayesian Approach
 
@@ -578,7 +577,6 @@ ci_mo_boot <- quantile(convert_to_psi(samples_mo), c(0.025,0.975))
 
 \begin{table}[H]
 \centering
-\caption{Bayesian Confidence Intervals}
 \begin{tabular}{ccc}
 Prior & Lower & Upper \\ \hline
 Most Pessimistic (Equal Tail) & `r round(ci_mp_equal[1],4)` & `r round(ci_mp_equal[2],4)` \\
@@ -616,7 +614,7 @@ Most Optimistic &  $9.61\cdot 10^{-15}$ \\ \hline
 \end{tabular}
 \end{table}
 
-The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence to reject our null hypothesis. The conclusion is therefore robust to the choice of prior.
+The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence to reject our null hypothesis. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 # Discussion / Conclusion
 
@@ -628,8 +626,7 @@ Notably, the priors constructed in this analysis are stronger than the minimally
 
 David J. Sencer CDC Museum. “CDC Museum COVID-19 Timeline.” Centers for Disease Control and Prevention, CDC, 8 July 2024, www.cdc.gov/museum/timeline/covid19.html. Accessed 14 Mar. 2026.
 
-Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:
-~:text=Abstract,the%20governments%20across%20the%20world., https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
+Kashte, Shivaji, et al. “COVID-19 Vaccines: Rapid Development, Implications, Challenges and Future Prospects.” Human Cell, vol. 34, no. 3, 7 Mar. 2021, pmc.ncbi.nlm.nih.gov/articles/PMC7937046/#:~:text=Abstract,the%20governments%20across%20the%20world., https://doi.org/10.1007/s13577-021-00512-4. Accessed 14 Mar. 2026.
 
 Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19 Vaccine.” The New England Journal of Medicine, vol. 383, no. 27, 10 Dec. 2020, www.nejm.org/doi/full/10.1056/NEJMoa2034577, https://doi.org/10.1056/NEJMoa2034577. Accessed 14 Mar. 2026.
 
@@ -736,8 +733,6 @@ $= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_v)^{n_1}(n_2\pi_p)^{n_2}}{(n_1\pi_v + n
 $= \frac{n!}{n_1!n_2!}\cdot\frac{(n_1\pi_v)^{n_1}}{(n_1\pi_v + n_2\pi_p)^{n_1}}\frac{(n_2\pi_p)^{n_2}}{(n_1\pi_v + n_2\pi_p)^{n_2}}$
 
 $= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_v)^{n_1}}{(n_1\pi_v + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{n - n_1}}{(n_1\pi_v + (n - n_1)\pi_p)^{(n - n_1)}}$
-
-$= \frac{n!}{n_1!(n - n_1)!}\cdot\frac{(n_1\pi_v)^{n_1}}{(n_1\pi_v + (n - n_1)\pi_p)^{n_1}}\frac{((n - n_1)\pi_p)^{(n - n_1)}}{(n_1\pi_v + (n - n_1)\pi_p)^{(n - n_1)}}$
 
 $= \binom{n}{n_1}\cdot(\frac{n_1\pi_v}{n_1\pi_v + (n - n_1)\pi_p})^{n_1} \cdot (\frac{((n - n_1)\pi_p)}{(n_1\pi_v + (n - n_1)\pi_p)})^{n - n_1}$
 
