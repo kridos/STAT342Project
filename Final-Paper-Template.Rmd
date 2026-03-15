@@ -191,11 +191,19 @@ $\hat{\psi}^{mle} \pm z_{\alpha/2} \sqrt{\frac{(2-\hat{\psi}^{mle})^2(1-\hat{\ps
 
 #### Parametric Bootstrap Percentile Interval
 
+The second method of finding the confidence interval for $\psi_0$ is calculating an interval using the parametric bootstrap. First, we take a plethora of COVID infected values from the binomial model at a certain sample size and infected probability. Then, we find $\hat{\pi}^{mle}$ values and use them to find $\hat{\psi}^{mle}$ values using the equation $\hat{\psi}^{mle} = \frac{1 - 2\hat{\pi}^{mle}}{1 - \hat{\pi}^{mle}}$. To construct the percentile interval, we calculate the mean and standard deviation of the combined $\hat{\psi}^{mle}$ values. We use the equation $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$ for the interval, where the mean of the values represents $\hat{\psi}^{mle}$ and the standard deviation represents $\hat{SE}$.
 
+### Significance Testing for $\psi_0$
 
-### Significance Test for $\psi_0$
+The test statistic we will use when doing significance testing for $\psi_0$ is the likelihood ratio test statistic, or W. The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$. For our test, $H_0: \psi_0 = 0.3$, which means $\hat{\psi}^{null} = 0.3$. The likelihood ratio test statistic becomes: $W = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(0.3)}\right]$. We can find the p-value in 2 different ways
 
-The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$.
+#### Chi-Square Distribution
+
+For large samples under the null hypothesis, $W \approx \chi^2_{1}$. To compute the p-value, we calculate using the likelihood ratio test statistic under the Chi-Square distribution with $df = 1$.
+
+#### Empirical P-value
+
+The empirical p-value is calculated by generating a large number of samples from the null hypothesis of $H_0: \psi_0 = 0.3$. For the generated samples, calculate $\hat{\psi}^{mle}$ and the likelihood ratio test statistic $W^{\ast}$ for each of them. Finally, to find the empirical p-value, count the fraction of times a $W^{\ast}$ from our generated samples is larger than the $W$ is observed.
 
 ## Bayesian Inference
 
@@ -325,6 +333,7 @@ most_opt
 ```
 
 ```{r label="bay_plots", echo=FALSE}
+# Calculating Bayesian P-values
 
 most_pessimistic <- ggplot() + 
   geom_function(fun = dbeta, 
@@ -388,7 +397,7 @@ more_optimistic <- ggplot() +
                 args = list(shape1 = 48.96 + t, shape2 = n-t + 66.55),
 xlim = c(0,1)) +
   scale_color_manual(values = c("Prior" = "red", "Posterior" = "blue")) + 
-  labs(title = "Binomial with Beta \nPrior (More Optimistic)", subtitle="observe t=8",
+  labs(title = "Binomial with Beta \nPrior (More Pessimistic)", subtitle="observe t=8",
        x = expression(pi),
        y = "PDF")
 
@@ -412,7 +421,7 @@ article_model + most_pessimistic + pessimistic + neutral + optimistic + more_opt
 
 ```
 
-The Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
+The resulting Bayesian P-values are essentially 0, indicating extremely strong posterior evidence that the vaccine efficacy exceeds the FDA threshold of 30%. This finding is consistent with the results reported in the original study where the posterior probability that vaccine efficacy exceeded 30% was larger than 0.999. The conclusion is therefore robust to the choice of prior, whether it is overly pessimistic or optimistic.
 
 # Results
 
@@ -434,6 +443,7 @@ upper <- psi_mle + qnorm(0.975)*psi_se
 lower
 upper
 psi_se 
+psi_mle
 ```
 
 ```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
@@ -473,7 +483,7 @@ psi.plot + pi.plot
 
 ```
 
-```{r label="mle_empirical_sd", echo=FALSE, results = FALSE}
+```{r label="mle_empirical_ci", echo=FALSE, results = FALSE}
 set.seed(414)
 
 pi_samples <- rbinom(n = 100000, size = 170, prob =  8/170)
@@ -488,6 +498,15 @@ lower_boot
 upper_boot <- mean(psi_samples) + qnorm(0.975)* sd(psi_samples)
 upper_boot
 ```
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccc} 
+Confidence Interval & MLE & SE & Lower & Upper \\ \hline
+Large Sample & 0.9506 & 0.0179 & 0.9156 & 0.9857 \\
+Bootstrap & 0.9503 & 0.0181 & 0.9149 & 0.9857 \\ \hline
+\end{tabular}
+\end{table}
 
 ### Likelihood Ratio Test Statistic
 
@@ -515,6 +534,16 @@ log_null
 W_stat <- 2*(log_mle - log_null)
 W_stat
 ```
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ccccc} 
+Type & P-value \\ \hline
+Chi Square &  $2.82\cdot 10^{-28}$ \\
+Empirical & 0 \\ \hline
+\end{tabular}
+\end{table}
 
 ```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, fig.height=4, fig.width=4}
 pchisq(W_stat, 1, lower.tail = F)
@@ -547,7 +576,7 @@ labs(title = "Counts of W from Bootstrapping",
 
 # Discussion / Conclusion
 
-We utilized statistical inference with both Frequentist and Bayesian frameworks by computing the maximum likelihood estimate (MLE) and exploring various priors to obtain posterior distributions and Bayesian p-values. The MLE estimate of efficacy resulted in about a 95% reduction in infection risk for the vaccinated group compared to the placebo group. Accordingly, the 95% large-sample confidence interval for the efficacy rate using the MLE emerged to be [91.56%, 98.57%], which lies in approximately the same region as the Bayesian credible interval reported in the original paper, [90.3%, 97.6%]. Both the likelihood ratio test and the Bayesian hypothesis tests also produced p-values approximately equal to zero, providing overwhelming evidence that vaccine efficacy exceeds the FDA threshold of 30%. Furthermore, the Bayesian results remained consistent across a range of pessimistic and optimistic prior beliefs, supporting that the conclusion is robust to the choice of prior. 
+Discuss / conclude here.
 
 # Bibliography
 
@@ -584,8 +613,8 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 ```{r ref.label="mle_graph", eval=FALSE}
 ```
 
-### Empirical Standard Deviation
-```{r, ref.label="mle_empirical_sd", eval=FALSE}
+### Empirical Confidence Interval
+```{r, ref.label="mle_empirical_ci", eval=FALSE}
 ```
 
 ### Ratio Statistic
@@ -622,7 +651,7 @@ Suppose X denotes the number of Covid cases among the $n_1$ patients randomly as
 ```{r ref.label = "table", echo=FALSE}
 ```
 
-Let us restrict our attention to just the 170 cases that had Covid. We want ot know the PMF of the random variable T which is defined as the count in the BNT162b2 vaccine cell given this restriction. That is, T is the value of X but with the restriction that X + Y = 170.
+Let us restrict our attention to just the 170 cases that had COVID-19. We want to know the PMF of the random variable T which is defined as the count in the BNT162b2 vaccine cell given this restriction. That is, T is the value of X but with the restriction that X + Y = 170.
 
 The binomial distribution for T can be justified by the following argument. Since the sample sizes - $n_1$ and $n_2$ - in each group are LARGE and the event rates are small, we may assume 
 
