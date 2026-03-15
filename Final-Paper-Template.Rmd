@@ -168,9 +168,7 @@ We can calculate the confidence interval for $\psi_0$ in two different ways.
 
 #### Large Sample Confidence Interval
 
-The first method is to calculate the large sample confidence interval. First, we establish that for large $n$ values under certain regularity conditions, $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\hat{\psi}^{mle})}})$, where $I(\psi_0) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right] \vert_{\psi = \psi_0}$. This is based on Theorem 12.1. Some of the regularity conditions include:
-   - The possible values for the observed value does not depend on the parameter
-   - The true value of the parameter does not fall on a boundary
+The first method is to calculate the large sample confidence interval. First, we establish that for large $n$ values under certain regularity conditions, $\hat{\psi_0}^{mle} \approx Norm(\psi_0, \frac{1}{\sqrt{I(\hat{\psi}^{mle})}})$, where $I(\psi_0) = E\left[-\frac{d^2}{d\psi^2}\ell(\psi)\right] \vert_{\psi = \psi_0}$. This is based on Theorem 12.1. Some of the regularity conditions include that the possible values for the observed value does not depend on the parameter and the true value of the parameter does not fall on a boundary
 
 ```{r label="mle_graph", echo=FALSE, warnings=FALSE, message=FALSE, fig.width=8, fig.height=4}
 loglik.psi<-function(psi,x, n){
@@ -223,9 +221,21 @@ $\frac{n(2-\psi)}{(2-\psi)^2(1-\psi)} - \frac{n(1-\psi)}{(2-\psi)^2(1-\psi)} = \
 
 Since we got $I(\hat{\psi}^{mle})$, our standard error is $\frac{1}{\sqrt{\frac{n}{(2-\psi)^2(1-\psi)}}} = \sqrt{\frac{(2-\psi)^2(1-\psi)}{n}}$.
 
-### Significance Test for $\psi_0$
+#### Parametric Bootstrap Percentile Interval
 
-The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$.
+The second method of finding the confidence interval for $\psi_0$ is calculating an interval using the parametric bootstrap. First, we take a plethora of COVID infected values from the binomial model at a certain sample size and infected probability. Then, we find $\hat{\pi}^{mle}$ values and use them to find $\hat{\psi}^{mle}$ values using the equation $\hat{\psi}^{mle} = \frac{1 - 2\hat{\pi}^{mle}}{1 - \hat{\pi}^{mle}}$. To construct the percentile interval, we calculate the mean and standard deviation of the combined $\hat{\psi}^{mle}$ values. We use the equation $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$ for the interval, where the mean of the values represents $\hat{\psi}^{mle}$ and the standard deviation represents $\hat{SE}$.
+
+### Significance Testing for $\psi_0$
+
+The test statistic we will use when doing significance testing for $\psi_0$ is the likelihood ratio test statistic, or W. The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$. For our test, $H_0: \psi_0 = 0.3$, which means $\hat{\psi}^{null} = 0.3$. The likelihood ratio test statistic becomes: $W = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(0.3)}\right]$. We can find the p-value in 2 different ways
+
+#### Chi-Square Distribution
+
+For large samples under the null hypothesis, $W \approx \chi^2_{1}$. To compute the p-value, we calculate using the likelihood ratio test statistic under the Chi-Square distribution with $df = 1$.
+
+#### Empirical P-value
+
+The empirical p-value is calculated by generating a large number of samples from the null hypothesis of $H_0: \psi_0 = 0.3$. For the generated samples, calculate $\hat{\psi}^{mle}$ and the likelihood ratio test statistic $W^{\ast}$ for each of them. Finally, to find the empirical p-value, count the fraction of times a $W^{\ast}$ from our generated samples is larger than the $W$ is observed.
 
 ## Bayesian Inference
 
