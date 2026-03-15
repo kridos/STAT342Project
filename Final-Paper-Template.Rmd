@@ -519,7 +519,6 @@ $\ell(0.3) = \ln{\binom{160}{8}} + 8\ln{(0.7)} -8\ln{(1.3)}  + (162)\ln{(\frac{1
 Then, $W = 2(-1.945 + 62.746) \approx \boxed{121.601}$
 
 
-Likelihood Ratio Test Statistic
 ```{r label="mle_ratio_stat", echo=FALSE, results = FALSE}
 log_lik_func <- function(psi, n , t){
   log(choose(n, t)) + t*log(1-psi) - t*log(2-psi) -(n-t)*log((2-psi))
@@ -545,7 +544,7 @@ Empirical & 0 \\ \hline
 \end{tabular}
 \end{table}
 
-```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, fig.height=4, fig.width=4}
+```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, include = FALSE}
 pchisq(W_stat, 1, lower.tail = F)
 
 
@@ -565,7 +564,9 @@ for(i in 1:10000){
 emp_p_value <- mean(values >= W_stat)
 emp_p_value
 cat("Empirical P value = ", emp_p_value)
+```
 
+```{r label="mle_empirical_hist", echo=FALSE, warnings=FALSE, message = FALSE, fig.height=4, fig.width=4}
 ggplot(data = NULL,
 mapping = aes(x = values))+
 geom_histogram(bins = 40) +
@@ -625,6 +626,11 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 
 ### Empirical P-Value
 ```{r ref.label="mle_empirical_p", eval=FALSE}
+```
+
+### Empirical Histogram
+```{r ref.label="mle_empirical_hist", eval = FALSE}
+
 ```
 
 ## Bayesian
