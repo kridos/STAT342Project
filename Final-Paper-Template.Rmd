@@ -191,11 +191,19 @@ $\hat{\psi}^{mle} \pm z_{\alpha/2} \sqrt{\frac{(2-\hat{\psi}^{mle})^2(1-\hat{\ps
 
 #### Parametric Bootstrap Percentile Interval
 
+The second method of finding the confidence interval for $\psi_0$ is calculating an interval using the parametric bootstrap. First, we take a plethora of COVID infected values from the binomial model at a certain sample size and infected probability. Then, we find $\hat{\pi}^{mle}$ values and use them to find $\hat{\psi}^{mle}$ values using the equation $\hat{\psi}^{mle} = \frac{1 - 2\hat{\pi}^{mle}}{1 - \hat{\pi}^{mle}}$. To construct the percentile interval, we calculate the mean and standard deviation of the combined $\hat{\psi}^{mle}$ values. We use the equation $\hat{\psi}^{mle} \pm z_{\alpha/2} \hat{SE}$ for the interval, where the mean of the values represents $\hat{\psi}^{mle}$ and the standard deviation represents $\hat{SE}$.
 
+### Significance Testing for $\psi_0$
 
-### Significance Test for $\psi_0$
+The test statistic we will use when doing significance testing for $\psi_0$ is the likelihood ratio test statistic, or W. The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$. For our test, $H_0: \psi_0 = 0.3$, which means $\hat{\psi}^{null} = 0.3$. The likelihood ratio test statistic becomes: $W = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(0.3)}\right]$. We can find the p-value in 2 different ways
 
-The likelihood ratio statistic is calculated by $W = 2\ln\Lambda$, which is equivalent to $2\ln(\frac{L(\hat{\psi}^{mle})}{L(\hat{\psi}^{null})}) = 2\left[\ln{L(\hat{\psi}^{mle})} - \ln{L(\hat{\psi}^{null})}\right]$.
+#### Chi-Square Distribution
+
+For large samples under the null hypothesis, $W \approx \chi^2_{1}$. To compute the p-value, we calculate using the likelihood ratio test statistic under the Chi-Square distribution with $df = 1$.
+
+#### Empirical P-value
+
+The empirical p-value is calculated by generating a large number of samples from the null hypothesis of $H_0: \psi_0 = 0.3$. For the generated samples, calculate $\hat{\psi}^{mle}$ and the likelihood ratio test statistic $W^{\ast}$ for each of them. Finally, to find the empirical p-value, count the fraction of times a $W^{\ast}$ from our generated samples is larger than the $W$ is observed.
 
 ## Bayesian Inference
 
@@ -407,7 +415,7 @@ xlim = c(0,1)) +
        y = "PDF")
 
 
-article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") & 
+article_model + most_pessimistic + pessimistic + neutral + optimistic + more_optimistic + plot_layout(nrow = 2, ncol = 3, guides = "collect") &
   theme(legend.position = "bottom")
 
 ```
@@ -473,7 +481,7 @@ psi.plot + pi.plot
 
 ```
 
-```{r label="mle_empirical_sd", echo=FALSE, results = FALSE}
+```{r label="mle_empirical_ci", echo=FALSE, results = FALSE}
 set.seed(414)
 
 pi_samples <- rbinom(n = 100000, size = 170, prob =  8/170)
@@ -584,8 +592,8 @@ Polack, Fernando P., et al. “Safety and Efficacy of the BNT162b2 MRNA Covid-19
 ```{r ref.label="mle_graph", eval=FALSE}
 ```
 
-### Empirical Standard Deviation
-```{r, ref.label="mle_empirical_sd", eval=FALSE}
+### Empirical Confidence Interval
+```{r, ref.label="mle_empirical_ci", eval=FALSE}
 ```
 
 ### Ratio Statistic
