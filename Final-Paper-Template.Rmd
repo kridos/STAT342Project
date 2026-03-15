@@ -425,9 +425,13 @@ article_model + most_pessimistic + pessimistic + neutral + optimistic + more_opt
 
 ## Frequentist Approach
 
+### MLE
+
+Using the equation $\hat{\psi}^{mle} = \frac{n - 2t}{n-t}$, we can calculate the MLE of $\psi$ when $n = 170$ and $t = 8$ like in our observed study. Ultimately, we get $\boxed{\hat{\psi}^{mle} \approx 0.9506}$.
+
 ### Confidence Interval
 
-Using all the information given, we can solve the 95\% confidence interval with $t = 8$ and $n = 170$: 
+Using all the information given, we can solve the 95\% large sample confidence interval and bootstrap percentile interval for $\psi_0$ with $t = 8$ and $n = 170$: 
 
 ```{r label="mle_confidence", echo=FALSE, results = FALSE}
 n <- 170
@@ -499,14 +503,16 @@ upper_boot
 
 \begin{table}[h]
 \centering
+\caption{Confidence Intervals for $\psi_0$}
 \begin{tabular}{ccccc} 
-Confidence Interval & MLE & SE & Lower & Upper \\ \hline
+Confidence Interval Type & MLE & SE & Lower & Upper \\ \hline
 Large Sample & 0.9506 & 0.0179 & 0.9156 & 0.9857 \\
 Bootstrap & 0.9503 & 0.0181 & 0.9149 & 0.9857 \\ \hline
 \end{tabular}
 \end{table}
 
-### Likelihood Ratio Test Statistic
+
+### Likelihood Ratio Test Statistic and P-values
 
 Given that $\hat{\psi}^{mle} \approx 0.9506$ and $H_0: \psi = 0.3$, we are solving for $2\left[\ell{(0.9506)} - \ell{(0.3)}\right]$. Using that $t = 8$ and $n = 160$, we can calculation $\ell(0.9506)$ and $\ell(0.3)$:
 
@@ -535,12 +541,15 @@ W_stat
 
 \begin{table}[h]
 \centering
+\caption{P-values for $\psi_0$}
 \begin{tabular}{ccccc} 
 Type & P-value \\ \hline
 Chi Square &  $2.82\cdot 10^{-28}$ \\
 Empirical & 0 \\ \hline
 \end{tabular}
 \end{table}
+
+Using table 2, we can conclude that the p-value under the chi square distribution and the empirical p-value are very similar, as both are around 0. With those p-values, we reject our null hypothesis and have sufficient evidence to conclude that $\psi_0$ does not equal 0.3.
 
 ```{r label="mle_empirical_p", echo=FALSE, warnings=FALSE, message = FALSE, include = FALSE}
 pchisq(W_stat, 1, lower.tail = F)
